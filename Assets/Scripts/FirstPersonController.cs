@@ -4,22 +4,31 @@ using UnityEngine.UI;
 public class FirstPersonController : MonoBehaviour
 {
     public float moveSpeed = 5f;  // 캐릭터 이동 속도
-    public float runSpeed = 7f; // 달리기 속도
+    public float runSpeed = 7f;   // 달리기 속도
     public float mouseSensitivity = 100f;  // 마우스 감도
     public float maxStamina = 5f;  // 최대 스태미나
     public float stamina = 5f;    // 현재 스태미나
     public float staminaDrainRate = 1f;  // 스태미나 소모율
     public float staminaRecoveryRate = 1f; // 스태미나 회복율
 
-    public Slider staminaSlider; // 스태미나 슬라이더
+    public Slider staminaSlider;  // 스태미나 슬라이더
 
     private CharacterController characterController;
     private float xRotation = 0f;  // 상하 카메라 회전을 위한 변수
+
+    private float originalMoveSpeed;  // 원래 이동 속도 저장
+    private float originalRunSpeed;   // 원래 달리기 속도 저장
+    private bool isSlowed = false;    // 속도 감소 상태 확인용
+    private float slowTimer = 0f;     // 속도 감소 시간 관리용
 
     void Start()
     {
         // Character Controller 컴포넌트 가져오기
         characterController = GetComponent<CharacterController>();
+
+        // 기본 속도 저장
+        originalMoveSpeed = moveSpeed;
+        originalRunSpeed = runSpeed;
 
         // 마우스 커서 잠금
         Cursor.lockState = CursorLockMode.Locked;
@@ -38,6 +47,16 @@ public class FirstPersonController : MonoBehaviour
 
         // UI 업데이트
         UpdateStaminaBar();
+
+        // 속도 감소 상태일 때 타이머 처리
+        if (isSlowed)
+        {
+            slowTimer -= Time.deltaTime;
+            if (slowTimer <= 0)
+            {
+                RestoreSpeed();  // 원래 속도로 복구
+            }
+        }
     }
 
     // 캐릭터 이동 처리 함수
@@ -97,5 +116,22 @@ public class FirstPersonController : MonoBehaviour
         {
             staminaSlider.value = stamina; // 스태미나 값을 슬라이더의 값으로 설정
         }
+    }
+
+    // 이동 속도를 줄이는 함수
+    public void SlowDown(float speedMultiplier, float duration)
+    {
+        moveSpeed *= speedMultiplier;
+        runSpeed *= speedMultiplier;
+        isSlowed = true;
+        slowTimer = duration;
+    }
+
+    // 이동 속도를 원래대로 복구하는 함수
+    void RestoreSpeed()
+    {
+        moveSpeed = originalMoveSpeed;
+        runSpeed = originalRunSpeed;
+        isSlowed = false;
     }
 }
