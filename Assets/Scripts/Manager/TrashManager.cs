@@ -5,16 +5,18 @@ using UnityEngine.UI;
 
 public class TrashManager : MonoBehaviour
 {
+    [Header("쓰레기 게이지")]
     public int Maxscary = 100;//최대 공포
     public int scary;//현제 공포
     public Image scaryBar; // 공포 이미지
 
+    [Header("느려지는 속도")]
     public float slowedSpeedMultiplier = 0.5f; //보내줄값
     public bool isEffectActive = false;//DangerItem에서 변화시킬값
 
     public AudioSource effectSound; // 소리 효과
 
-    public GameObject Player;
+    private GameObject Player;
     private FirstPersonController playerController;
     public void Start()
     {
