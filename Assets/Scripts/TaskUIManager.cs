@@ -67,19 +67,21 @@ public class TaskUIManager : MonoBehaviour
 
     void UpdateUI()
     {
-        //현재 갯수 알림이
-        circleText.text = $"{circleCount}/{totalCircle}"; 
-        cylinderText.text = $"{cylinderCount}/{totalCylinder}";
-        squareText.text = $"{squareCount}/{totalSquare}";
+        // 현재 갯수 알림이
+        if (circleText != null) circleText.text = $"{circleCount}/{totalCircle}";
+        if (cylinderText != null) cylinderText.text = $"{cylinderCount}/{totalCylinder}";
+        if (squareText != null) squareText.text = $"{squareCount}/{totalSquare}";
 
-        //초과 했는지 페크
+        // 초과했는지 체크
         CheckCompletion(circleCount, totalCircle, circleText, circleStrikeThrough);
         CheckCompletion(cylinderCount, totalCylinder, cylinderText, cylinderStrikeThrough);
         CheckCompletion(squareCount, totalSquare, squareText, squareStrikeThrough);
     }
 
-    void CheckCompletion(int count, int total, Text text, GameObject strikeThrough)//현제값,총량,글색,빨간줄
+    void CheckCompletion(int count, int total, Text text, GameObject strikeThrough)
     {
+        if (text == null || strikeThrough == null) return;
+
         if (count >= total)
         {
             text.color = Color.red;
