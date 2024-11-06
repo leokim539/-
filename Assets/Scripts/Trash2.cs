@@ -77,7 +77,7 @@ public class Trash2 : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
-            if (hit.collider != null && (hit.collider.CompareTag("Trash") || hit.collider.CompareTag("DangerTrash")))
+            if (hit.collider != null && (hit.collider.CompareTag("Trash") || hit.collider.CompareTag("DangerTrash") || hit.collider.CompareTag("TrashCan")))
             {
                 ShowUI(hit.collider.gameObject);
             }
