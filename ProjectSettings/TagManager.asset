@@ -8,6 +8,10 @@ TagManager:
   - TrashCan
   - DangerTrash
   - RainZone
+  - Drawer
+  - Drawer2
+  - Drawer3
+  - TV
   layers:
   - Default
   - TransparentFX

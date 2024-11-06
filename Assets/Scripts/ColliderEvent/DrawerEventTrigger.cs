@@ -32,7 +32,7 @@ public class DrawerEventTrigger : MonoBehaviour
             RaycastHit hit;
 
             // 플레이어 위치에서 정면으로 레이캐스트
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3f))
+            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 1.5f))
             {
                 Transform hitTransform = hit.transform;
 
