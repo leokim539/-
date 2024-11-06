@@ -28,6 +28,7 @@ public class Trash2 : MonoBehaviour
     public float maxHoldTime = 2f; // 최대 홀드 시간
     private float currentHoldTime = 0f; // 현재 누르고 있는 시간
     private bool isHolding = false; // F키를 누르고 있는지 여부
+    private bool isDangerHolding = false; // F키를 누르고 있는지 여부
 
     private GameObject currentTrash; // 현재 상호작용 중인 쓰레기
 
@@ -46,6 +47,28 @@ public class Trash2 : MonoBehaviour
     {
         CheckForObject();
 
+        if (isDangerHolding )
+        {
+            // F키가 눌린 상태에서 슬라이더 값을 업데이트합니다.
+            if (Input.GetKey(KeyCode.F))
+            {
+                currentHoldTime += Time.deltaTime; // 초당 1씩 증가
+
+                // 슬라이더 값 업데이트
+                progressBar.value = currentHoldTime;
+
+                // 슬라이더 값이 최대값에 도달했을 때
+                if (currentHoldTime >= maxHoldTime)
+                {
+                    ConsumeDangerTrash();
+                }
+            }
+            else
+            {
+                // F키를 떼면 초기화
+                ResetHold();
+            }
+        }
         if (isHolding)
         {
             // F키가 눌린 상태에서 슬라이더 값을 업데이트합니다.
@@ -77,9 +100,13 @@ public class Trash2 : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
-            if (hit.collider != null && (hit.collider.CompareTag("Trash") || hit.collider.CompareTag("DangerTrash") || hit.collider.CompareTag("TrashCan")))
+            if (hit.collider != null && hit.collider.CompareTag("Trash"))
             {
-                ShowUI(hit.collider.gameObject);
+                ShowUITrash(hit.collider.gameObject);
+            }
+            else if(hit.collider != null && hit.collider.CompareTag("DangerTrash"))
+            {
+                ShowUIDangerTrash(hit.collider.gameObject);
             }
             else
             {
@@ -92,12 +119,19 @@ public class Trash2 : MonoBehaviour
         }
     }
 
-    void ShowUI(GameObject trashObject)
+    void ShowUITrash(GameObject trashObject)
     {
         currentTrash = trashObject; // 상호작용할 오브젝트 저장
         interactUI.SetActive(true); // UI 표시
         progressBar.gameObject.SetActive(true); // 진행 바 표시
         isHolding = true; // F키를 누르는 상태로 설정
+    }
+    void ShowUIDangerTrash(GameObject trashObject)
+    {
+        currentTrash = trashObject; // 상호작용할 오브젝트 저장
+        interactUI.SetActive(true); // UI 표시
+        progressBar.gameObject.SetActive(true); // 진행 바 표시
+        isDangerHolding = true; // F키를 누르는 상태로 설정
     }
 
     void HideUI()
@@ -126,6 +160,37 @@ public class Trash2 : MonoBehaviour
 
         trashManager.scary += Trashscary;
         trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
+
+        // 쓰레기 종류에 따른 UI 업데이트
+        if (objectName.Contains(trash1))
+        {
+            taskUIManager.UpdateCircleCount();
+        }
+        else if (objectName.Contains(trash2))
+        {
+            taskUIManager.UpdateCylinderCount();
+        }
+        else if (objectName.Contains(trash3))
+        {
+            taskUIManager.UpdateSquareCount();
+        }
+
+        // 초기화
+        HideUI();
+    }
+    void ConsumeDangerTrash()
+    {
+        if (trashManager.scary + Trashscary >= 100)
+        {
+            return; // 공포치가 100 이상이면 소비하지 않음
+        }
+
+        string objectName = currentTrash.name;
+        currentTrash.SetActive(false); // 쓰레기 오브젝트 비활성화
+
+        trashManager.scary += Trashscary;
+        trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
+        trashManager.isEffectActive = true;
 
         // 쓰레기 종류에 따른 UI 업데이트
         if (objectName.Contains(trash1))

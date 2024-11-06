@@ -8,9 +8,9 @@ public class DangerItem : MonoBehaviour
     public float slowDuration = 0.5f; //보내줄값
     public int Trashscary;//쓰레기 먹으면 늘어나는 공포
 
-    private bool TrashInRange = false; 
+    private bool TrashInRange = false;
 
-    public GameObject Manager;
+    private GameObject Manager;
     private TrashManager trashManager;
 
     public void Start()
