@@ -12,6 +12,7 @@ TagManager:
   - Drawer2
   - Drawer3
   - TV
+  - Door
   layers:
   - Default
   - TransparentFX
