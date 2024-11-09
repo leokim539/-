@@ -4,7 +4,7 @@ using UnityEngine;
 public class DoorController : MonoBehaviour
 {
     public GameObject interactionUI; // 상호작용 UI
-    public float moveDistance = 90f; // 문이 회전할 각도
+
     private bool isOpen = false; // 문이 열려있는지 여부
     private bool isMoving = false; // 문이 이동 중인지 여부
 
@@ -16,7 +16,7 @@ public class DoorController : MonoBehaviour
     private void Start()
     {
         // 초기 상태에서 X축을 -90도로 설정
-        transform.localEulerAngles = new Vector3(-90, transform.localEulerAngles.y, 0);
+      //  transform.localEulerAngles = new Vector3(-90, transform.localEulerAngles.y, 0);
 
         // AudioSource 컴포넌트 가져오기
         audioSource = gameObject.AddComponent<AudioSource>();
@@ -63,33 +63,44 @@ public class DoorController : MonoBehaviour
     public IEnumerator ToggleDoor() // public으로 변경하여 외부에서 호출 가능하도록
     {
         isMoving = true; // 이동 중 상태 설정
-        float targetAngle = isOpen ? -moveDistance : moveDistance; // 회전할 각도 설정
-        float currentAngle = transform.localEulerAngles.y; // 현재 Y축 각도
-        float newAngle = currentAngle + targetAngle; // 목표 각도
+
+        // 문이 열릴 때와 닫힐 때의 현재 각도를 저장할 변수
+        float currentAngle = transform.localEulerAngles.y;
+        float targetAngle;
+
+        // 문이 닫혀 있는 상태일 때
+        if (!isOpen)
+        {
+            targetAngle = currentAngle + 90f; // 현재 각도에서 90도 더하기
+        }
+        else // 문이 열려 있는 상태일 때
+        {
+            targetAngle = currentAngle - 90f; // 현재 각도에서 90도 빼기
+        }
 
         // 오디오 클립 설정
         AudioClip currentClip = isOpen ? closeSound : openSound;
         audioSource.clip = currentClip;
-        audioSource.loop = true; // 루프 설정
+        audioSource.loop = false; // 루프 설정 해제
         audioSource.Play(); // 소리 재생 시작
 
         // 문을 회전시키는 애니메이션
-        while (Mathf.Abs(newAngle - transform.localEulerAngles.y) > 0.1f)
+        while (Mathf.Abs(targetAngle - currentAngle) > 0.1f)
         {
             float step = Time.deltaTime * 150f; // 회전 속도
-            float angle = Mathf.MoveTowardsAngle(transform.localEulerAngles.y, newAngle, step);
-            transform.localEulerAngles = new Vector3(-90, angle, 0); // X축은 -90, Y축만 회전
+            currentAngle = Mathf.MoveTowardsAngle(currentAngle, targetAngle, step); // 현재 각도를 목표 각도로 이동
+            transform.localEulerAngles = new Vector3(0, currentAngle, 90); // X축은 0, Y축만 회전
             yield return null; // 다음 프레임까지 대기
         }
 
         // 최종 각도로 설정
-        transform.localEulerAngles = new Vector3(-90, newAngle, 0); // X축은 -90, Y축만 설정
+        transform.localEulerAngles = new Vector3(0, targetAngle, 90); // X축은 0, Y축만 설정
 
         // 소리 재생 중지
-        audioSource.loop = false; // 루프 해제
         audioSource.Stop();
 
         isOpen = !isOpen; // 문 상태 반전
         isMoving = false; // 이동 완료 상태로 변경
     }
+
 }
