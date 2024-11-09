@@ -15,21 +15,27 @@ public class FirstPersonController : MonoBehaviour
 
     public List<System.Func<float>> speedOverrides = new List<System.Func<float>>();
 
-    Rigidbody rigidbody;
+    private Rigidbody rigidbody;
+    private AudioSource audioSource; // 오디오 소스
 
     private float originalMoveSpeed;  // 원래 이동 속도 저장
     private float originalRunSpeed;   // 원래 달리기 속도 저장
+    private bool isWalking; // 걷고 있는지 여부
 
+    public AudioClip walkSound; // 걷기 소리
+    public AudioClip runSound; // 달리기 소리
     //public float mouseSensitivity = 100f;  // 마우스 감도
     //private float xRotation = 0f;  // 상하 카메라 회전을 위한 변수
     //private CharacterController characterController;
     void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
     }
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>(); // AudioSource 컴포넌트 가져오기
+        rigidbody = GetComponent<Rigidbody>();
+
         originalMoveSpeed = moveSpeed;//속도 저장
         originalRunSpeed = runSpeed;
 
@@ -39,7 +45,6 @@ public class FirstPersonController : MonoBehaviour
     }
     void Update()
     {
-        
     }
     void FixedUpdate()
     {
@@ -50,22 +55,41 @@ public class FirstPersonController : MonoBehaviour
         UpdateStaminaBar();// UI 업데이트
     }
     void MovePlayer()
-    { 
+    {
         bool isSprinting = Input.GetKey(runningKey) && stamina > 0;// 스프린트 여부 체크
         float targetMovingSpeed = isSprinting ? runSpeed : moveSpeed;
-
+        
         if (isSprinting)// 스프린트 시 스태미나 소모
         {
             stamina -= staminaDrainRate * Time.deltaTime;
             stamina = Mathf.Clamp(stamina, 0, maxStamina);
+            PlaySound(runSound); // 달리기 소리 재생
         }
-        if (speedOverrides.Count > 0)
+        else if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // 걷기 소리 재생
+        {
+            PlaySound(walkSound);
+        }
+        else
+        {
+            audioSource.Stop(); // 소리 정지
+        }
+
+        /*if (speedOverrides.Count > 0)
         {
             targetMovingSpeed = speedOverrides[speedOverrides.Count - 1]();
-        }      
+        }  */    
         Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed);// 이동 벡터 계산       
         rigidbody.velocity = transform.rotation * new Vector3(targetVelocity.x, rigidbody.velocity.y, targetVelocity.y);// 캐릭터 이동
-    } 
+    }
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource.clip != clip || !audioSource.isPlaying) // 현재 재생 중인 소리와 다를 경우
+        {
+            audioSource.clip = clip;
+            audioSource.loop = true; // 소리 반복 재생
+            audioSource.Play();
+        }
+    }
     void RecoverStamina()// 스태미나 회복 함수
     {
         if (stamina < maxStamina && !Input.GetKey(runningKey))
