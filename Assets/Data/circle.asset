@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: circle
   m_EditorClassIdentifier: 
   prefab: {fileID: 2873996025307360935, guid: e8aae471aeab92b44a3ccc94471081b1, type: 3}
-  spawnPosition: []
+  spawnPosition:
+  - {x: 1, y: 1, z: 0}
+  - {x: 2, y: 1, z: 0}
+  - {x: 3, y: 1, z: 0}

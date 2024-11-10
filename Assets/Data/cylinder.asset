@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: cylinder
   m_EditorClassIdentifier: 
   prefab: {fileID: 520402341616845165, guid: 47cfb2e9d236e5849ab4757825991f4f, type: 3}
-  spawnPosition: []
+  spawnPosition:
+  - {x: 1, y: 1, z: 1}
+  - {x: 2, y: 1, z: 1}
+  - {x: 3, y: 1, z: 1}
