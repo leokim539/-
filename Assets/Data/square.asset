@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 005ee23ae41844643a129995db538355, type: 3}
+  m_Name: square
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 273134160014791921, guid: 3c337d8aa53b214479f0ba14d424000c, type: 3}
+  spawnPosition:
+  - {x: 1, y: 1, z: 2}
+  - {x: 2, y: 1, z: 2}
+  - {x: 3, y: 1, z: 2}
