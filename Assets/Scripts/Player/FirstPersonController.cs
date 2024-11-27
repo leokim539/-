@@ -24,11 +24,14 @@ public class FirstPersonController : MonoBehaviour
 
     public AudioClip walkSound; // 걷기 소리
     public AudioClip runSound; // 달리기 소리
+
+    private Animator animator; // 애니메이터 
     //public float mouseSensitivity = 100f;  // 마우스 감도
     //private float xRotation = 0f;  // 상하 카메라 회전을 위한 변수
     //private CharacterController characterController;
     void Awake()
     {
+        animator = transform.Find("Idel").GetComponent<Animator>(); // 애니메이터 가져옴
     }
 
     void Start()
@@ -64,20 +67,23 @@ public class FirstPersonController : MonoBehaviour
             stamina -= staminaDrainRate * Time.deltaTime;
             stamina = Mathf.Clamp(stamina, 0, maxStamina);
             PlaySound(runSound); // 달리기 소리 재생
+            animator.SetBool("isWalk", false); // 여기 원래 달리기 애니 재생인데 아직 달리기 애니메이션 없음
         }
         else if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // 걷기 소리 재생
         {
             PlaySound(walkSound);
+            animator.SetBool("isWalk", true); // 걷기 애니메이션 
         }
         else
         {
             audioSource.Stop(); // 소리 정지
+            animator.SetBool("isWalk", false); // 걷기 중지 
         }
 
         /*if (speedOverrides.Count > 0)
         {
             targetMovingSpeed = speedOverrides[speedOverrides.Count - 1]();
-        }  */    
+        }  */
         Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed);// 이동 벡터 계산       
         rigidbody.velocity = transform.rotation * new Vector3(targetVelocity.x, rigidbody.velocity.y, targetVelocity.y);// 캐릭터 이동
     }
