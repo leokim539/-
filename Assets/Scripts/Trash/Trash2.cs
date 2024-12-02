@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // UI를 사용하기 위한 네임스페이스
+using UnityEngine.UI;
+using Photon.Pun;
 
-public class Trash2 : MonoBehaviour
+public class Trash2 : MonoBehaviourPunCallbacks
 {
     [Header("상호작용 거리")]
     public float interactDistance = 1.5f; // 플레이어와 오브젝트 간의 최대 상호작용 거리
@@ -29,6 +30,7 @@ public class Trash2 : MonoBehaviour
     private float currentHoldTime = 0f; // 현재 누르고 있는 시간
     private bool isHolding = false; // F키를 누르고 있는지 여부
     private bool isDangerHolding = false; // F키를 누르고 있는지 여부
+    private bool isCanHolding = false; // F키를 누르고 있는지 여부
 
     private GameObject currentTrash; // 현재 상호작용 중인 쓰레기
 
@@ -42,54 +44,17 @@ public class Trash2 : MonoBehaviour
         progressBar.maxValue = 2; // 슬라이더의 최대 값 설정
         progressBar.value = 0; // 슬라이더 초기화
     }
-
     void Update()
     {
         CheckForObject();
 
-        if (isDangerHolding )
+        if (isDangerHolding)
         {
-            // F키가 눌린 상태에서 슬라이더 값을 업데이트합니다.
-            if (Input.GetKey(KeyCode.F))
-            {
-                currentHoldTime += Time.deltaTime; // 초당 1씩 증가
-
-                // 슬라이더 값 업데이트
-                progressBar.value = currentHoldTime;
-
-                // 슬라이더 값이 최대값에 도달했을 때
-                if (currentHoldTime >= maxHoldTime)
-                {
-                    ConsumeDangerTrash();
-                }
-            }
-            else
-            {
-                // F키를 떼면 초기화
-                ResetHold();
-            }
+            HandleHolding(true);
         }
-        if (isHolding)
+        else if (isHolding)
         {
-            // F키가 눌린 상태에서 슬라이더 값을 업데이트합니다.
-            if (Input.GetKey(KeyCode.F))
-            {
-                currentHoldTime += Time.deltaTime; // 초당 1씩 증가
-
-                // 슬라이더 값 업데이트
-                progressBar.value = currentHoldTime;
-
-                // 슬라이더 값이 최대값에 도달했을 때
-                if (currentHoldTime >= maxHoldTime)
-                {
-                    ConsumeTrash();
-                }
-            }
-            else
-            {
-                // F키를 떼면 초기화
-                ResetHold();
-            }
+            HandleHolding(false);
         }
     }
 
@@ -104,7 +69,7 @@ public class Trash2 : MonoBehaviour
             {
                 ShowUITrash(hit.collider.gameObject);
             }
-            else if(hit.collider != null && hit.collider.CompareTag("DangerTrash"))
+            else if (hit.collider != null && hit.collider.CompareTag("DangerTrash"))
             {
                 ShowUIDangerTrash(hit.collider.gameObject);
             }
@@ -126,6 +91,7 @@ public class Trash2 : MonoBehaviour
         progressBar.gameObject.SetActive(true); // 진행 바 표시
         isHolding = true; // F키를 누르는 상태로 설정
     }
+
     void ShowUIDangerTrash(GameObject trashObject)
     {
         currentTrash = trashObject; // 상호작용할 오브젝트 저장
@@ -146,8 +112,51 @@ public class Trash2 : MonoBehaviour
         currentHoldTime = 0f;
         progressBar.value = 0f; // 슬라이더 값 초기화
         isHolding = false;
+        isDangerHolding = false; // 위험 쓰레기 상태 초기화
     }
 
+    void HandleHolding(bool isDanger)
+    {
+        if (Input.GetKey(KeyCode.F))
+        {
+            currentHoldTime += Time.deltaTime; 
+            progressBar.value = currentHoldTime; // 슬라이더 값 업데이트
+
+            if (currentHoldTime >= maxHoldTime)
+            {
+                if (isDanger)
+                {
+                    photonView.RPC("ConsumeDangerTrash", RpcTarget.All);
+                }
+                else
+                {
+                    photonView.RPC("ConsumeTrash", RpcTarget.All);
+                }
+            }
+        }
+        else
+        {
+            ResetHold();
+        }
+    }
+    [PunRPC]
+    void UpdateTaskUI(string objectName)
+    {
+        if (objectName.Contains(trash1))
+        {
+            taskUIManager.UpdateCircleCount();
+        }
+        else if (objectName.Contains(trash2))
+        {
+            taskUIManager.UpdateCylinderCount();
+        }
+        else if (objectName.Contains(trash3))
+        {
+            taskUIManager.UpdateSquareCount();
+        }
+    }
+
+    [PunRPC]
     void ConsumeTrash()
     {
         if (trashManager.scary + Trashscary >= 100)
@@ -161,23 +170,12 @@ public class Trash2 : MonoBehaviour
         trashManager.scary += Trashscary;
         trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
 
-        // 쓰레기 종류에 따른 UI 업데이트
-        if (objectName.Contains(trash1))
-        {
-            taskUIManager.UpdateCircleCount();
-        }
-        else if (objectName.Contains(trash2))
-        {
-            taskUIManager.UpdateCylinderCount();
-        }
-        else if (objectName.Contains(trash3))
-        {
-            taskUIManager.UpdateSquareCount();
-        }
+        photonView.RPC("UpdateTaskUI", RpcTarget.All, objectName);
 
-        // 초기화
         HideUI();
     }
+
+    [PunRPC]
     void ConsumeDangerTrash()
     {
         if (trashManager.scary + Trashscary >= 100)
@@ -192,21 +190,216 @@ public class Trash2 : MonoBehaviour
         trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
         trashManager.isEffectActive = true;
 
-        // 쓰레기 종류에 따른 UI 업데이트
-        if (objectName.Contains(trash1))
-        {
-            taskUIManager.UpdateCircleCount();
-        }
-        else if (objectName.Contains(trash2))
-        {
-            taskUIManager.UpdateCylinderCount();
-        }
-        else if (objectName.Contains(trash3))
-        {
-            taskUIManager.UpdateSquareCount();
-        }
+        photonView.RPC("UpdateTaskUI", RpcTarget.All, objectName);
 
-        // 초기화
         HideUI();
     }
+
+
+    /*
+        void Update()
+        {
+            CheckForObject();
+
+            if (isDangerHolding )
+            {
+                // F키가 눌린 상태에서 슬라이더 값을 업데이트합니다.
+                if (Input.GetKey(KeyCode.F))
+                {
+                    currentHoldTime += Time.deltaTime; // 초당 1씩 증가
+
+                    // 슬라이더 값 업데이트
+                    progressBar.value = currentHoldTime;
+
+                    // 슬라이더 값이 최대값에 도달했을 때
+                    if (currentHoldTime >= maxHoldTime)
+                    {
+                        ConsumeDangerTrash();
+                    }
+                }
+                else
+                {
+                    // F키를 떼면 초기화
+                    ResetHold();
+                }
+            }
+            if (isHolding)
+            {
+                // F키가 눌린 상태에서 슬라이더 값을 업데이트합니다.
+                if (Input.GetKey(KeyCode.F))
+                {
+                    currentHoldTime += Time.deltaTime; // 초당 1씩 증가
+
+                    // 슬라이더 값 업데이트
+                    progressBar.value = currentHoldTime;
+
+                    // 슬라이더 값이 최대값에 도달했을 때
+                    if (currentHoldTime >= maxHoldTime)
+                    {
+                        ConsumeTrash();
+                    }
+                }
+                else
+                {
+                    // F키를 떼면 초기화
+                    ResetHold();
+                }
+            }
+            if (isCanHolding)
+            {
+                // F키가 눌린 상태에서 슬라이더 값을 업데이트합니다.
+                if (Input.GetKey(KeyCode.F))
+                {
+                    currentHoldTime += Time.deltaTime; // 초당 1씩 증가
+
+                    // 슬라이더 값 업데이트
+                    progressBar.value = currentHoldTime;
+
+                    // 슬라이더 값이 최대값에 도달했을 때
+                    if (currentHoldTime >= maxHoldTime)
+                    {
+                        ConsumeTrashCan();
+                    }
+                }
+                else
+                {
+                    // F키를 떼면 초기화
+                    ResetHold();
+                }
+            }
+        }
+
+        void CheckForObject()
+        {
+            RaycastHit hit;
+            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, interactDistance))
+            {
+                if (hit.collider != null && hit.collider.CompareTag("Trash"))
+                {
+                    ShowUITrash(hit.collider.gameObject);
+                }
+                else if (hit.collider != null && hit.collider.CompareTag("DangerTrash"))
+                {
+                    ShowUIDangerTrash(hit.collider.gameObject);
+                }
+                else if (hit.collider != null && hit.collider.CompareTag("TrashCan"))
+                {
+                    ShowUITrashCan(hit.collider.gameObject);
+                }
+                else
+                {
+                    HideUI();
+                }
+            }
+            else
+            {
+                HideUI();
+            }
+        }
+
+        void ShowUITrash(GameObject trashObject)
+        {
+            currentTrash = trashObject; // 상호작용할 오브젝트 저장
+            interactUI.SetActive(true); // UI 표시
+            progressBar.gameObject.SetActive(true); // 진행 바 표시
+            isHolding = true; // F키를 누르는 상태로 설정
+        }
+        void ShowUIDangerTrash(GameObject trashObject)
+        {
+            currentTrash = trashObject; // 상호작용할 오브젝트 저장
+            interactUI.SetActive(true); // UI 표시
+            progressBar.gameObject.SetActive(true); // 진행 바 표시
+            isDangerHolding = true; // F키를 누르는 상태로 설정
+        }
+        void ShowUITrashCan(GameObject trashObject)
+        {
+            currentTrash = trashObject; // 상호작용할 오브젝트 저장
+            interactUI.SetActive(true); // UI 표시
+            progressBar.gameObject.SetActive(true); // 진행 바 표시
+            isCanHolding = true; // F키를 누르는 상태로 설정
+        }
+
+        void HideUI()
+        {
+            interactUI.SetActive(false); // UI 숨김
+            progressBar.gameObject.SetActive(false); // 진행 바 숨김
+            ResetHold(); // F키 누르는 상태 초기화
+        }
+
+        void ResetHold()
+        {
+            currentHoldTime = 0f;
+            progressBar.value = 0f; // 슬라이더 값 초기화
+            isHolding = false;
+        }
+
+        void ConsumeTrash()
+        {
+            if (trashManager.scary + Trashscary >= 100)
+            {
+                return; // 공포치가 100 이상이면 소비하지 않음
+            }
+
+            string objectName = currentTrash.name;
+            currentTrash.SetActive(false); // 쓰레기 오브젝트 비활성화
+
+            trashManager.scary += Trashscary;
+            trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
+
+            // 쓰레기 종류에 따른 UI 업데이트
+            if (objectName.Contains(trash1))
+            {
+                taskUIManager.UpdateCircleCount();
+            }
+            else if (objectName.Contains(trash2))
+            {
+                taskUIManager.UpdateCylinderCount();
+            }
+            else if (objectName.Contains(trash3))
+            {
+                taskUIManager.UpdateSquareCount();
+            }
+
+            // 초기화
+            HideUI();
+        }
+        void ConsumeDangerTrash()
+        {
+            if (trashManager.scary + Trashscary >= 100)
+            {
+                return; // 공포치가 100 이상이면 소비하지 않음
+            }
+
+            string objectName = currentTrash.name;
+            currentTrash.SetActive(false); // 쓰레기 오브젝트 비활성화
+
+            trashManager.scary += Trashscary;
+            trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
+            trashManager.isEffectActive = true;
+
+            // 쓰레기 종류에 따른 UI 업데이트
+            if (objectName.Contains(trash1))
+            {
+                taskUIManager.UpdateCircleCount();
+            }
+            else if (objectName.Contains(trash2))
+            {
+                taskUIManager.UpdateCylinderCount();
+            }
+            else if (objectName.Contains(trash3))
+            {
+                taskUIManager.UpdateSquareCount();
+            }
+
+            // 초기화
+            HideUI();
+        }
+        void ConsumeTrashCan()
+        {
+            trashManager.scary = 0;
+            trashManager.UpdateScaryBar(); //공포 이미지 관리
+            trashManager.isEffectActive = false;
+        }*/
 }

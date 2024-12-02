@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-
-public class FirstPersonLook : MonoBehaviour
+using Photon.Pun;
+public class FirstPersonLook : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     private Transform character;            // 캐릭터의 몸체를 가리킴 (Y축 회전용)
@@ -60,15 +60,17 @@ public class FirstPersonLook : MonoBehaviour
     // 캐릭터 회전 메서드
     private void RotateCharacter()
     {
-        Vector2 mouseDelta = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
-        Vector2 rawFrameVelocity = Vector2.Scale(mouseDelta, Vector2.one * sensitivity);
-        frameVelocity = Vector2.Lerp(frameVelocity, rawFrameVelocity, 1 / smoothing);
-        velocity += frameVelocity;
-        velocity.y = Mathf.Clamp(velocity.y, -90, 90);
+        if (photonView.IsMine) // 이 오브젝트가 내 것일 때만 회전
+        {
+            Vector2 mouseDelta = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
+            Vector2 rawFrameVelocity = Vector2.Scale(mouseDelta, Vector2.one * sensitivity);
+            frameVelocity = Vector2.Lerp(frameVelocity, rawFrameVelocity, 1 / smoothing);
+            velocity += frameVelocity;
+            velocity.y = Mathf.Clamp(velocity.y, -90, 90);
 
-        // 카메라는 X축 회전, 캐릭터는 Y축 회전만 적용
-        transform.localRotation = Quaternion.AngleAxis(-velocity.y, Vector3.right);
-        character.localRotation = Quaternion.AngleAxis(velocity.x, Vector3.up);
+            transform.localRotation = Quaternion.AngleAxis(-velocity.y, Vector3.right);
+            character.localRotation = Quaternion.AngleAxis(velocity.x, Vector3.up);
+        }
     }
 
     // 설정 창을 열고 닫는 메서드

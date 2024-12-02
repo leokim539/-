@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class FirstPersonController : MonoBehaviour
+using Photon.Pun;
+public class FirstPersonController : MonoBehaviourPunCallbacks
 {
     public float moveSpeed = 5f;  // 캐릭터 이동 속도
     public float runSpeed = 7f; // 달리기 속도
@@ -48,14 +48,18 @@ public class FirstPersonController : MonoBehaviour
     }
     void Update()
     {
+        if (photonView.IsMine)
+        {
+            MovePlayer();// 이동 처리
+
+            RecoverStamina();// 스태미나 회복
+
+            UpdateStaminaBar();// UI 업데이트
+        }
     }
     void FixedUpdate()
     {
-        MovePlayer();// 이동 처리
-
-        RecoverStamina();// 스태미나 회복
-
-        UpdateStaminaBar();// UI 업데이트
+        
     }
     void MovePlayer()
     {
@@ -86,6 +90,8 @@ public class FirstPersonController : MonoBehaviour
         }  */
         Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed);// 이동 벡터 계산       
         rigidbody.velocity = transform.rotation * new Vector3(targetVelocity.x, rigidbody.velocity.y, targetVelocity.y);// 캐릭터 이동
+
+        photonView.RPC("UpdateStamina", RpcTarget.Others, stamina);
     }
     private void PlaySound(AudioClip clip)
     {
@@ -111,6 +117,13 @@ public class FirstPersonController : MonoBehaviour
             staminaSlider.value = stamina; // 스태미나 값을 슬라이더의 값으로 설정
         }
     }
+    [PunRPC]
+    public void UpdateStamina(float newStamina)
+    {
+        stamina = newStamina; // 스태미나 업데이트
+        UpdateStaminaBar(); // UI 업데이트
+    }
+
     public void SlowDown(float speedMultiplier)
     {
         moveSpeed *= speedMultiplier; // 이동 속도를 줄이는 배율 (절반 속도)
