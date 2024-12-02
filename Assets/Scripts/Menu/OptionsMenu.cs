@@ -1,51 +1,38 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-<<<<<<< Updated upstream
-public class OptionsMenu : MonoBehaviour
-=======
-public class MenuController : MonoBehaviour
->>>>>>> Stashed changes
+public class OptionsMenuController : MonoBehaviour
 {
-    [Header("Panels")]
-    public GameObject optionsPanel;
-    public GameObject tutorialPanel;
-
-    [Header("Buttons")]
-    public Button openOptionsButton;
-    public Button closeOptionsButton;
-    public Button exitButton;
-    public Button openTutorialButton;
-    public Button closeTutorialButton;
+    public GameObject optionsPanel; // OptionsPanel을 연결
+    public Button openOptionsButton; // 옵션 열기 버튼
+    public Button closeButton; // 닫기 버튼
+    public Button exitButton; // Exit 버튼
 
     void Start()
     {
-        // 패널 비활성화
-        SetPanelActive(optionsPanel, false);
-        SetPanelActive(tutorialPanel, false);
+        // 옵션 창 비활성화
+        optionsPanel.SetActive(false);
 
-        // 버튼 이벤트 설정
-        AddButtonListener(openOptionsButton, () => SetPanelActive(optionsPanel, true));
-        AddButtonListener(closeOptionsButton, () => SetPanelActive(optionsPanel, false));
-        AddButtonListener(openTutorialButton, () => SetPanelActive(tutorialPanel, true));
-        AddButtonListener(closeTutorialButton, () => SetPanelActive(tutorialPanel, false));
-        AddButtonListener(exitButton, ExitGame);
+        // 각 버튼에 이벤트 연결
+        openOptionsButton.onClick.AddListener(OpenOptionsPanel);
+        closeButton.onClick.AddListener(CloseOptionsPanel);
+        exitButton.onClick.AddListener(ExitGame); // Exit 버튼에 이벤트 연결
     }
 
-    void SetPanelActive(GameObject panel, bool isActive)
+    void OpenOptionsPanel()
     {
-        if (panel != null)
-            panel.SetActive(isActive);
+        optionsPanel.SetActive(true); // 옵션 창 활성화
     }
 
-    void AddButtonListener(Button button, UnityEngine.Events.UnityAction action)
+    void CloseOptionsPanel()
     {
-        if (button != null)
-            button.onClick.AddListener(action);
+        optionsPanel.SetActive(false); // 옵션 창 비활성화
     }
 
     void ExitGame()
     {
-        Application.Quit();
+        Application.Quit(); // 게임 종료
+
+       
     }
 }

@@ -14,11 +14,7 @@ GameObject:
   - component: {fileID: 754367261989722106}
   - component: {fileID: 1890714036852102468}
   - component: {fileID: 6967127152933504464}
-<<<<<<< Updated upstream:Assets/Resources/Player.prefab
   - component: {fileID: 1667295797079056806}
-=======
-  - component: {fileID: -7881456397616127144}
->>>>>>> Stashed changes:Assets/Prefab/Player.prefab
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -233,11 +229,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-<<<<<<< Updated upstream:Assets/Resources/Player.prefab
 --- !u!114 &1667295797079056806
-=======
---- !u!114 &-7881456397616127144
->>>>>>> Stashed changes:Assets/Prefab/Player.prefab
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
