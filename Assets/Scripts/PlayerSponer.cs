@@ -42,7 +42,7 @@ public class PlayerSponer : MonoBehaviourPunCallbacks
             if (playerCount > 0 && playerCount <= spawnPositions.Length)
             {
                 Vector3 spawnPosition = spawnPositions[playerCount - 1]; // 플레이어 수에 따라 스폰 위치 선택
-                PhotonNetwork.Instantiate(playerPrefab.name, spawnPosition, Quaternion.identity);
+                PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
             }
             else
             {
