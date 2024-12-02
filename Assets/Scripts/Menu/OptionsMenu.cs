@@ -1,7 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+<<<<<<< Updated upstream
 public class OptionsMenu : MonoBehaviour
+=======
+public class MenuController : MonoBehaviour
+>>>>>>> Stashed changes
 {
     [Header("Panels")]
     public GameObject optionsPanel;

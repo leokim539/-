@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
+using System.Collections;
 
 public class SlideInImage : MonoBehaviour
 {
     public RectTransform imageRectTransform; // 이동할 이미지의 RectTransform
     public Vector2 targetPosition = new Vector2(0, 0); // 이미지가 도착할 위치
     public float moveSpeed = 500f; // 이동 속도
+    public float slideInDelay = 2f; // 이미지가 올라오기 전에 대기할 시간 (초)
 
     private Vector2 startPosition; // 이미지의 초기 위치
     private bool isMoving = false;
@@ -24,6 +26,16 @@ public class SlideInImage : MonoBehaviour
 
         // 초기 목표 위치 설정
         currentTargetPosition = targetPosition;
+
+        // 딜레이 후 슬라이드 시작
+        StartCoroutine(StartSlideInAfterDelay());
+    }
+
+    IEnumerator StartSlideInAfterDelay()
+    {
+        yield return new WaitForSeconds(slideInDelay);
+
+        // 슬라이드 시작
         isMoving = true;
     }
 
