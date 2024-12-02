@@ -13,6 +13,9 @@ TagManager:
   - Drawer3
   - TV
   - Door
+  - Bullet
+  - Key
+  - GroundTrash
   layers:
   - Default
   - TransparentFX

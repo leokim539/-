@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
-public class FirstPersonController : MonoBehaviourPunCallbacks
+
+public class FirstPersonController : MonoBehaviour
 {
     public float moveSpeed = 5f;  // 캐릭터 이동 속도
     public float runSpeed = 7f; // 달리기 속도
@@ -12,6 +13,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
     public float staminaDrainRate = 1f;  // 스태미나 소모율
     public float staminaRecoveryRate = 1f; // 스태미나 회복율
     public Slider staminaSlider; // 스태미나 슬라이더
+
 
     public List<System.Func<float>> speedOverrides = new List<System.Func<float>>();
 
@@ -26,9 +28,11 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
     public AudioClip runSound; // 달리기 소리
 
     private Animator animator; // 애니메이터 
-    //public float mouseSensitivity = 100f;  // 마우스 감도
-    //private float xRotation = 0f;  // 상하 카메라 회전을 위한 변수
-    //private CharacterController characterController;
+
+    // 카메라 관련 변수
+    public Camera mainCamera; // MainCamera 오브젝트
+    public Camera crouchCamera; // MainCamera2 오브젝트
+
     void Awake()
     {
         animator = transform.Find("Idel").GetComponent<Animator>(); // 애니메이터 가져옴
@@ -39,33 +43,64 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
         audioSource = GetComponent<AudioSource>(); // AudioSource 컴포넌트 가져오기
         rigidbody = GetComponent<Rigidbody>();
 
-        originalMoveSpeed = moveSpeed;//속도 저장
+        originalMoveSpeed = moveSpeed; // 속도 저장
         originalRunSpeed = runSpeed;
 
-        // Character Controller 컴포넌트 가져오기
-        //characterController = GetComponent<CharacterController>();
-        //Cursor.lockState = CursorLockMode.Locked;// 마우스 커서 잠금
-    }
-    void Update()
-    {
-        if (photonView.IsMine)
+        // 카메라를 초기 상태로 설정
+        if (mainCamera != null && crouchCamera != null)
         {
-            MovePlayer();// 이동 처리
-
-            RecoverStamina();// 스태미나 회복
-
-            UpdateStaminaBar();// UI 업데이트
+            mainCamera.enabled = true; // MainCamera 활성화
+            crouchCamera.enabled = false; // MainCamera2 비활성화
         }
     }
+
+    void Update()
+    {
+    }
+
     void FixedUpdate()
     {
-        
+        MovePlayer(); // 이동 처리
+        RecoverStamina(); // 스태미나 회복
+        UpdateStaminaBar(); // UI 업데이트
     }
+
+    public void PickingUp()
+    {
+        Debug.Log("PickingUp 메서드가 호출되었습니다."); // 디버깅 메시지 추가
+        animator.SetBool("isCrouched", true);
+
+        // 카메라 전환
+        if (mainCamera != null && crouchCamera != null)
+        {
+            mainCamera.enabled = false; // MainCamera 비활성화
+            crouchCamera.enabled = true; // MainCamera2 활성화
+        }
+
+        // 딜레이를 두기 위해 코루틴을 호출
+        StartCoroutine(DelayCrouch());
+    }
+
+    private IEnumerator DelayCrouch()
+    {
+        yield return new WaitForSeconds(0.5f); // 0.5초 딜레이
+        animator.SetBool("isCrouched", false); // 쪼그려 앉는 애니메이션 상태를 해제
+
+
+        yield return new WaitForSeconds(1f);
+        // 카메라를 원래 상태로 되돌림
+        if (mainCamera != null && crouchCamera != null)
+        {
+            mainCamera.enabled = true; // MainCamera 활성화
+            crouchCamera.enabled = false; // MainCamera2 비활성화
+        }
+    }
+
     void MovePlayer()
     {
         bool isSprinting = Input.GetKey(runningKey) && stamina > 0;// 스프린트 여부 체크
         float targetMovingSpeed = isSprinting ? runSpeed : moveSpeed;
-        
+
         if (isSprinting)// 스프린트 시 스태미나 소모
         {
             stamina -= staminaDrainRate * Time.deltaTime;
@@ -84,14 +119,8 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
             animator.SetBool("isWalk", false); // 걷기 중지 
         }
 
-        /*if (speedOverrides.Count > 0)
-        {
-            targetMovingSpeed = speedOverrides[speedOverrides.Count - 1]();
-        }  */
-        Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed);// 이동 벡터 계산       
-        rigidbody.velocity = transform.rotation * new Vector3(targetVelocity.x, rigidbody.velocity.y, targetVelocity.y);// 캐릭터 이동
-
-        photonView.RPC("UpdateStamina", RpcTarget.Others, stamina);
+        Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed); // 이동 벡터 계산       
+        rigidbody.velocity = transform.rotation * new Vector3(targetVelocity.x, rigidbody.velocity.y, targetVelocity.y); // 캐릭터 이동
     }
     private void PlaySound(AudioClip clip)
     {
@@ -102,7 +131,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
             audioSource.Play();
         }
     }
-    void RecoverStamina()// 스태미나 회복 함수
+    void RecoverStamina() // 스태미나 회복 함수
     {
         if (stamina < maxStamina && !Input.GetKey(runningKey))
         {
@@ -110,18 +139,13 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
             stamina = Mathf.Clamp(stamina, 0, maxStamina);
         }
     }
-    void UpdateStaminaBar()// 슬라이더 업데이트 함수
+
+    void UpdateStaminaBar() // 슬라이더 업데이트 함수
     {
         if (staminaSlider != null)
         {
             staminaSlider.value = stamina; // 스태미나 값을 슬라이더의 값으로 설정
         }
-    }
-    [PunRPC]
-    public void UpdateStamina(float newStamina)
-    {
-        stamina = newStamina; // 스태미나 업데이트
-        UpdateStaminaBar(); // UI 업데이트
     }
 
     public void SlowDown(float speedMultiplier)
@@ -132,11 +156,13 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
         moveSpeed = Mathf.Max(moveSpeed, originalMoveSpeed * 0.5f); // 원래 속도의 50% 이하로 떨어지지 않도록
         runSpeed = Mathf.Max(runSpeed, originalRunSpeed * 0.5f);
     }
+
     public void RestoreSpeed()
     {
         moveSpeed = originalMoveSpeed;
         runSpeed = originalRunSpeed;
     }
+}
     /*    void MovePlayer()
         {
             float moveX = Input.GetAxis("Horizontal");  // 좌우 이동 입력
@@ -174,4 +200,3 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
         // 카메라 회전 적용
         Camera.main.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }*/
-}

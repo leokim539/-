@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using Photon.Pun;
+using UnityEngine.UI; // UI를 사용하기 위한 네임스페이스
 
-public class Trash2 : MonoBehaviourPunCallbacks
+public class Trash2 : MonoBehaviour
 {
     [Header("상호작용 거리")]
-    public float interactDistance = 1.5f; // 플레이어와 오브젝트 간의 최대 상호작용 거리
+    public float interactDistance = 3f; // 플레이어와 오브젝트 간의 최대 상호작용 거리
+
 
     [Header("쓰레기 먹으면 늘어나는 양")]
     public int Trashscary; // 쓰레기 먹으면 증가하는 공포치
@@ -30,9 +30,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
     private float currentHoldTime = 0f; // 현재 누르고 있는 시간
     private bool isHolding = false; // F키를 누르고 있는지 여부
     private bool isDangerHolding = false; // F키를 누르고 있는지 여부
-    private bool isCanHolding = false; // F키를 누르고 있는지 여부
 
     private GameObject currentTrash; // 현재 상호작용 중인 쓰레기
+
+    private EffectTrash effectTrash;
+
+    [Header("플레이어 설정")]
+    public Transform playerTransform; // 플레이어의 Transform을 드래그하여 할당
 
     void Start()
     {
@@ -41,20 +45,52 @@ public class Trash2 : MonoBehaviourPunCallbacks
         taskUIManager = Manager.GetComponent<TaskUIManager>();
 
         interactUI.SetActive(false); // 처음엔 UI를 숨깁니다.
-        progressBar.maxValue = 2; // 슬라이더의 최대 값 설정
+        progressBar.maxValue = maxHoldTime; // 슬라이더의 최대 값 설정
         progressBar.value = 0; // 슬라이더 초기화
+
+        effectTrash = FindObjectOfType<EffectTrash>();
     }
+
     void Update()
     {
         CheckForObject();
 
         if (isDangerHolding)
         {
-            HandleHolding(true);
+            HandleHolding();
         }
-        else if (isHolding)
+        if (isHolding)
         {
-            HandleHolding(false);
+            HandleHolding();
+        }
+    }
+
+    void HandleHolding()
+    {
+        if (Input.GetKey(KeyCode.F))
+        {
+            currentHoldTime += Time.deltaTime; // 초당 1씩 증가
+
+            // 슬라이더 값 업데이트
+            progressBar.value = currentHoldTime;
+
+            // 슬라이더 값이 최대값에 도달했을 때
+            if (currentHoldTime >= maxHoldTime)
+            {
+                if (isDangerHolding)
+                {
+                    ConsumeDangerTrash();
+                }
+                else
+                {
+                    ConsumeTrash();
+                }
+            }
+        }
+        else
+        {
+            // F키를 떼면 초기화
+            ResetHold();
         }
     }
 
@@ -72,6 +108,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
             else if (hit.collider != null && hit.collider.CompareTag("DangerTrash"))
             {
                 ShowUIDangerTrash(hit.collider.gameObject);
+            }
+            else if (hit.collider != null && hit.collider.CompareTag("GroundTrash"))
+            {
+                ShowUIGroundTrash(hit.collider.gameObject);
             }
             else
             {
@@ -99,6 +139,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
         progressBar.gameObject.SetActive(true); // 진행 바 표시
         isDangerHolding = true; // F키를 누르는 상태로 설정
     }
+    void ShowUIGroundTrash(GameObject trashObject)
+    {
+        currentTrash = trashObject; // 상호작용할 오브젝트 저장
+        interactUI.SetActive(true); // UI 표시
+        progressBar.gameObject.SetActive(true); // 진행 바 표시
+        isDangerHolding = true; // F키를 누르는 상태로 설정
+    }
 
     void HideUI()
     {
@@ -112,35 +159,62 @@ public class Trash2 : MonoBehaviourPunCallbacks
         currentHoldTime = 0f;
         progressBar.value = 0f; // 슬라이더 값 초기화
         isHolding = false;
-        isDangerHolding = false; // 위험 쓰레기 상태 초기화
+        isDangerHolding = false; // 위험 쓰레기 초기화
     }
 
-    void HandleHolding(bool isDanger)
+    void ConsumeTrash()
     {
-        if (Input.GetKey(KeyCode.F))
+        if (trashManager.scary + Trashscary >= 100)
         {
-            currentHoldTime += Time.deltaTime; 
-            progressBar.value = currentHoldTime; // 슬라이더 값 업데이트
+            return; // 공포치가 100 이상이면 소비하지 않음
+        }
 
-            if (currentHoldTime >= maxHoldTime)
+        string objectName = currentTrash.name;
+        StartCoroutine(CollectItem(currentTrash)); // 아이템 수집 효과 실행
+        trashManager.scary += Trashscary;
+        trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
+
+        // 쓰레기 종류에 따른 UI 업데이트
+        UpdateTaskUI(objectName);
+
+
+
+
+        // 초기화
+        HideUI();
+    }
+
+
+
+    void ConsumeDangerTrash()
+    {
+        if (trashManager.scary + Trashscary >= 100)
+        {
+            return; // 공포치가 100 이상이면 소비하지 않음
+        }
+
+        string objectName = currentTrash.name;
+        StartCoroutine(CollectItem(currentTrash)); // 아이템 수집 효과 실행
+        trashManager.scary += Trashscary;
+        trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
+                                       // trashManager.isEffectActive = true;
+        if (currentTrash.CompareTag("GroundTrash"))
+        {
+            FirstPersonController firstPersonController = FindObjectOfType<FirstPersonController>();
+            if (firstPersonController != null)
             {
-                if (isDanger)
-                {
-                    photonView.RPC("ConsumeDangerTrash", RpcTarget.All);
-                }
-                else
-                {
-                    photonView.RPC("ConsumeTrash", RpcTarget.All);
-                }
+                firstPersonController.PickingUp(); // PickingUp 메서드 호출
             }
         }
-        else
-        {
-            ResetHold();
-        }
+
+        // 쓰레기 종류에 따른 UI 업데이트
+        UpdateTaskUI(objectName);
+
+        // 초기화
+        HideUI();
     }
-    [PunRPC]
-    void UpdateTaskUI(string objectName)
+
+    private void UpdateTaskUI(string objectName)
     {
         if (objectName.Contains(trash1))
         {
@@ -156,45 +230,47 @@ public class Trash2 : MonoBehaviourPunCallbacks
         }
     }
 
-    [PunRPC]
-    void ConsumeTrash()
+    private IEnumerator CollectItem(GameObject item)
     {
-        if (trashManager.scary + Trashscary >= 100)
+        // 콜라이더 가져오기 및 비활성화
+        Collider itemCollider = item.GetComponent<Collider>();
+        if (itemCollider != null)
         {
-            return; // 공포치가 100 이상이면 소비하지 않음
+            itemCollider.enabled = false; // 콜라이더 비활성화
         }
 
-        string objectName = currentTrash.name;
-        currentTrash.SetActive(false); // 쓰레기 오브젝트 비활성화
+        Vector3 originalScale = item.transform.localScale;
+        Vector3 targetScale = Vector3.zero; // 최종 크기
+        float duration = 1f; // 이동 및 축소 시간
+        float elapsedTime = 0f;
 
-        trashManager.scary += Trashscary;
-        trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
-
-        photonView.RPC("UpdateTaskUI", RpcTarget.All, objectName);
-
-        HideUI();
-    }
-
-    [PunRPC]
-    void ConsumeDangerTrash()
-    {
-        if (trashManager.scary + Trashscary >= 100)
+        while (elapsedTime < duration)
         {
-            return; // 공포치가 100 이상이면 소비하지 않음
+            // 플레이어 방향으로 이동
+            Vector3 dir = playerTransform.position - item.transform.position;
+            dir.y = 0; // Y축을 0으로 설정하여 수평 이동만 하도록 함
+            dir.Normalize(); // 방향 벡터 정규화
+
+            // 아이템을 플레이어 쪽으로 이동
+            item.transform.position += dir * (3f * Time.deltaTime); // 속도 조정
+
+            // 크기 줄이기
+            item.transform.localScale = Vector3.Lerp(originalScale, targetScale, elapsedTime / (duration / 3));
+            elapsedTime += Time.deltaTime;
+
+            // 아이템 비활성화 직전에 PostProcess 효과 트리거
+            if (effectTrash != null)
+            {
+                effectTrash.TriggerPostProcessEffect();
+            }
+
+            yield return null;
         }
 
-        string objectName = currentTrash.name;
-        currentTrash.SetActive(false); // 쓰레기 오브젝트 비활성화
-
-        trashManager.scary += Trashscary;
-        trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
-        trashManager.isEffectActive = true;
-
-        photonView.RPC("UpdateTaskUI", RpcTarget.All, objectName);
-
-        HideUI();
+        // 아이템 비활성화
+        item.SetActive(false); // 아이템 비활성화
     }
-
+}
 
     /*
         void Update()
@@ -402,4 +478,3 @@ public class Trash2 : MonoBehaviourPunCallbacks
             trashManager.UpdateScaryBar(); //공포 이미지 관리
             trashManager.isEffectActive = false;
         }*/
-}
