@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 6967127152933504464}
   - component: {fileID: 1667295797079056806}
   - component: {fileID: 4652278823109680218}
+  - component: {fileID: 8789996166319371500}
+  - component: {fileID: -4829004366119847647}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -250,7 +252,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: -4829004366119847647}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -276,6 +279,41 @@ MonoBehaviour:
   progressBar: {fileID: 0}
   maxHoldTime: 2
   playerTransform: {fileID: 0}
+--- !u!114 &8789996166319371500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3527990153254771694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec72980442fddac4d86e75ab24b4d027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  character: {fileID: 4978887135667488676}
+  sensitivity: 2
+  smoothing: 1.5
+  playerCamera: {fileID: 1044452084491499104}
+  panel: {fileID: 0}
+  keyToPress: 9
+  settingsPanel: {fileID: 0}
+--- !u!114 &-4829004366119847647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3527990153254771694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &5408255534115799117
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,7 +372,6 @@ GameObject:
   - component: {fileID: 1044452084491499104}
   - component: {fileID: 4613617285421303850}
   - component: {fileID: 6357768027321717255}
-  - component: {fileID: 8523972047407583057}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -476,24 +513,6 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
---- !u!114 &8523972047407583057
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7369344880248237417}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec72980442fddac4d86e75ab24b4d027, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  character: {fileID: 4978887135667488676}
-  sensitivity: 2
-  smoothing: 1.5
-  panel: {fileID: 0}
-  keyToPress: 9
-  settingsPanel: {fileID: 0}
 --- !u!1001 &3125766538646478375
 PrefabInstance:
   m_ObjectHideFlags: 0

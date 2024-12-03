@@ -3,9 +3,10 @@ using Photon.Pun;
 public class FirstPersonLook : MonoBehaviourPunCallbacks
 {
     [SerializeField]
-    private Transform character;            // 캐릭터의 몸체를 가리킴 (Y축 회전용)
+    public Transform character;            // 캐릭터의 몸체를 가리킴 (Y축 회전용)
     public float sensitivity = 2;
     public float smoothing = 1.5f;
+    public Camera playerCamera; // 플레이어 카메라
 
     [Header("상태창 버튼")]
     public GameObject panel; // 패널을 드래그하여 연결합니다.
@@ -19,11 +20,12 @@ public class FirstPersonLook : MonoBehaviourPunCallbacks
     private bool isSettingsOpen = false;    // 설정 창 열림 상태 확인 변수
 
     private TaskUIManager taskUIManager;
+    private float xRotation = 0f;
 
     void Reset()
     {
         // 부모 오브젝트의 FirstPersonController와 Transform을 가져옴
-        character = GetComponentInParent<FirstPersonController>().transform;
+        //character = GetComponent<FirstPersonController>().transform;
     }
 
     void Start()
@@ -31,8 +33,9 @@ public class FirstPersonLook : MonoBehaviourPunCallbacks
         settingsPanel = GameObject.Find("ESC");
         panel = GameObject.Find("Tap");
 
+        settingsPanel.SetActive(false);
+
         taskUIManager = GetComponent<TaskUIManager>();
-        // FirstPersonController 및 Rigidbody 캐싱
         firstPersonController = GetComponentInParent<FirstPersonController>();
         rb = GetComponentInParent<Rigidbody>();
 
@@ -42,6 +45,11 @@ public class FirstPersonLook : MonoBehaviourPunCallbacks
             rb.freezeRotation = true; // Rigidbody의 회전을 고정
         }
 
+        Camera playerCamera = GetComponentInChildren<Camera>();
+        if (playerCamera != null)
+        {
+            playerCamera.gameObject.SetActive(photonView.IsMine); // 자신의 카메라만 활성화
+        }
         // 게임 시작 시 마우스 커서 고정 및 숨기기
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -81,14 +89,22 @@ public class FirstPersonLook : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine) // 이 오브젝트가 내 것일 때만 회전
         {
-            Vector2 mouseDelta = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
+            float mouseX = Input.GetAxis("Mouse X") * 100 * Time.deltaTime;
+            float mouseY = Input.GetAxis("Mouse Y") * 100 * Time.deltaTime;
+
+            xRotation -= mouseY;
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f); // 상하 회전 제한
+
+            playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            character.Rotate(Vector3.up * mouseX); // 몸체 회전
+            /*Vector2 mouseDelta = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
             Vector2 rawFrameVelocity = Vector2.Scale(mouseDelta, Vector2.one * sensitivity);
             frameVelocity = Vector2.Lerp(frameVelocity, rawFrameVelocity, 1 / smoothing);
             velocity += frameVelocity;
             velocity.y = Mathf.Clamp(velocity.y, -90, 90);
 
             transform.localRotation = Quaternion.AngleAxis(-velocity.y, Vector3.right);
-            character.localRotation = Quaternion.AngleAxis(velocity.x, Vector3.up);
+            character.localRotation = Quaternion.AngleAxis(velocity.x, Vector3.up);*/
         }
     }
 
