@@ -41,12 +41,15 @@ public class EffectManager : MonoBehaviour
         effectCoroutine = null;
     }
 
-    public void DeactivatePostProcessEffect()
+    // 모든 자식 오브젝트 비활성화
+    public void DeactivateAllChildObjects()
     {
-        if (activeVolume != null)
+        foreach (Transform child in transform)
         {
-            activeVolume.SetActive(false); // GameObject 비활성화
-            activeVolume = null; // 활성화된 포스트 프로세스 초기화
+            if (child.gameObject.activeSelf) // 활성화된 자식 오브젝트만 비활성화
+            {
+                child.gameObject.SetActive(false);
+            }
         }
     }
 }

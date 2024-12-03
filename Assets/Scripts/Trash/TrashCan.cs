@@ -35,7 +35,7 @@ public class TrashCan : MonoBehaviour
             trashManager.isEffectActive = false;
 
             // PostProcessVolume 비활성화
-            effectManager.DeactivatePostProcessEffect(); // 추가된 비활성화 기능 호출
+            effectManager.DeactivateAllChildObjects(); // 추가된 비활성화 기능 호출
         }
     }
 

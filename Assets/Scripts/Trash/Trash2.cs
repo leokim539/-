@@ -227,6 +227,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
         float duration = 1f; // 이동 및 축소 시간
         float elapsedTime = 0f;
 
+        // EffectTrash 컴포넌트 확인
+        EffectTrash itemEffectTrash = item.GetComponent<EffectTrash>();
+
         while (elapsedTime < duration)
         {
             // 플레이어 방향으로 이동
@@ -241,10 +244,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
             item.transform.localScale = Vector3.Lerp(originalScale, targetScale, elapsedTime / (duration / 3));
             elapsedTime += Time.deltaTime;
 
-            // 아이템 비활성화 직전에 PostProcess 효과 트리거
-            if (effectTrash != null)
+            // PostProcess 효과는 EffectTrash 컴포넌트가 있는 경우에만 트리거
+            if (itemEffectTrash != null)
             {
-                effectTrash.TriggerPostProcessEffect();
+                itemEffectTrash.TriggerPostProcessEffect();
             }
 
             yield return null;
