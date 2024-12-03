@@ -15,7 +15,7 @@ public class TrashCan : MonoBehaviour
         trashManager = Manager.GetComponent<TrashManager>();
 
 
-        GameObject postProcessManager = GameObject.Find("PostProcessManager");
+        GameObject postProcessManager = GameObject.Find("PosProcessManager");
         effectManager = postProcessManager.GetComponent<EffectManager>();  // EffectManager 찾기
 
         // Debug 로그 추가

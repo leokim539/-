@@ -22,7 +22,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     public string trash2;
     public string trash3;
 
-    public Camera camera;
+    public Camera ca;
 
     [Header("UI 관련")]
     public GameObject interactUI; // F키 UI
@@ -31,7 +31,6 @@ public class Trash2 : MonoBehaviourPunCallbacks
     private float currentHoldTime = 0f; // 현재 누르고 있는 시간
     private bool isHolding = false; // F키를 누르고 있는지 여부
     private bool isDangerHolding = false; // F키를 누르고 있는지 여부
-    private bool isCanHolding = false;
 
     private GameObject currentTrash; // 현재 상호작용 중인 쓰레기
 
@@ -40,8 +39,23 @@ public class Trash2 : MonoBehaviourPunCallbacks
     [Header("플레이어 설정")]
     public Transform playerTransform; // 플레이어의 Transform을 드래그하여 할당
 
+    void Awake()
+    {
+        //interactUI = GameObject.Find("F");
+        GameObject sliderObject = GameObject.Find("Slider");
+        if (sliderObject != null)
+        {
+            progressBar = sliderObject.GetComponent<Slider>();
+        }
+        Debug.Log("Awake");
+    }
     void Start()
     {
+        interactUI = GameObject.Find("F"); // Start에서 찾기
+        if (interactUI == null)
+        {
+            Debug.LogError("Interact UI not found!");
+        }
         Manager = GameObject.Find("Manager");
         trashManager = Manager.GetComponent<TrashManager>();
         taskUIManager = Manager.GetComponent<TaskUIManager>();
@@ -50,13 +64,17 @@ public class Trash2 : MonoBehaviourPunCallbacks
         progressBar.maxValue = maxHoldTime; // 슬라이더의 최대 값 설정
         progressBar.value = 0; // 슬라이더 초기화
 
+        ca = GetComponentInChildren<Camera>();
+
         effectTrash = FindObjectOfType<EffectTrash>();
     }
 
     void Update()
     {
-        CheckForObject();
-
+        if (photonView.IsMine)
+        {
+            CheckForObject();
+        }
         if (isDangerHolding)
         {
             HandleHolding();
@@ -99,7 +117,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     void CheckForObject()
     {
         RaycastHit hit;
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = ca.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
@@ -230,10 +248,12 @@ public class Trash2 : MonoBehaviourPunCallbacks
         // EffectTrash 컴포넌트 확인
         EffectTrash itemEffectTrash = item.GetComponent<EffectTrash>();
 
+        Vector3 myPosition = transform.position;
+
         while (elapsedTime < duration)
         {
             // 플레이어 방향으로 이동
-            Vector3 dir = playerTransform.position - item.transform.position;
+            Vector3 dir = myPosition - item.transform.position;
             dir.y = 0; // Y축을 0으로 설정하여 수평 이동만 하도록 함
             dir.Normalize(); // 방향 벡터 정규화
 

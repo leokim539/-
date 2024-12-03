@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public class FirstPersonController : MonoBehaviour
+public class FirstPersonController : MonoBehaviourPunCallbacks
 {
     public float moveSpeed = 5f;  // 캐릭터 이동 속도
     public float runSpeed = 7f; // 달리기 속도
@@ -17,7 +18,7 @@ public class FirstPersonController : MonoBehaviour
 
     public List<System.Func<float>> speedOverrides = new List<System.Func<float>>();
 
-    private Rigidbody rigidbody;
+    private Rigidbody rd;
     private AudioSource audioSource; // 오디오 소스
 
     private float originalMoveSpeed;  // 원래 이동 속도 저장
@@ -41,7 +42,7 @@ public class FirstPersonController : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>(); // AudioSource 컴포넌트 가져오기
-        rigidbody = GetComponent<Rigidbody>();
+        rd = GetComponent<Rigidbody>();
 
         originalMoveSpeed = moveSpeed; // 속도 저장
         originalRunSpeed = runSpeed;
@@ -56,15 +57,13 @@ public class FirstPersonController : MonoBehaviour
 
     void Update()
     {
+        if (photonView.IsMine)
+        {
+            MovePlayer(); // 이동 처리
+            RecoverStamina(); // 스태미나 회복
+            UpdateStaminaBar(); // UI 업데이트        }
+        }
     }
-
-    void FixedUpdate()
-    {
-        MovePlayer(); // 이동 처리
-        RecoverStamina(); // 스태미나 회복
-        UpdateStaminaBar(); // UI 업데이트
-    }
-
     public void PickingUp()
     {
         Debug.Log("PickingUp 메서드가 호출되었습니다."); // 디버깅 메시지 추가
@@ -120,7 +119,7 @@ public class FirstPersonController : MonoBehaviour
         }
 
         Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed); // 이동 벡터 계산       
-        rigidbody.velocity = transform.rotation * new Vector3(targetVelocity.x, rigidbody.velocity.y, targetVelocity.y); // 캐릭터 이동
+        rd.velocity = transform.rotation * new Vector3(targetVelocity.x, rd.velocity.y, targetVelocity.y); // 캐릭터 이동
     }
     private void PlaySound(AudioClip clip)
     {

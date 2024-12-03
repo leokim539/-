@@ -524,7 +524,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &472281038
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1893,7 +1893,7 @@ MonoBehaviour:
   optionsPanel: {fileID: 472281037}
   tutorialPanel: {fileID: 1564089091}
   openOptionsButton: {fileID: 218565565}
-  closeOptionsButton: {fileID: 0}
+  closeOptionsButton: {fileID: 79920819}
   exitButton: {fileID: 1028893229}
   openTutorialButton: {fileID: 1417284891}
   closeTutorialButton: {fileID: 775178927}
@@ -2500,7 +2500,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1564089092
 RectTransform:
   m_ObjectHideFlags: 0
