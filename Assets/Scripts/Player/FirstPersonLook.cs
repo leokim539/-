@@ -6,6 +6,10 @@ public class FirstPersonLook : MonoBehaviourPunCallbacks
     private Transform character;            // 캐릭터의 몸체를 가리킴 (Y축 회전용)
     public float sensitivity = 2;
     public float smoothing = 1.5f;
+
+    [Header("상태창 버튼")]
+    public GameObject panel; // 패널을 드래그하여 연결합니다.
+    public KeyCode keyToPress;
     public GameObject settingsPanel;        // 설정 창 패널을 연결
 
     private Vector2 velocity;
@@ -13,6 +17,8 @@ public class FirstPersonLook : MonoBehaviourPunCallbacks
     private FirstPersonController firstPersonController; // FirstPersonController 스크립트 참조
     private Rigidbody rb;                   // Rigidbody 참조
     private bool isSettingsOpen = false;    // 설정 창 열림 상태 확인 변수
+
+    private TaskUIManager taskUIManager;
 
     void Reset()
     {
@@ -22,6 +28,10 @@ public class FirstPersonLook : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        settingsPanel = GameObject.Find("ESC");
+        panel = GameObject.Find("Tap");
+
+        taskUIManager = GetComponent<TaskUIManager>();
         // FirstPersonController 및 Rigidbody 캐싱
         firstPersonController = GetComponentInParent<FirstPersonController>();
         rb = GetComponentInParent<Rigidbody>();
@@ -39,21 +49,30 @@ public class FirstPersonLook : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        // ESC 키로 설정 창을 토글
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (photonView.IsMine)
         {
-            ToggleSettingsPanel();
-        }
-
-        // 설정 창이 닫혀 있을 때만 캐릭터 회전
-        if (!isSettingsOpen)
-        {
-            RotateCharacter();
-        }
-        else if (rb != null)
-        {
-            // 설정 창이 열렸을 때 Rigidbody의 각속도를 초기화하여 회전 방지
-            rb.angularVelocity = Vector3.zero;
+            // ESC 키로 설정 창을 토글
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                ToggleSettingsPanel();
+            }
+            // 설정 창이 닫혀 있을 때만 캐릭터 회전
+            if (!isSettingsOpen)
+            {
+                RotateCharacter();
+            }
+            else if (rb != null)
+            {
+                // 설정 창이 열렸을 때 Rigidbody의 각속도를 초기화하여 회전 방지
+                rb.angularVelocity = Vector3.zero;
+            }
+            if (Input.GetKey(keyToPress))
+            {
+                panel.SetActive(true);
+                taskUIManager.UpdateUI();
+            }
+            else
+                panel.SetActive(false);
         }
     }
 

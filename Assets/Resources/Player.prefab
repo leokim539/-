@@ -491,6 +491,8 @@ MonoBehaviour:
   character: {fileID: 4978887135667488676}
   sensitivity: 2
   smoothing: 1.5
+  panel: {fileID: 0}
+  keyToPress: 9
   settingsPanel: {fileID: 0}
 --- !u!1001 &3125766538646478375
 PrefabInstance:

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-
+using Photon.Pun;
 [ExecuteInEditMode]
-public class GroundCheck : MonoBehaviour
+public class GroundCheck : MonoBehaviourPunCallbacks
 {
     public float distanceThreshold = .15f;
     public bool isGrounded = true;
@@ -15,14 +15,17 @@ public class GroundCheck : MonoBehaviour
 
     void LateUpdate()
     {
-        bool isGroundedNow = Physics.Raycast(RaycastOrigin, Vector3.down, distanceThreshold * 2);
-
-        if (isGroundedNow && !isGrounded)
+        if (photonView.IsMine)
         {
-            Grounded?.Invoke();
-        }
+            bool isGroundedNow = Physics.Raycast(RaycastOrigin, Vector3.down, distanceThreshold * 2);
 
-        isGrounded = isGroundedNow;
+            if (isGroundedNow && !isGrounded)
+            {
+                Grounded?.Invoke();
+            }
+
+            isGrounded = isGroundedNow;
+        }
     }
 
     void OnDrawGizmosSelected()

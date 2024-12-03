@@ -41,17 +41,20 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>(); // AudioSource 컴포넌트 가져오기
-        rd = GetComponent<Rigidbody>();
-
-        originalMoveSpeed = moveSpeed; // 속도 저장
-        originalRunSpeed = runSpeed;
-
-        // 카메라를 초기 상태로 설정
-        if (mainCamera != null && crouchCamera != null)
+        if (photonView.IsMine)
         {
-            mainCamera.enabled = true; // MainCamera 활성화
-            crouchCamera.enabled = false; // MainCamera2 비활성화
+            audioSource = GetComponent<AudioSource>(); // AudioSource 컴포넌트 가져오기
+            rd = GetComponent<Rigidbody>();
+
+            originalMoveSpeed = moveSpeed; // 속도 저장
+            originalRunSpeed = runSpeed;
+
+            // 카메라를 초기 상태로 설정
+            if (mainCamera != null && crouchCamera != null)
+            {
+                mainCamera.enabled = true; // MainCamera 활성화
+                crouchCamera.enabled = false; // MainCamera2 비활성화
+            }
         }
     }
 
@@ -61,7 +64,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
         {
             MovePlayer(); // 이동 처리
             RecoverStamina(); // 스태미나 회복
-            UpdateStaminaBar(); // UI 업데이트        }
+            UpdateStaminaBar(); // UI 업데이트        
         }
     }
     public void PickingUp()

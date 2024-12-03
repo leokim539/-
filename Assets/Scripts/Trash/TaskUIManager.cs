@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class TaskUIManager : MonoBehaviour
+using Photon.Pun;
+public class TaskUIManager : MonoBehaviourPunCallbacks
 {
     [Header("쓰레기 주운 갯수")]
     public Text circleText;
@@ -19,10 +20,6 @@ public class TaskUIManager : MonoBehaviour
     public GameObject cylinderStrikeThrough;
     public GameObject squareStrikeThrough;
 
-    [Header("상태창 버튼")]
-    public GameObject panel; // 패널을 드래그하여 연결합니다.
-    public KeyCode keyToPress;
-
     private int circleCount = 0;
     private int cylinderCount = 0;
     private int squareCount = 0;
@@ -38,13 +35,7 @@ public class TaskUIManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(keyToPress))
-        {
-            panel.SetActive(true);
-            UpdateUI();
-        }
-        else
-            panel.SetActive(false);
+        
     }
 
     public void UpdateCircleCount()
@@ -65,7 +56,7 @@ public class TaskUIManager : MonoBehaviour
         UpdateUI();
     }
 
-    void UpdateUI()
+    public void UpdateUI()
     {
         // 현재 갯수 알림이
         if (circleText != null) circleText.text = $"{circleCount}/{totalCircle}";
