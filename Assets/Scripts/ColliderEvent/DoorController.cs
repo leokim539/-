@@ -112,8 +112,20 @@ public class DoorController : MonoBehaviour
         if (!enabled || audioSource == null || isUnlocking) yield break;
 
         isMoving = true;
-        float currentAngle = transform.localEulerAngles.y;
-        float targetAngle = !isOpen ? currentAngle + 90f : currentAngle - 90f;
+        float startAngle = transform.localEulerAngles.z;
+        float targetAngle;
+
+        // 문이 닫혀있다면 열기 (0 → 90)
+        if (!isOpen)
+        {
+            startAngle = 0f;
+            targetAngle = 90f;
+        }
+        else  // 문이 열려있다면 닫기 (90 → 0)
+        {
+            startAngle = 90f;
+            targetAngle = 0f;
+        }
 
         if (audioSource != null)
         {
@@ -126,15 +138,23 @@ public class DoorController : MonoBehaviour
             }
         }
 
-        while (Mathf.Abs(targetAngle - currentAngle) > 0.1f)
+        float elapsedTime = 0f;
+        float totalRotationTime = 0.5f; // 회전에 걸리는 총 시간
+
+        while (elapsedTime < totalRotationTime)
         {
-            float step = Time.deltaTime * 150f;
-            currentAngle = Mathf.MoveTowardsAngle(currentAngle, targetAngle, step);
-            transform.localEulerAngles = new Vector3(0, currentAngle, 90);
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / totalRotationTime;
+            // Smoothstep을 사용하여 더 자연스러운 보간 효과
+            t = t * t * (3f - 2f * t);
+            float currentAngle = Mathf.Lerp(startAngle, targetAngle, t);
+            transform.localEulerAngles = new Vector3(-90f, 0f, currentAngle);
             yield return null;
         }
 
-        transform.localEulerAngles = new Vector3(0, targetAngle, 90);
+        // 최종 각도 명확히 설정
+        transform.localEulerAngles = new Vector3(-90f, 0f, targetAngle);
+
         if (audioSource != null)
         {
             audioSource.Stop();
