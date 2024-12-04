@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class DialogueManager : MonoBehaviour
@@ -8,7 +7,6 @@ public class DialogueManager : MonoBehaviour
     public SlideInImage slideInImage; // SlideInImage 스크립트
     public GameObject dialoguePanel; // 대화창 Panel
     public TMP_Text dialogueText; // TextMeshPro 대화 텍스트
-    public Button nextButton; // 다음 버튼
 
     public string[] dialogueLines; // 대화 내용 배열
     public float textSpeed = 0.05f; // 텍스트 표시 속도
@@ -21,9 +19,8 @@ public class DialogueManager : MonoBehaviour
 
     void Start()
     {
-        // 대화창과 버튼을 비활성화 상태로 시작
+        // 대화창을 비활성화 상태로 시작
         dialoguePanel.SetActive(false);
-        nextButton.gameObject.SetActive(false);
 
         // SlideInImage 완료 시점에 대화창 실행
         slideInImage.OnSlideComplete += StartDialogue;
@@ -55,9 +52,15 @@ public class DialogueManager : MonoBehaviour
         ManageCursorVisibility();
 
         // 스페이스바로 다음 대화로 넘어가기
-        if (Input.GetKeyDown(KeyCode.Space) && !isTyping && !isDialogueEnded)
+        if (Input.GetKeyDown(KeyCode.Space) && dialoguePanel.activeSelf && !isTyping && !isDialogueEnded)
         {
             NextDialogue();
+        }
+
+        // ESC로 대화 종료 요청 (대화창이 활성화된 경우에만 작동)
+        if (Input.GetKeyDown(KeyCode.Escape) && dialoguePanel.activeSelf)
+        {
+            CloseDialoguePanelImmediately();
         }
     }
 
@@ -90,9 +93,8 @@ public class DialogueManager : MonoBehaviour
             yield return new WaitForSeconds(textSpeed);
         }
 
-        // 텍스트 표시 완료 후 버튼 활성화
+        // 텍스트 표시 완료
         isTyping = false;
-        nextButton.gameObject.SetActive(true);
     }
 
     public void NextDialogue()
@@ -112,24 +114,6 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void OnNextButtonClicked()
-    {
-        if (isTyping || isDialogueEnded)
-            return; // 텍스트 출력 중 또는 대화 종료 후 버튼 작동 금지
-
-        // 다음 대화로 이동
-        currentLineIndex++;
-
-        if (currentLineIndex < dialogueLines.Length)
-        {
-            StartCoroutine(TypeText());
-        }
-        else
-        {
-            EndDialogue();
-        }
-    }
-
     private void EndDialogue()
     {
         isDialogueEnded = true;
@@ -139,6 +123,15 @@ public class DialogueManager : MonoBehaviour
 
         // 딜레이 후 SlideDown 호출
         StartCoroutine(DelayedSlideDown());
+    }
+
+    private void CloseDialoguePanelImmediately()
+    {
+        // ESC 누르면 대화창 즉시 비활성화
+        dialoguePanel.SetActive(false);
+
+        // SlideDown 호출 (이미지가 내려가는 동작은 대화창과 별개로 진행)
+        slideInImage.SlideDown(slideDownPosition);
     }
 
     IEnumerator DelayedSlideDown()
