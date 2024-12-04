@@ -152,10 +152,11 @@ public class FirstPersonLook : MonoBehaviourPunCallbacks
             ToggleFirstPersonController(true); // FirstPersonController 활성화
 
             // 움직임 및 소리 재개
-            if (firstPersonController != null)
+           /* if (firstPersonController != null)
             {
                 firstPersonController.ResumeMovement();
-            }
+            }*/
+           
         }
     }
 }

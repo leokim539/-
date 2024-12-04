@@ -189,7 +189,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
     }
 
     // 추가한 메서드
-    public void ResumeMovement()
+    /*public void ResumeMovement()
     {
         // 특별한 동작 필요 없음 (Update에서 처리)
     }
