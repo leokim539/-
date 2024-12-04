@@ -7,14 +7,13 @@ using Photon.Pun;
 public class FirstPersonController : MonoBehaviourPunCallbacks
 {
     public float moveSpeed = 5f;  // 캐릭터 이동 속도
-    public float runSpeed = 7f; // 달리기 속도
-    public KeyCode runningKey = KeyCode.LeftShift; //달리기 키
+    public float runSpeed = 7f;  // 달리기 속도
+    public KeyCode runningKey = KeyCode.LeftShift; // 달리기 키
     public float maxStamina = 5f;  // 최대 스태미나
     public float stamina = 5f;    // 현재 스태미나
     public float staminaDrainRate = 1f;  // 스태미나 소모율
     public float staminaRecoveryRate = 1f; // 스태미나 회복율
     public Slider staminaSlider; // 스태미나 슬라이더
-
 
     public List<System.Func<float>> speedOverrides = new List<System.Func<float>>();
 
@@ -67,6 +66,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
             UpdateStaminaBar(); // UI 업데이트        
         }
     }
+
     public void PickingUp()
     {
         Debug.Log("PickingUp 메서드가 호출되었습니다."); // 디버깅 메시지 추가
@@ -88,7 +88,6 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(0.5f); // 0.5초 딜레이
         animator.SetBool("isCrouched", false); // 쪼그려 앉는 애니메이션 상태를 해제
 
-
         yield return new WaitForSeconds(1f);
         // 카메라를 원래 상태로 되돌림
         if (mainCamera != null && crouchCamera != null)
@@ -100,10 +99,10 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
 
     void MovePlayer()
     {
-        bool isSprinting = Input.GetKey(runningKey) && stamina > 0;// 스프린트 여부 체크
+        bool isSprinting = Input.GetKey(runningKey) && stamina > 0; // 스프린트 여부 체크
         float targetMovingSpeed = isSprinting ? runSpeed : moveSpeed;
 
-        if (isSprinting)// 스프린트 시 스태미나 소모
+        if (isSprinting) // 스프린트 시 스태미나 소모
         {
             stamina -= staminaDrainRate * Time.deltaTime;
             stamina = Mathf.Clamp(stamina, 0, maxStamina);
@@ -124,6 +123,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
         Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed); // 이동 벡터 계산       
         rd.velocity = transform.rotation * new Vector3(targetVelocity.x, rd.velocity.y, targetVelocity.y); // 캐릭터 이동
     }
+
     private void PlaySound(AudioClip clip)
     {
         if (audioSource.clip != clip || !audioSource.isPlaying) // 현재 재생 중인 소리와 다를 경우
@@ -133,6 +133,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
             audioSource.Play();
         }
     }
+
     void RecoverStamina() // 스태미나 회복 함수
     {
         if (stamina < maxStamina && !Input.GetKey(runningKey))
@@ -164,8 +165,37 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
         moveSpeed = originalMoveSpeed;
         runSpeed = originalRunSpeed;
     }
-}
-    /*    void MovePlayer()
+
+    // 추가한 메서드
+    public void StopMovement()
+    {
+        if (!photonView.IsMine) return; // 로컬 플레이어만 처리
+
+        if (audioSource != null)
+        {
+            audioSource.Stop(); // 소리 정지
+        }
+
+        if (animator != null)
+        {
+            animator.SetBool("isWalk", false); // 걷기 애니메이션 중단
+            animator.SetBool("isCrouched", false); // 쪼그리기 애니메이션 중단
+        }
+
+        if (rd != null)
+        {
+            rd.velocity = Vector3.zero; // 캐릭터 속도 초기화
+        }
+    }
+
+    // 추가한 메서드
+    public void ResumeMovement()
+    {
+        // 특별한 동작 필요 없음 (Update에서 처리)
+    }
+
+    /* 주석 코드: 대체 MovePlayer 로직 (이전 방식)
+        void MovePlayer()
         {
             float moveX = Input.GetAxis("Horizontal");  // 좌우 이동 입력
             float moveZ = Input.GetAxis("Vertical");    // 앞뒤 이동 입력
@@ -187,18 +217,5 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
                 stamina = Mathf.Clamp(stamina, 0, maxStamina);
             }
         }
-    // 마우스 입력으로 캐릭터 및 카메라 회전 처리 함수
-    void RotatePlayer()
-    {
-        // 마우스 좌우 움직임으로 캐릭터 회전
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        transform.Rotate(Vector3.up * mouseX);
-
-        // 마우스 상하 움직임으로 카메라 회전
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-        xRotation -= mouseY;  // 상하 회전 값 조정
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);  // 카메라 상하 회전 범위 제한
-
-        // 카메라 회전 적용
-        Camera.main.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-    }*/
+    */
+}
