@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using Photon.Pun;
 
-public class DrawerController : MonoBehaviour
+public class DrawerController : MonoBehaviourPunCallbacks
 {
     public GameObject openUI;  // 서랍이 열렸을 때 표시할 UI
     public GameObject closeUI;  // 서랍이 닫혔을 때 표시할 UI
@@ -43,7 +44,8 @@ public class DrawerController : MonoBehaviour
                 DrawerController drawer = hit.transform.GetComponent<DrawerController>();
                 if (drawer != null && drawer.enabled && !drawer.isMoving)
                 {
-                    StartCoroutine(drawer.ToggleDrawer());
+                    // RPC 호출로 드로어를 여는 작업
+                    drawer.photonView.RPC("ToggleDrawerRPC", RpcTarget.All);
                 }
             }
         }
@@ -83,6 +85,12 @@ public class DrawerController : MonoBehaviour
             openUI.SetActive(false);
             closeUI.SetActive(false);
         }
+    }
+
+    [PunRPC] // RPC 메서드로 설정
+    public void ToggleDrawerRPC()
+    {
+        StartCoroutine(ToggleDrawer());
     }
 
     public IEnumerator ToggleDrawer()
