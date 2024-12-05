@@ -5359,6 +5359,7 @@ GameObject:
   m_Component:
   - component: {fileID: 705507995}
   - component: {fileID: 705507994}
+  - component: {fileID: 705507996}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -5443,6 +5444,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &705507996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705507993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!64 &705965555
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5600,7 +5624,6 @@ GameObject:
   - component: {fileID: 749116328}
   - component: {fileID: 749116331}
   - component: {fileID: 749116333}
-  - component: {fileID: 749116334}
   - component: {fileID: 749116335}
   m_Layer: 0
   m_Name: Manager
@@ -5683,6 +5706,7 @@ MonoBehaviour:
   circleStrikeThrough: {fileID: 0}
   cylinderStrikeThrough: {fileID: 0}
   squareStrikeThrough: {fileID: 453115954}
+  oneObject: {fileID: 0}
 --- !u!114 &749116333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5695,21 +5719,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8914377e20fc61b49be0b71fd72e1a94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &749116334
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 749116327}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbd8c93ec2e298f45b5a2d504718cd92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  loadingUI: {fileID: 0}
-  progressBar: {fileID: 0}
-  loadingTime: 2
 --- !u!114 &749116335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14509,6 +14518,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1155819668}
   - component: {fileID: 1155819667}
+  - component: {fileID: 1155819669}
   m_Layer: 0
   m_Name: Spot Light
   m_TagString: Untagged
@@ -14593,6 +14603,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1195383095}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &1155819669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155819666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!64 &1165234666
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -18461,7 +18494,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 749116334}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Loading, Assembly-CSharp
         m_MethodName: StartLoadingScene
         m_Mode: 5
