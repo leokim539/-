@@ -84,10 +84,10 @@ public class FirstPersonLook : MonoBehaviourPunCallbacks
                 panel.SetActive(true);
                 taskUIManager.UpdateUI();
             }
-            else
-            {
-                panel.SetActive(false);
-            }
+                else
+                {
+                    panel.SetActive(false);
+                }
         }
     }
 
