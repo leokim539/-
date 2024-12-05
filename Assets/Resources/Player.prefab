@@ -391,6 +391,9 @@ MonoBehaviour:
   trash1: circle
   trash2: cylinder
   trash3: square
+  trash4: BeerCan
+  trash5: PetBottle
+  trash6: TrashBag
   ca: {fileID: 0}
   interactUI: {fileID: 0}
   progressBar: {fileID: 0}
@@ -443,7 +446,7 @@ GameObject:
   - component: {fileID: 8924707477561034804}
   m_Layer: 0
   m_Name: Ground
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -655,7 +658,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0

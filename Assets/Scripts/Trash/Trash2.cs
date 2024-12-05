@@ -7,7 +7,7 @@ using Photon.Pun;
 public class Trash2 : MonoBehaviourPunCallbacks
 {
     [Header("상호작용 거리")]
-    public float interactDistance = 3f; // 플레이어와 오브젝트 간의 최대 상호작용 거리
+    public float interactDistance = 5f; // 플레이어와 오브젝트 간의 최대 상호작용 거리
 
 
     [Header("쓰레기 먹으면 늘어나는 양")]
@@ -21,6 +21,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
     public string trash1;
     public string trash2;
     public string trash3;
+    public string trash4;
+    public string trash5;
+    public string trash6;
 
     public Camera ca;
 
@@ -238,6 +241,18 @@ public class Trash2 : MonoBehaviourPunCallbacks
         else if (objectName.Contains(trash3))
         {
             taskUIManager.UpdateSquareCount();
+        }
+        else if (objectName.Contains(trash4))
+        {
+            taskUIManager.UpdateBeerCanCount();
+        }
+        else if (objectName.Contains(trash5))
+        {
+            taskUIManager.UpdatePetBottleCount();
+        }
+        else if (objectName.Contains(trash6))
+        {
+            taskUIManager.UpdateTrashBagCount();
         }
         else return;
     }

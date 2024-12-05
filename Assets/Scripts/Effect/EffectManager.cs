@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Rendering.PostProcessing; // PostProcessVolume 사용 시 필요
 
 public class EffectManager : MonoBehaviour
 {
@@ -17,16 +18,15 @@ public class EffectManager : MonoBehaviour
             activeVolume.SetActive(true); // 효과 즉시 활성화
             effectCoroutine = StartCoroutine(ActivateEffectTemporarily(postProcessObject));
         }
-        if (postProcessObject != null)
+
+        // 자식 오브젝트 중 특정 컴포넌트를 찾아서 활성화
+        PostProcessVolume[] childVolumes = postProcessObject.GetComponentsInChildren<PostProcessVolume>();
+        if (childVolumes.Length > 0)
         {
-            // 자식 오브젝트 중 GameObject 찾아서 활성화
-            GameObject[] childVolumes = GetComponentsInChildren<GameObject>();
-            if (childVolumes.Length > 0)
-            {
-                activeVolume = childVolumes[0];
-                activeVolume.SetActive(true); // 효과 즉시 활성화
-                effectCoroutine = StartCoroutine(ActivateEffectTemporarily(childVolumes[0]));
-            }
+            // 첫 번째 자식 컴포넌트를 활성화
+            activeVolume = childVolumes[0].gameObject;
+            activeVolume.SetActive(true); // 효과 즉시 활성화
+            effectCoroutine = StartCoroutine(ActivateEffectTemporarily(activeVolume));
         }
     }
 
