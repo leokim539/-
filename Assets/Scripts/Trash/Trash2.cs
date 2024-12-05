@@ -196,7 +196,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         photonView.RPC("UpdateTaskUI", RpcTarget.Others, objectName);
 
-        photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash);
+        photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash.GetPhotonView().ViewID);
     }
 
     void ConsumeDangerTrash()
@@ -216,12 +216,12 @@ public class Trash2 : MonoBehaviourPunCallbacks
         // 쓰레기 종류에 따른 UI 업데이트
         UpdateTaskUI(objectName);
         
-        // 초기화
+        // 초기화  
         HideUI();
 
         photonView.RPC("UpdateTaskUI", RpcTarget.Others, objectName);
 
-        photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash);
+        photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash.GetPhotonView().ViewID);
     }
 
     [PunRPC]
@@ -241,9 +241,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
         }
     }
     [PunRPC]
-    public void RPC_CollectItem(GameObject item)
+    public void RPC_CollectItem(int itemViewID)
     {
-       StartCoroutine(CollectItem(item));
+        PhotonView itemPhotonView = PhotonView.Find(itemViewID);
+        if (itemPhotonView != null)
+        {
+            StartCoroutine(CollectItem(itemPhotonView.gameObject));
+        }
     }
     public IEnumerator CollectItem(GameObject item)
     {
