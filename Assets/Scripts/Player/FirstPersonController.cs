@@ -96,19 +96,38 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
     }
-    private void ToggleSettingsPanel()
-    {
-        isSettingsOpen = !isSettingsOpen;
-        settingsPanel.SetActive(isSettingsOpen);
+   private void ToggleSettingsPanel()
+{
+    isSettingsOpen = !isSettingsOpen;
+    settingsPanel.SetActive(isSettingsOpen);
 
-        if (isSettingsOpen) // 설정 창이 열렸을 때
+    if (isSettingsOpen) // 설정 창이 열렸을 때
+    {
+        Cursor.visible = true; // 마우스 커서 표시
+        Cursor.lockState = CursorLockMode.None; // 마우스 이동 가능
+        audioSource.Stop(); // 걷기 소리 정지
+
+        // 애니메이션 비활성화
+        if (animator != null)
         {
-            Cursor.visible = true; // 마우스 커서 표시
-            Cursor.lockState = CursorLockMode.None; // 마우스 이동 가능
-            audioSource.Stop();
+            animator.SetFloat("Forward", 0f);
+            animator.SetFloat("Strafe", 0f);
+            animator.SetFloat("isWalking", 0f);
+            animator.SetBool("isCrouched", false); // 쪼그리기 상태 해제
         }
 
+        // 캐릭터 이동 중지
+        if (rd != null)
+        {
+            rd.velocity = Vector3.zero; // Rigidbody 이동 속도 초기화
+        }
     }
+    else // 설정 창이 닫혔을 때
+    {
+        Cursor.visible = false; // 마우스 커서 숨김
+        Cursor.lockState = CursorLockMode.Locked; // 마우스 고정
+    }
+}
    // void MovePlayer()
    // {
      //   float x = Input.GetAxis("Horizontal");
