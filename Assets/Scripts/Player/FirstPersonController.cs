@@ -7,6 +7,12 @@ using Photon.Realtime;
 
 public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
 {
+
+
+    private float forward; // Forward 애니메이션 상태
+    private float strafe;  // Strafe 애니메이션 상태
+    private float isWalking; // 걷기 상태 (0 또는 1)
+
     private Animator animator; // 애니메이터
     private AudioSource audioSource; // 오디오 소스
     private Rigidbody rd;
@@ -16,7 +22,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     public float moveSpeed = 5f;  // 캐릭터 이동 속도
     public float sensitivity = 2;
 
-    private float xRotation = 0f; 
+    private float xRotation = 0f;
     public Transform character;
 
     public List<System.Func<float>> speedOverrides = new List<System.Func<float>>();
@@ -43,7 +49,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log("IsMine: " + photonView.IsMine);
         settingsPanel = GameObject.Find("ESC");
         panel = GameObject.Find("Tap");
-        
+
         if (photonView.IsMine)
         {
             settingsPanel.SetActive(false);
@@ -79,7 +85,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             {
                 ToggleSettingsPanel();
             }
-            if(!isSettingsOpen)
+            if (!isSettingsOpen)
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
@@ -109,26 +115,28 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         }
 
     }
-   // void MovePlayer()
-   // {
-     //   float x = Input.GetAxis("Horizontal");
-      //  float z = Input.GetAxis("Vertical");
-       // Vector3 move = transform.right * x + transform.forward * z;
-       // transform.position += move * moveSpeed * Time.deltaTime;
-
-       // if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // 걷기 소리 재생
-       // {
-       //     PlaySound(walkSound);
-      //  }
-      //  else
-       // {
-       //     audioSource.Stop(); // 소리 정지
-      //  }
+    // void MovePlayer()
+    // {
+    //   float x = Input.GetAxis("Horizontal");
+    //  float z = Input.GetAxis("Vertical");
+    // Vector3 move = transform.right * x + transform.forward * z;
+    // transform.position += move * moveSpeed * Time.deltaTime;
 
 
+    // if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // 걷기 소리 재생
+    // {
+    //     PlaySound(walkSound);
+    //  }
+    //  else
+    // {
+    //     audioSource.Stop(); // 소리 정지
+    //  }
 
-      //  UpdateAnimator(move);
-  //  }
+
+
+    //  UpdateAnimator(move);
+    //  }
+
 
     void MovePlayer()// 변경된 메서드(애니메이션 속도 관련)
     {
@@ -139,7 +147,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         Vector2 targetVelocity = new Vector2(x * moveSpeed, z * moveSpeed);
 
         // 캐릭터 이동
-        rd.velocity = transform.rotation * new Vector3(targetVelocity.x, rd.velocity.y, targetVelocity.y); 
+        rd.velocity = transform.rotation * new Vector3(targetVelocity.x, rd.velocity.y, targetVelocity.y);
 
         // 걷기 소리 재생
         if (x != 0 || z != 0) // 이동 중일 때
@@ -158,27 +166,55 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     private void UpdateAnimator(Vector2 targetVelocity)
     {
         // 이동 벡터의 크기를 계산하여 Forward와 Strafe 파라미터에 설정
-        float forward = targetVelocity.y / moveSpeed; // moveSpeed를 기준으로 전방 비율 계산
-        float strafe = targetVelocity.x / moveSpeed;  // moveSpeed를 기준으로 측면 비율 계산
+        forward = targetVelocity.y / moveSpeed; // moveSpeed를 기준으로 전방 비율 계산
+        strafe = targetVelocity.x / moveSpeed;  // moveSpeed를 기준으로 측면 비율 계산
 
         animator.SetFloat("Forward", forward); // Forward 파라미터 설정
         animator.SetFloat("Strafe", strafe);   // Strafe 파라미터 설정
 
         // 걷기 애니메이션 상태 처리
-        // isWalk 파라미터 대신 Forward와 Strafe 값을 사용하여 걷기 상태를 판단
         if (Mathf.Abs(forward) > 0.01f || Mathf.Abs(strafe) > 0.01f) // 이동 중이면
         {
-            animator.SetFloat("isWalking", 1f); // 걷기 상태 설정 (1)
+            isWalking = 1f; // 걷기 상태 설정 (1)
         }
         else
         {
-            animator.SetFloat("isWalking", 0f); // 걷기 상태 해제 (0)
+            isWalking = 0f; // 걷기 상태 해제 (0)
+        }
+
+        animator.SetFloat("isWalking", isWalking); // 애니메이터에 설정
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // 내 위치와 회전 정보를 전송
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+            stream.SendNext(forward); // Forward 전송
+            stream.SendNext(strafe);  // Strafe 전송
+            stream.SendNext(isWalking); // isWalking 전송
+        }
+        else
+        {
+            // 다른 플레이어의 위치와 회전 정보를 수신
+            transform.position = (Vector3)stream.ReceiveNext();
+            transform.rotation = (Quaternion)stream.ReceiveNext();
+            forward = (float)stream.ReceiveNext(); // Forward 수신
+            strafe = (float)stream.ReceiveNext();  // Strafe 수신
+            isWalking = (float)stream.ReceiveNext(); // isWalking 수신
+
+            // 애니메이터 업데이트
+            animator.SetFloat("Forward", forward); // Forward 애니메이터에 설정
+            animator.SetFloat("Strafe", strafe);   // Strafe 애니메이터에 설정
+            animator.SetFloat("isWalking", isWalking); // isWalking 애니메이터에 설정
         }
     }
     void CameraRotation()
     {
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity*2 * Time.deltaTime * 100; // 마우스 X 이동
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity*2 * Time.deltaTime * 100; // 마우스 Y 이동
+        float mouseX = Input.GetAxis("Mouse X") * sensitivity * 2 * Time.deltaTime * 100; // 마우스 X 이동
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * 2 * Time.deltaTime * 100; // 마우스 Y 이동
 
         xRotation -= mouseY; // 카메라 상하 회전값 조정
         xRotation = Mathf.Clamp(xRotation, -90f, 90f); // 상하 회전 제한
@@ -212,7 +248,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             crouchCamera.enabled = false; // MainCamera2 비활성화
         }
     }
-    
+
 
     private void PlaySound(AudioClip clip)
     {
@@ -257,21 +293,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             rd.velocity = Vector3.zero; // 캐릭터 속도 초기화
         }
     }
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            // 내 위치와 회전 정보를 전송
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
-        }
-        else
-        {
-            // 다른 플레이어의 위치와 회전 정보를 수신
-            transform.position = (Vector3)stream.ReceiveNext();
-            transform.rotation = (Quaternion)stream.ReceiveNext();
-        }
-    }
+
     // 추가한 메서드
     /*public void ResumeMovement()
     {
