@@ -43,7 +43,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log("IsMine: " + photonView.IsMine);
         settingsPanel = GameObject.Find("ESC");
         panel = GameObject.Find("Tap");
-
+        settingsPanel.SetActive(false);
         if (photonView.IsMine)
         {
             Debug.Log("이 플레이어는 나의 것입니다.");
@@ -138,7 +138,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         Vector2 targetVelocity = new Vector2(x * moveSpeed, z * moveSpeed);
 
         // 캐릭터 이동
-        rd.velocity = transform.rotation * new Vector3(targetVelocity.x, rd.velocity.y, targetVelocity.y);
+        rd.velocity = transform.rotation * new Vector3(targetVelocity.x, rd.velocity.y, targetVelocity.y); 
 
         // 걷기 소리 재생
         if (x != 0 || z != 0) // 이동 중일 때
@@ -176,8 +176,8 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     }
     void CameraRotation()
     {
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime * 100; // 마우스 X 이동
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime * 100; // 마우스 Y 이동
+        float mouseX = Input.GetAxis("Mouse X") * sensitivity*2 * Time.deltaTime * 100; // 마우스 X 이동
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivity*2 * Time.deltaTime * 100; // 마우스 Y 이동
 
         xRotation -= mouseY; // 카메라 상하 회전값 조정
         xRotation = Mathf.Clamp(xRotation, -90f, 90f); // 상하 회전 제한

@@ -60,7 +60,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
         trashManager = Manager.GetComponent<TrashManager>();
         taskUIManager = Manager.GetComponent<TaskUIManager>();
 
-        interactUI.SetActive(false); // 처음엔 UI를 숨깁니다.
+        interactUI.SetActive(false); // 처음엔 UI를 숨깁니다.   
         progressBar.maxValue = maxHoldTime; // 슬라이더의 최대 값 설정
         progressBar.value = 0; // 슬라이더 초기화
 
