@@ -44,6 +44,7 @@ MonoBehaviour:
   - ConsumeTrash
   - UpdateTaskUI
   - UpdateEffectState
+  - ToggleDoorRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

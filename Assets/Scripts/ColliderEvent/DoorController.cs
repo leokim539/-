@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using Photon.Pun;
 
-public class DoorController : MonoBehaviour
+public class DoorController : MonoBehaviourPunCallbacks  // MonoBehaviourPunCallbacks로 변경
 {
     public GameObject openUI;  // 문이 열렸을 때 표시할 UI
     public GameObject closeUI;
@@ -49,7 +50,8 @@ public class DoorController : MonoBehaviour
                     }
                     else
                     {
-                        StartCoroutine(door.ToggleDoor());
+                        // 문을 여는 RPC 호출
+                        door.photonView.RPC("ToggleDoorRPC", RpcTarget.All);
                     }
                 }
             }
@@ -107,6 +109,12 @@ public class DoorController : MonoBehaviour
         }
     }
 
+    [PunRPC]  // RPC 메서드로 설정
+    public void ToggleDoorRPC()
+    {
+        StartCoroutine(ToggleDoor());
+    }
+
     public IEnumerator ToggleDoor()
     {
         if (!enabled || audioSource == null || isUnlocking) yield break;
@@ -139,7 +147,7 @@ public class DoorController : MonoBehaviour
         }
 
         float elapsedTime = 0f;
-        float totalRotationTime = 0.5f; // 회전에 걸리는 총 시간
+        float totalRotationTime = 1f; // 회전에 걸리는 총 시간
 
         while (elapsedTime < totalRotationTime)
         {
