@@ -102,26 +102,49 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
         bool isSprinting = Input.GetKey(runningKey) && stamina > 0; // 스프린트 여부 체크
         float targetMovingSpeed = isSprinting ? runSpeed : moveSpeed;
 
-        if (isSprinting) // 스프린트 시 스태미나 소모
+        // 스프린트 시 스태미나 소모
+        if (isSprinting)
         {
             stamina -= staminaDrainRate * Time.deltaTime;
             stamina = Mathf.Clamp(stamina, 0, maxStamina);
             PlaySound(runSound); // 달리기 소리 재생
-            animator.SetBool("isWalk", false); // 여기 원래 달리기 애니 재생인데 아직 달리기 애니메이션 없음
         }
         else if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // 걷기 소리 재생
         {
             PlaySound(walkSound);
-            animator.SetBool("isWalk", true); // 걷기 애니메이션 
         }
         else
         {
             audioSource.Stop(); // 소리 정지
-            animator.SetBool("isWalk", false); // 걷기 중지 
         }
 
-        Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed); // 이동 벡터 계산       
+        // 이동 벡터 계산
+        Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed);
         rd.velocity = transform.rotation * new Vector3(targetVelocity.x, rd.velocity.y, targetVelocity.y); // 캐릭터 이동
+
+        // 애니메이션 상태 업데이트
+        UpdateAnimator(targetVelocity);
+    }
+
+    private void UpdateAnimator(Vector2 targetVelocity)
+    {
+        // 이동 벡터의 크기를 계산하여 Forward와 Strafe 파라미터에 설정
+        float forward = targetVelocity.y / moveSpeed; // moveSpeed를 기준으로 전방 비율 계산
+        float strafe = targetVelocity.x / moveSpeed;  // moveSpeed를 기준으로 측면 비율 계산
+
+        animator.SetFloat("Forward", forward); // Forward 파라미터 설정
+        animator.SetFloat("Strafe", strafe);   // Strafe 파라미터 설정
+
+        // 걷기 애니메이션 상태 처리
+        // isWalk 파라미터 대신 Forward와 Strafe 값을 사용하여 걷기 상태를 판단
+        if (Mathf.Abs(forward) > 0.01f || Mathf.Abs(strafe) > 0.01f) // 이동 중이면
+        {
+            animator.SetFloat("isWalking", 1f); // 걷기 상태 설정 (1)
+        }
+        else
+        {
+            animator.SetFloat("isWalking", 0f); // 걷기 상태 해제 (0)
+        }
     }
 
     private void PlaySound(AudioClip clip)
