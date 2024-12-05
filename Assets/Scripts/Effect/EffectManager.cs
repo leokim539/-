@@ -4,7 +4,7 @@ using UnityEngine.Rendering.PostProcessing; // PostProcessVolume 사용 시 필요
 
 public class EffectManager : MonoBehaviour
 {
-    private float effectDuration = 8f; // 효과 지속 시간
+    private float effectDuration = 40f; // 효과 지속 시간
     private GameObject activeVolume; // 현재 활성화된 GameObject 추적
     private Coroutine effectCoroutine; // 효과 코루틴 추적
 

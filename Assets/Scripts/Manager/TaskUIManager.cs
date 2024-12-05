@@ -29,8 +29,8 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
     public GameObject PetBottleStrikeThrough;
     public GameObject TrashBagStrikeThrough;
 
-    private int circleCount = 0;
-    private int cylinderCount = 0;
+    private int circleCount = 2;
+    private int cylinderCount = 2;
     private int squareCount = 0;
     private int BeerCanCount = 0;
     private int PetBottleCount = 0;
