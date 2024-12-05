@@ -60,8 +60,8 @@ public class Trash2 : MonoBehaviourPunCallbacks
         trashManager = Manager.GetComponent<TrashManager>();
         taskUIManager = Manager.GetComponent<TaskUIManager>();
 
-        progressBar.maxValue = maxHoldTime; // 슬라이더의 최대 값 설정
-        progressBar.value = 0; // 슬라이더 초기화
+        //progressBar.maxValue = maxHoldTime; // 슬라이더의 최대 값 설정
+        //progressBar.value = 0; // 슬라이더 초기화
 
         ca = GetComponentInChildren<Camera>();
 
@@ -196,7 +196,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         photonView.RPC("UpdateTaskUI", RpcTarget.Others, objectName);
 
-        photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash.GetPhotonView().ViewID);
+        //photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash.GetPhotonView().ViewID);
     }
 
     void ConsumeDangerTrash()
@@ -221,7 +221,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         photonView.RPC("UpdateTaskUI", RpcTarget.Others, objectName);
 
-        photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash.GetPhotonView().ViewID);
+        //photonView.RPC("RPC_CollectItem", RpcTarget.Others, objectName);
     }
 
     [PunRPC]
@@ -239,14 +239,15 @@ public class Trash2 : MonoBehaviourPunCallbacks
         {
             taskUIManager.UpdateSquareCount();
         }
+        else return;
     }
     [PunRPC]
-    public void RPC_CollectItem(int itemViewID)
+    public void RPC_CollectItem(string itemName)
     {
-        PhotonView itemPhotonView = PhotonView.Find(itemViewID);
-        if (itemPhotonView != null)
+        GameObject item = GameObject.Find(itemName); // 이름으로 아이템 찾기
+        if (item != null)
         {
-            StartCoroutine(CollectItem(itemPhotonView.gameObject));
+            StartCoroutine(CollectItem(item));
         }
     }
     public IEnumerator CollectItem(GameObject item)
