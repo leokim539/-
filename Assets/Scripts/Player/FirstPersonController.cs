@@ -112,6 +112,20 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             Cursor.visible = true; // 마우스 커서 표시
             Cursor.lockState = CursorLockMode.None; // 마우스 이동 가능
             audioSource.Stop();
+
+            if (animator != null)
+            {
+                animator.SetFloat("Forward", 0f);
+                animator.SetFloat("Strafe", 0f);
+                animator.SetFloat("isWalking", 0f);
+                animator.SetBool("isCrouched", false);
+
+            }
+
+            if (rd != null)
+            {
+                rd.velocity = Vector3.zero;
+            }
         }
 
     }
