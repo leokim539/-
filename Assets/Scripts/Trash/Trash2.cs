@@ -60,13 +60,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
         trashManager = Manager.GetComponent<TrashManager>();
         taskUIManager = Manager.GetComponent<TaskUIManager>();
 
-        interactUI.SetActive(false); // 처음엔 UI를 숨깁니다.   
-        progressBar.maxValue = maxHoldTime; // 슬라이더의 최대 값 설정
-        progressBar.value = 0; // 슬라이더 초기화
+        //progressBar.maxValue = maxHoldTime; // 슬라이더의 최대 값 설정
+        //progressBar.value = 0; // 슬라이더 초기화
 
         ca = GetComponentInChildren<Camera>();
 
         effectTrash = FindObjectOfType<EffectTrash>();
+  
     }
 
     void Update()
@@ -101,7 +101,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 {
                     ConsumeDangerTrash();
                 }
-                else
+                if(isHolding)
                 {
                     ConsumeTrash();
                 }
@@ -121,11 +121,11 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
-            if (hit.collider.CompareTag("Trash"))
+            if (hit.collider.CompareTag("Trash") || hit.collider.CompareTag("GroundTrash"))
             {
                 ShowUITrash(hit.collider.gameObject, false);
             }
-            else if (hit.collider.CompareTag("DangerTrash") || hit.collider.CompareTag("GroundTrash"))
+            else if (hit.collider.CompareTag("DangerTrash") )
             {
                 ShowUITrash(hit.collider.gameObject, true);
             }
@@ -180,11 +180,23 @@ public class Trash2 : MonoBehaviourPunCallbacks
         trashManager.scary += Trashscary;
         trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
 
+        if (currentTrash.CompareTag("GroundTrash"))
+        {
+            FirstPersonController firstPersonController = FindObjectOfType<FirstPersonController>();
+            if (firstPersonController != null)
+            {
+                firstPersonController.PickingUp(); // PickingUp 메서드 호출
+            }
+        }
         // 쓰레기 종류에 따른 UI 업데이트
         UpdateTaskUI(objectName);
 
         // 초기화
         HideUI();
+
+        photonView.RPC("UpdateTaskUI", RpcTarget.Others, objectName);
+
+        //photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash.GetPhotonView().ViewID);
     }
 
     void ConsumeDangerTrash()
@@ -198,24 +210,22 @@ public class Trash2 : MonoBehaviourPunCallbacks
         StartCoroutine(CollectItem(currentTrash)); // 아이템 수집 효과 실행
         trashManager.scary += Trashscary;
         trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
-                                       // trashManager.isEffectActive = true;
-        if (currentTrash.CompareTag("GroundTrash"))
-        {
-            FirstPersonController firstPersonController = FindObjectOfType<FirstPersonController>();
-            if (firstPersonController != null)
-            {
-                firstPersonController.PickingUp(); // PickingUp 메서드 호출
-            }
-        }
+        trashManager.isEffectActive = true;
+        
 
         // 쓰레기 종류에 따른 UI 업데이트
         UpdateTaskUI(objectName);
-
-        // 초기화
+        
+        // 초기화  
         HideUI();
+
+        photonView.RPC("UpdateTaskUI", RpcTarget.Others, objectName);
+
+        //photonView.RPC("RPC_CollectItem", RpcTarget.Others, objectName);
     }
 
-    private void UpdateTaskUI(string objectName)
+    [PunRPC]
+    void UpdateTaskUI(string objectName)
     {
         if (objectName.Contains(trash1))
         {
@@ -229,9 +239,18 @@ public class Trash2 : MonoBehaviourPunCallbacks
         {
             taskUIManager.UpdateSquareCount();
         }
+        else return;
     }
-
-    private IEnumerator CollectItem(GameObject item)
+    [PunRPC]
+    public void RPC_CollectItem(string itemName)
+    {
+        GameObject item = GameObject.Find(itemName); // 이름으로 아이템 찾기
+        if (item != null)
+        {
+            StartCoroutine(CollectItem(item));
+        }
+    }
+    public IEnumerator CollectItem(GameObject item)
     {
         // 콜라이더 가져오기 및 비활성화
         Collider itemCollider = item.GetComponent<Collider>();
