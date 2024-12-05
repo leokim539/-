@@ -43,9 +43,10 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log("IsMine: " + photonView.IsMine);
         settingsPanel = GameObject.Find("ESC");
         panel = GameObject.Find("Tap");
-        settingsPanel.SetActive(false);
+        
         if (photonView.IsMine)
         {
+            settingsPanel.SetActive(false);
             Debug.Log("이 플레이어는 나의 것입니다.");
             audioSource = GetComponent<AudioSource>(); // AudioSource 컴포넌트 가져오기
             rd = GetComponent<Rigidbody>();
