@@ -3,50 +3,54 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using Photon.Realtime;
 
-public class FirstPersonController : MonoBehaviourPunCallbacks
+public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
 {
+    private Animator animator; // 애니메이터
+    private AudioSource audioSource; // 오디오 소스
+    private Rigidbody rd;
+    private float originalMoveSpeed;  // 원래 이동 속도 저장
+    private bool isSettingsOpen = false;
+
     public float moveSpeed = 5f;  // 캐릭터 이동 속도
-    public float runSpeed = 7f;  // 달리기 속도
-    public KeyCode runningKey = KeyCode.LeftShift; // 달리기 키
-    public float maxStamina = 5f;  // 최대 스태미나
-    public float stamina = 5f;    // 현재 스태미나
-    public float staminaDrainRate = 1f;  // 스태미나 소모율
-    public float staminaRecoveryRate = 1f; // 스태미나 회복율
-    public Slider staminaSlider; // 스태미나 슬라이더
+    public float sensitivity = 2;
+
+    private float xRotation = 0f; 
+    public Transform character;
 
     public List<System.Func<float>> speedOverrides = new List<System.Func<float>>();
 
-    private Rigidbody rd;
-    private AudioSource audioSource; // 오디오 소스
+    [Header("오디오")]
+    public AudioClip walkSound; // 걷기 소리 
 
-    private float originalMoveSpeed;  // 원래 이동 속도 저장
-    private float originalRunSpeed;   // 원래 달리기 속도 저장
-    private bool isWalking; // 걷고 있는지 여부
-
-    public AudioClip walkSound; // 걷기 소리
-    public AudioClip runSound; // 달리기 소리
-
-    private Animator animator; // 애니메이터 
-
-    // 카메라 관련 변수
     public Camera mainCamera; // MainCamera 오브젝트
     public Camera crouchCamera; // MainCamera2 오브젝트
 
+    [Header("UI 버튼")]
+    public GameObject panel; // 패널을 드래그하여 연결합니다.
+    public KeyCode keyToPress; // 상태창을 활성화하는 키
+    public GameObject settingsPanel; // 설정 창 패널을 연결
+
     void Awake()
     {
+        character = GetComponent<FirstPersonController>().transform;
         animator = transform.Find("Idel").GetComponent<Animator>(); // 애니메이터 가져옴
     }
 
     void Start()
     {
+        settingsPanel = GameObject.Find("ESC");
+        panel = GameObject.Find("Tap");
+
+        settingsPanel.SetActive(false);
+
         if (photonView.IsMine)
         {
             audioSource = GetComponent<AudioSource>(); // AudioSource 컴포넌트 가져오기
             rd = GetComponent<Rigidbody>();
 
             originalMoveSpeed = moveSpeed; // 속도 저장
-            originalRunSpeed = runSpeed;
 
             // 카메라를 초기 상태로 설정
             if (mainCamera != null && crouchCamera != null)
@@ -54,6 +58,8 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
                 mainCamera.enabled = true; // MainCamera 활성화
                 crouchCamera.enabled = false; // MainCamera2 비활성화
             }
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 
@@ -61,18 +67,72 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
-            MovePlayer(); // 이동 처리
-            RecoverStamina(); // 스태미나 회복
-            UpdateStaminaBar(); // UI 업데이트        
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                ToggleSettingsPanel();
+            }
+            if(!isSettingsOpen)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                MovePlayer(); // 이동 처리
+                CameraRotation(); // 카메라 처리
+            }
+            if (Input.GetKey(keyToPress))
+            {
+                panel.SetActive(true);
+            }
+            else
+            {
+                panel.SetActive(false);
+            }
         }
     }
+    private void ToggleSettingsPanel()
+    {
+        isSettingsOpen = !isSettingsOpen;
+        settingsPanel.SetActive(isSettingsOpen);
 
+        if (isSettingsOpen) // 설정 창이 열렸을 때
+        {
+            Cursor.visible = true; // 마우스 커서 표시
+            Cursor.lockState = CursorLockMode.None; // 마우스 이동 가능
+            audioSource.Stop();
+        }
+        
+    }
+    void MovePlayer()
+    {
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+        Vector3 move = transform.right * x + transform.forward * z;
+        transform.position += move * moveSpeed * Time.deltaTime;
+     
+        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // 걷기 소리 재생
+        {
+            PlaySound(walkSound);
+        }
+        else
+        {
+            audioSource.Stop(); // 소리 정지
+        }
+
+        UpdateAnimator(move);
+    }
+    void CameraRotation()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime * 100; // 마우스 X 이동
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime * 100; // 마우스 Y 이동
+
+        xRotation -= mouseY; // 카메라 상하 회전값 조정
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f); // 상하 회전 제한
+
+        mainCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f); // 카메라 상하 회전
+        character.Rotate(Vector3.up * mouseX); // 캐릭터 좌우 회전
+
+    }
     public void PickingUp()
     {
-        Debug.Log("PickingUp 메서드가 호출되었습니다."); // 디버깅 메시지 추가
-        animator.SetBool("isCrouched", true);
-
-        // 카메라 전환
         if (mainCamera != null && crouchCamera != null)
         {
             mainCamera.enabled = false; // MainCamera 비활성화
@@ -96,36 +156,6 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
             crouchCamera.enabled = false; // MainCamera2 비활성화
         }
     }
-
-    void MovePlayer()
-    {
-        bool isSprinting = Input.GetKey(runningKey) && stamina > 0; // 스프린트 여부 체크
-        float targetMovingSpeed = isSprinting ? runSpeed : moveSpeed;
-
-        // 스프린트 시 스태미나 소모
-        if (isSprinting)
-        {
-            stamina -= staminaDrainRate * Time.deltaTime;
-            stamina = Mathf.Clamp(stamina, 0, maxStamina);
-            PlaySound(runSound); // 달리기 소리 재생
-        }
-        else if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // 걷기 소리 재생
-        {
-            PlaySound(walkSound);
-        }
-        else
-        {
-            audioSource.Stop(); // 소리 정지
-        }
-
-        // 이동 벡터 계산
-        Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed);
-        rd.velocity = transform.rotation * new Vector3(targetVelocity.x, rd.velocity.y, targetVelocity.y); // 캐릭터 이동
-
-        // 애니메이션 상태 업데이트
-        UpdateAnimator(targetVelocity);
-    }
-
     private void UpdateAnimator(Vector2 targetVelocity)
     {
         // 이동 벡터의 크기를 계산하여 Forward와 Strafe 파라미터에 설정
@@ -157,36 +187,16 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
         }
     }
 
-    void RecoverStamina() // 스태미나 회복 함수
-    {
-        if (stamina < maxStamina && !Input.GetKey(runningKey))
-        {
-            stamina += staminaRecoveryRate * Time.deltaTime;
-            stamina = Mathf.Clamp(stamina, 0, maxStamina);
-        }
-    }
-
-    void UpdateStaminaBar() // 슬라이더 업데이트 함수
-    {
-        if (staminaSlider != null)
-        {
-            staminaSlider.value = stamina; // 스태미나 값을 슬라이더의 값으로 설정
-        }
-    }
-
     public void SlowDown(float speedMultiplier)
     {
         moveSpeed *= speedMultiplier; // 이동 속도를 줄이는 배율 (절반 속도)
-        runSpeed *= speedMultiplier;
 
         moveSpeed = Mathf.Max(moveSpeed, originalMoveSpeed * 0.5f); // 원래 속도의 50% 이하로 떨어지지 않도록
-        runSpeed = Mathf.Max(runSpeed, originalRunSpeed * 0.5f);
     }
 
     public void RestoreSpeed()
     {
         moveSpeed = originalMoveSpeed;
-        runSpeed = originalRunSpeed;
     }
 
     // 추가한 메서드
@@ -210,7 +220,21 @@ public class FirstPersonController : MonoBehaviourPunCallbacks
             rd.velocity = Vector3.zero; // 캐릭터 속도 초기화
         }
     }
-
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // 내 위치와 회전 정보를 전송
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+        }
+        else
+        {
+            // 다른 플레이어의 위치와 회전 정보를 수신
+            transform.position = (Vector3)stream.ReceiveNext();
+            transform.rotation = (Quaternion)stream.ReceiveNext();
+        }
+    }
     // 추가한 메서드
     /*public void ResumeMovement()
     {

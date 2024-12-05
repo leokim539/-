@@ -11,8 +11,8 @@ public class PlayerSponer : MonoBehaviourPunCallbacks
     {
         spawnPositions = new Vector3[]
         {
-            new Vector3(-1, 1, 0), 
-            new Vector3(-1, 1, -2)
+            new Vector3(-1, 2, 0),
+            new Vector3(-1, 2, -1)
         };
     }
     void Start()
