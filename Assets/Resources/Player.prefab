@@ -133,7 +133,7 @@ MonoBehaviour:
   mainCamera: {fileID: 1044452084491499104}
   crouchCamera: {fileID: 0}
   panel: {fileID: 0}
-  keyToPress: 0
+  keyToPress: 9
   settingsPanel: {fileID: 0}
 --- !u!82 &6967127152933504464
 AudioSource:
@@ -252,6 +252,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 1890714036852102468}
   - {fileID: -4829004366119847647}
+  - {fileID: 3224672043525037238}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
