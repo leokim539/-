@@ -40,10 +40,10 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
 
     void Start()
     {
+        Debug.Log("IsMine: " + photonView.IsMine);
         settingsPanel = GameObject.Find("ESC");
         panel = GameObject.Find("Tap");
 
-        settingsPanel.SetActive(false);
         if (photonView.IsMine)
         {
             Debug.Log("이 플레이어는 나의 것입니다.");
