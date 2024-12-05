@@ -9,15 +9,10 @@ public class PlayerSponer : MonoBehaviourPunCallbacks
     public Vector3[] spawnPositions; // 스폰 위치 배열
     void Awake()
     {
-        spawnPositions = new Vector3[]
-        {
-            new Vector3(-1, 2, 0),
-            new Vector3(-1, 2, -1)
-        };
+        spawnPositions = new Vector3[]{new Vector3(-1, 2, 0),new Vector3(-1, 2, -1)};
     }
     void Start()
     {
-        // 씬이 로드된 후 플레이어 소환
         SpawnPlayers();
     }
 

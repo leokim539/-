@@ -40,15 +40,16 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
 
     void Start()
     {
+        Debug.Log("IsMine: " + photonView.IsMine);
         settingsPanel = GameObject.Find("ESC");
         panel = GameObject.Find("Tap");
 
-        settingsPanel.SetActive(false);
-
         if (photonView.IsMine)
         {
+            Debug.Log("이 플레이어는 나의 것입니다.");
             audioSource = GetComponent<AudioSource>(); // AudioSource 컴포넌트 가져오기
             rd = GetComponent<Rigidbody>();
+            rd.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 
             originalMoveSpeed = moveSpeed; // 속도 저장
 
@@ -60,6 +61,12 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             }
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            mainCamera.gameObject.SetActive(true);
+        }
+        else
+        {
+            mainCamera.gameObject.SetActive(false);
+
         }
     }
 
@@ -99,16 +106,42 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             Cursor.lockState = CursorLockMode.None; // 마우스 이동 가능
             audioSource.Stop();
         }
-        
+
     }
-    void MovePlayer()
+   // void MovePlayer()
+   // {
+     //   float x = Input.GetAxis("Horizontal");
+      //  float z = Input.GetAxis("Vertical");
+       // Vector3 move = transform.right * x + transform.forward * z;
+       // transform.position += move * moveSpeed * Time.deltaTime;
+
+       // if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // 걷기 소리 재생
+       // {
+       //     PlaySound(walkSound);
+      //  }
+      //  else
+       // {
+       //     audioSource.Stop(); // 소리 정지
+      //  }
+
+
+
+      //  UpdateAnimator(move);
+  //  }
+
+    void MovePlayer()// 변경된 메서드(애니메이션 속도 관련)
     {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
-        Vector3 move = transform.right * x + transform.forward * z;
-        transform.position += move * moveSpeed * Time.deltaTime;
-     
-        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // 걷기 소리 재생
+
+        // 이동 벡터 계산
+        Vector2 targetVelocity = new Vector2(x * moveSpeed, z * moveSpeed);
+
+        // 캐릭터 이동
+        rd.velocity = transform.rotation * new Vector3(targetVelocity.x, rd.velocity.y, targetVelocity.y);
+
+        // 걷기 소리 재생
+        if (x != 0 || z != 0) // 이동 중일 때
         {
             PlaySound(walkSound);
         }
@@ -117,7 +150,29 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             audioSource.Stop(); // 소리 정지
         }
 
-        UpdateAnimator(move);
+        UpdateAnimator(targetVelocity); // 애니메이션 상태 업데이트
+    }
+
+
+    private void UpdateAnimator(Vector2 targetVelocity)
+    {
+        // 이동 벡터의 크기를 계산하여 Forward와 Strafe 파라미터에 설정
+        float forward = targetVelocity.y / moveSpeed; // moveSpeed를 기준으로 전방 비율 계산
+        float strafe = targetVelocity.x / moveSpeed;  // moveSpeed를 기준으로 측면 비율 계산
+
+        animator.SetFloat("Forward", forward); // Forward 파라미터 설정
+        animator.SetFloat("Strafe", strafe);   // Strafe 파라미터 설정
+
+        // 걷기 애니메이션 상태 처리
+        // isWalk 파라미터 대신 Forward와 Strafe 값을 사용하여 걷기 상태를 판단
+        if (Mathf.Abs(forward) > 0.01f || Mathf.Abs(strafe) > 0.01f) // 이동 중이면
+        {
+            animator.SetFloat("isWalking", 1f); // 걷기 상태 설정 (1)
+        }
+        else
+        {
+            animator.SetFloat("isWalking", 0f); // 걷기 상태 해제 (0)
+        }
     }
     void CameraRotation()
     {
@@ -156,26 +211,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             crouchCamera.enabled = false; // MainCamera2 비활성화
         }
     }
-    private void UpdateAnimator(Vector2 targetVelocity)
-    {
-        // 이동 벡터의 크기를 계산하여 Forward와 Strafe 파라미터에 설정
-        float forward = targetVelocity.y / moveSpeed; // moveSpeed를 기준으로 전방 비율 계산
-        float strafe = targetVelocity.x / moveSpeed;  // moveSpeed를 기준으로 측면 비율 계산
-
-        animator.SetFloat("Forward", forward); // Forward 파라미터 설정
-        animator.SetFloat("Strafe", strafe);   // Strafe 파라미터 설정
-
-        // 걷기 애니메이션 상태 처리
-        // isWalk 파라미터 대신 Forward와 Strafe 값을 사용하여 걷기 상태를 판단
-        if (Mathf.Abs(forward) > 0.01f || Mathf.Abs(strafe) > 0.01f) // 이동 중이면
-        {
-            animator.SetFloat("isWalking", 1f); // 걷기 상태 설정 (1)
-        }
-        else
-        {
-            animator.SetFloat("isWalking", 0f); // 걷기 상태 해제 (0)
-        }
-    }
+    
 
     private void PlaySound(AudioClip clip)
     {
