@@ -44,9 +44,9 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         panel = GameObject.Find("Tap");
 
         settingsPanel.SetActive(false);
-
         if (photonView.IsMine)
         {
+            Debug.Log("이 플레이어는 나의 것입니다.");
             audioSource = GetComponent<AudioSource>(); // AudioSource 컴포넌트 가져오기
             rd = GetComponent<Rigidbody>();
 
@@ -60,6 +60,12 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             }
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            mainCamera.gameObject.SetActive(true);
+        }
+        else
+        {
+            mainCamera.gameObject.SetActive(false);
+
         }
     }
 
