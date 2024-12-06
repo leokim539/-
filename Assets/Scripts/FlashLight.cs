@@ -23,14 +23,14 @@ public class FlashLight : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (off && Input.GetButtonDown("Q"))
+        if (off && Input.GetButtonDown("T"))
         {
             flashlight.SetActive(true);
             turnOn.Play();
             off = false;
             on = true;
         }
-        else if (on && Input.GetButtonDown("Q"))
+        else if (on && Input.GetButtonDown("T"))
         {
             flashlight.SetActive(false);
             turnOff.Play();

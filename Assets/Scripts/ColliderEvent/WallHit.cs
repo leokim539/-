@@ -14,8 +14,7 @@ public class WallHit : MonoBehaviour
                 audioSource.Play();
             }
 
-            // 스크립트를 비활성화하여 다시 호출되지 않도록 설정
-            gameObject.SetActive(false);
         }
+     
     }
 }

@@ -38,7 +38,7 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
 
     private int totalCircle = 2;
     private int totalCylinder = 2;
-    private int totalSquare = 2;
+    private int totalSquare = 1;
     private int totalBeerCan = 2;
     private int totalPetBottle = 2;
     private int totalTrashBag = 2;
