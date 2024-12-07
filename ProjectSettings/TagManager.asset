@@ -9,8 +9,6 @@ TagManager:
   - DangerTrash
   - RainZone
   - Drawer
-  - Drawer2
-  - Drawer3
   - TV
   - Door
   - Bullet
@@ -18,6 +16,7 @@ TagManager:
   - GroundTrash
   - UseItem
   - Item
+  - FlashLight
   layers:
   - Default
   - TransparentFX
