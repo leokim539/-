@@ -46,6 +46,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
     public string[] ItemNames; // 주문 이름 배열
     private bool itemCanUse = false;
     private string currentItem; // 현재 획득한 아이템 이름
+    [Header("시야 가리기 아이템")]
+    public GameObject canvasPrefab; // 시야를 가릴 Canvas 프리팹
+    public float effectDuration = 5f; // 효과 지속 시간
     void Awake()
     {
         //interactUI = GameObject.Find("F");
@@ -213,11 +216,38 @@ public class Trash2 : MonoBehaviourPunCallbacks
         // 초기화
         HideUI();
 
-        photonView.RPC("UpdateTaskUI", RpcTarget.Others, objectName);
+        //photonView.RPC("UpdateTaskUI", RpcTarget.Others, objectName);
 
         //photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash.GetPhotonView().ViewID);
     }
-
+    void UpdateTaskUI(string objectName)
+    {
+        if (objectName.Contains(trash1))
+        {
+            taskUIManager.UpdateCircleCount();
+        }
+        else if (objectName.Contains(trash2))
+        {
+            taskUIManager.UpdateCylinderCount();
+        }
+        else if (objectName.Contains(trash3))
+        {
+            taskUIManager.UpdateSquareCount();
+        }
+        else if (objectName.Contains(trash4))
+        {
+            taskUIManager.UpdateBeerCanCount();
+        }
+        else if (objectName.Contains(trash5))
+        {
+            taskUIManager.UpdatePetBottleCount();
+        }
+        else if (objectName.Contains(trash6))
+        {
+            taskUIManager.UpdateTrashBagCount();
+        }
+        else return;
+    }
     void ConsumeDangerTrash()
     {
         int randomIndex = Random.Range(0, ItemNames.Length); // 랜덤 인덱스 생성
@@ -260,41 +290,58 @@ public class Trash2 : MonoBehaviourPunCallbacks
     {
         switch(item)
         {
-            case "qw":
+            case "시야가리기"://상대 시야 5초간 안보임
+                if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
+                {
+                    StartCoroutine(ApplyObscuringEffect());
+                }
+                break;
+            case "테이저건"://상대 5초간 못움직임
+                if (PhotonNetwork.IsConnected)
+                {
+                    // 모든 플레이어를 순회하여 자신이 아닌 플레이어의 PhotonView를 찾아 RPC 호출
+                    foreach (var player in PhotonNetwork.PlayerList)
+                    {
+                        if (player != PhotonNetwork.LocalPlayer) // 자신이 아닌 플레이어
+                        {
+                            // 상대방 플레이어의 PhotonView를 찾기
+                            GameObject playerObject = GameObject.Find("Player(Clone)"); // 플레이어 오브젝트 이름 규칙에 따라 찾기
+                            if (playerObject != null)
+                            {
+                                PhotonView targetPhotonView = playerObject.GetComponent<PhotonView>();
+                                if (targetPhotonView != null)
+                                {
+                                    targetPhotonView.RPC("DisableMovement", RpcTarget.All, 5f); // 5초 동안 이동 비활성화
+                                }
+                            }
+                        }
+                    }
+                }
                 break;
             default:
                 break;
         }
-        
     }
-    [PunRPC]
-    void UpdateTaskUI(string objectName)
+    
+    private IEnumerator ApplyObscuringEffect()
     {
-        if (objectName.Contains(trash1))
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
         {
-            taskUIManager.UpdateCircleCount();
+            if (player != gameObject) // 자신이 아닌 경우
+            {
+                GameObject canvasInstance = PhotonNetwork.Instantiate(canvasPrefab.name, player.transform.position, Quaternion.identity, 0);
+                canvasInstance.transform.SetParent(player.transform); // 상대방 오브젝트의 자식으로 설정
+
+                RectTransform rectTransform = canvasInstance.GetComponent<RectTransform>();
+                rectTransform.localPosition = Vector3.zero;
+                rectTransform.localScale = new Vector3(1, 1, 1);
+
+                yield return new WaitForSeconds(effectDuration);
+
+                PhotonNetwork.Destroy(canvasInstance);
+            }
         }
-        else if (objectName.Contains(trash2))
-        {
-            taskUIManager.UpdateCylinderCount();
-        }
-        else if (objectName.Contains(trash3))
-        {
-            taskUIManager.UpdateSquareCount();
-        }
-        else if (objectName.Contains(trash4))
-        {
-            taskUIManager.UpdateBeerCanCount();
-        }
-        else if (objectName.Contains(trash5))
-        {
-            taskUIManager.UpdatePetBottleCount();
-        }
-        else if (objectName.Contains(trash6))
-        {
-            taskUIManager.UpdateTrashBagCount();
-        }
-        else return;
     }
     [PunRPC]
     public void RPC_CollectItem(string itemName)

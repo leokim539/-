@@ -4,11 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using Unity.VisualScripting;
 
 public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
 {
-
-
     private float forward; // Forward 애니메이션 상태
     private float strafe;  // Strafe 애니메이션 상태
     private float isWalking; // 걷기 상태 (0 또는 1)
@@ -38,6 +37,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     public KeyCode keyToPress; // 상태창을 활성화하는 키
     public GameObject settingsPanel; // 설정 창 패널을 연결
 
+    private bool canMove = true;
     void Awake()
     {
         character = GetComponent<FirstPersonController>().transform;
@@ -89,8 +89,11 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                MovePlayer(); // 이동 처리
                 CameraRotation(); // 카메라 처리
+                if (canMove)
+                {
+                    MovePlayer(); // 이동 처리
+                }
             }
             if (Input.GetKey(keyToPress))
             {
@@ -101,6 +104,17 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
                 panel.SetActive(false);
             }
         }
+    }
+    [PunRPC]
+    public void DisableMovement(float duration)
+    {
+        canMove = false; // 이동 비활성화
+        StartCoroutine(EnableMovementAfterDelay(duration)); // 일정 시간 후 이동 활성화
+    }
+    private IEnumerator EnableMovementAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        canMove = true; // 이동 활성화
     }
     private void ToggleSettingsPanel()
     {

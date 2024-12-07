@@ -614,6 +614,11 @@ MonoBehaviour:
   progressBar: {fileID: 0}
   maxHoldTime: 2
   playerTransform: {fileID: 0}
+  ItemImage: {fileID: 0}
+  ItemSprites: []
+  ItemNames: []
+  canvasPrefab: {fileID: 5561152691885889832, guid: 0daa0e974ddb57d45b6d038daa71e841, type: 3}
+  effectDuration: 5
 --- !u!114 &8789996166319371500
 MonoBehaviour:
   m_ObjectHideFlags: 0
