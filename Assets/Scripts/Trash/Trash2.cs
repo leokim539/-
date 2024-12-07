@@ -49,6 +49,15 @@ public class Trash2 : MonoBehaviourPunCallbacks
     [Header("시야 가리기 아이템")]
     public GameObject canvasPrefab; // 시야를 가릴 Canvas 프리팹
     public float effectDuration = 5f; // 효과 지속 시간
+    [Header("쓰레기통 위치변경 아이템")]
+    private Vector3[] randomPositions = new Vector3[]
+    {
+        new Vector3(0f, 0f, 0f),
+        new Vector3(5f, 0f, 5f),
+        new Vector3(-5f, 0f, -5f),
+        new Vector3(10f, 0f, 0f),
+        new Vector3(0f, 0f, 10f)
+    };
     void Awake()
     {
         //interactUI = GameObject.Find("F");
@@ -299,12 +308,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
             case "테이저건"://상대 5초간 못움직임
                 if (PhotonNetwork.IsConnected)
                 {
-                    // 모든 플레이어를 순회하여 자신이 아닌 플레이어의 PhotonView를 찾아 RPC 호출
                     foreach (var player in PhotonNetwork.PlayerList)
                     {
                         if (player != PhotonNetwork.LocalPlayer) // 자신이 아닌 플레이어
                         {
-                            // 상대방 플레이어의 PhotonView를 찾기
                             GameObject playerObject = GameObject.Find("Player(Clone)"); // 플레이어 오브젝트 이름 규칙에 따라 찾기
                             if (playerObject != null)
                             {
@@ -318,6 +325,25 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     }
                 }
                 break;
+            case "쓰레기통위치바꾸기"://쓰레기통 위치 렌덤 바꾸기
+                if (PhotonNetwork.IsConnected)
+                {
+                    GameObject targetPrefab = GameObject.Find("TargetPrefabName"); 
+                    if (targetPrefab != null)
+                    {
+                        Vector3 newPosition = GetRandomPosition();
+                        targetPrefab.transform.position = newPosition;
+
+                        PhotonView targetPhotonView = targetPrefab.GetComponent<PhotonView>();
+                        if (targetPhotonView != null)
+                        {
+                            targetPhotonView.RPC("UpdatePosition", RpcTarget.All, newPosition);
+                        }
+                    }
+                }
+                break;
+            case "변비약"://아무능력없음
+
             default:
                 break;
         }
@@ -351,6 +377,16 @@ public class Trash2 : MonoBehaviourPunCallbacks
         {
             StartCoroutine(CollectItem(item));
         }
+    }
+    private Vector3 GetRandomPosition()
+    {
+        int randomIndex = Random.Range(0, randomPositions.Length);
+        return randomPositions[randomIndex];
+    }
+    [PunRPC]
+    void UpdatePosition(Vector3 newPosition)
+    {
+        transform.position = newPosition; // 위치 업데이트
     }
     public IEnumerator CollectItem(GameObject item)
     {
