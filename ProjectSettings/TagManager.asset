@@ -16,6 +16,8 @@ TagManager:
   - Bullet
   - Key
   - GroundTrash
+  - UseItem
+  - Item
   layers:
   - Default
   - TransparentFX

@@ -46,11 +46,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
     public string[] ItemNames; // 주문 이름 배열
     private bool itemCanUse = false;
     private string currentItem; // 현재 획득한 아이템 이름
+    private string item; // 현재 획득한 아이템 이름
     [Header("시야 가리기 아이템")]
     public GameObject canvasPrefab; // 시야를 가릴 Canvas 프리팹
     public float effectDuration = 5f; // 효과 지속 시간
     [Header("쓰레기통 위치변경 아이템")]
     private Vector3[] randomPositions = new Vector3[]
+
     {
         new Vector3(0f, 0f, 0f),
         new Vector3(5f, 0f, 5f),
@@ -58,6 +60,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
         new Vector3(10f, 0f, 0f),
         new Vector3(0f, 0f, 10f)
     };
+    [Header("변비약")]
+    public AudioClip soundEffect;
+    private AudioSource audioSource; 
     void Awake()
     {
         //interactUI = GameObject.Find("F");
@@ -90,7 +95,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
         ca = GetComponentInChildren<Camera>();
 
         effectTrash = FindObjectOfType<EffectTrash>();
-  
+
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.clip = soundEffect;
     }
 
     void Update()
@@ -156,8 +163,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
             {
                 ShowUITrash(hit.collider.gameObject, false);
             }
-            else if (hit.collider.CompareTag("DangerTrash") )
+            else if (hit.collider.CompareTag("UseItem"))
             {
+                ShowUITrash(hit.collider.gameObject, true);
+            }
+            else if (hit.collider.CompareTag("Item"))
+            {
+                item = hit.collider.gameObject.name;
                 ShowUITrash(hit.collider.gameObject, true);
             }
             else
@@ -259,41 +271,40 @@ public class Trash2 : MonoBehaviourPunCallbacks
     }
     void ConsumeDangerTrash()
     {
-        int randomIndex = Random.Range(0, ItemNames.Length); // 랜덤 인덱스 생성
-        string selectedOrderName = ItemNames[randomIndex]; // 랜덤으로 선택된 주문 이름
-        int index = System.Array.IndexOf(ItemNames, selectedOrderName); // 주문 이름의 인덱스 찾기
-
-        StartCoroutine(CollectItem(currentTrash));
-
-        if (index >= 0 && index < ItemSprites.Length)
+        currentItem = null; // 현재 아이템 초기화
+        ItemImage.sprite = null; // UI 이미지 초기화
+        if (currentTrash.CompareTag("Item"))
         {
-            ItemImage.sprite = ItemSprites[index]; // 해당 인덱스의 스프라이트로 이미지 변경
-            Debug.LogWarning(currentItem);
-            itemCanUse = true;
-        } // 선택된 주문 이름에 따라 이미지 업데이트
+            currentItem = item;
+            int index = System.Array.IndexOf(ItemNames, currentItem); // 아이템 이름의 인덱스 찾기
 
-        HideUI();
-        /*if (trashManager.scary + Trashscary >= 100)
+            StartCoroutine(CollectItem(currentTrash));
+            if (index >= 0 && index < ItemSprites.Length)
+            {
+                ItemImage.sprite = ItemSprites[index]; // 해당 인덱스의 스프라이트로 이미지 변경
+                Debug.LogWarning(currentItem);
+                itemCanUse = true;
+            } // 선택된 주문 이름에 따라 이미지 업데이트
+        }        
+        else if (currentTrash.CompareTag("UseItem"))
         {
-            return; // 공포치가 100 이상이면 소비하지 않음
+            int randomIndex = Random.Range(0, ItemNames.Length); // 랜덤 인덱스 생성
+            currentItem = ItemNames[randomIndex]; // 랜덤으로 선택된 아이템 이름
+            int index = System.Array.IndexOf(ItemNames, currentItem); // 아이템 이름의 인덱스 찾기
+
+            StartCoroutine(CollectItem(currentTrash));
+            if (index >= 0 && index < ItemSprites.Length)
+            {
+                ItemImage.sprite = ItemSprites[index]; // 해당 인덱스의 스프라이트로 이미지 변경
+                Debug.LogWarning(currentItem);
+                itemCanUse = true;
+            } // 선택된 주문 이름에 따라 이미지 업데이트
         }
-
-        string objectName = currentTrash.name;
-        StartCoroutine(CollectItem(currentTrash)); // 아이템 수집 효과 실행
-        trashManager.scary += Trashscary;
-        trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
-        trashManager.isEffectActive = true;
-        
-
-        // 쓰레기 종류에 따른 UI 업데이트
-        UpdateTaskUI(objectName);
-        
-        // 초기화  
         HideUI();
-
-        photonView.RPC("UpdateTaskUI", RpcTarget.Others, objectName);
-
-        photonView.RPC("RPC_CollectItem", RpcTarget.Others, objectName);*/
+    }
+    void Item()
+    {
+        
     }
     void ItemUse(string item)
     {
@@ -343,7 +354,11 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 }
                 break;
             case "변비약"://아무능력없음
-
+                if(PhotonNetwork.IsConnected)
+                {
+                    PlaySoundForLocalPlayer();
+                }
+                break;
             default:
                 break;
         }
@@ -387,6 +402,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
     void UpdatePosition(Vector3 newPosition)
     {
         transform.position = newPosition; // 위치 업데이트
+    }
+    private void PlaySoundForLocalPlayer()
+    {
+        audioSource.Play();
     }
     public IEnumerator CollectItem(GameObject item)
     {
