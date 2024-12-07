@@ -8,8 +8,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
 {
     [Header("상호작용 거리")]
     public float interactDistance = 5f; // 플레이어와 오브젝트 간의 최대 상호작용 거리
-
-
+    
     [Header("쓰레기 먹으면 늘어나는 양")]
     public int Trashscary; // 쓰레기 먹으면 증가하는 공포치
 
@@ -41,7 +40,12 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
     [Header("플레이어 설정")]
     public Transform playerTransform; // 플레이어의 Transform을 드래그하여 할당
-
+    [Header("랜덤 아이템")]
+    public Image ItemImage; // 아이템를 표시할 UI Image
+    public Sprite[] ItemSprites; // 주문 이름에 따라 사용할 스프라이트 배열
+    public string[] ItemNames; // 주문 이름 배열
+    private bool itemCanUse = false;
+    private string currentItem; // 현재 획득한 아이템 이름
     void Awake()
     {
         //interactUI = GameObject.Find("F");
@@ -49,6 +53,11 @@ public class Trash2 : MonoBehaviourPunCallbacks
         if (sliderObject != null)
         {
             progressBar = sliderObject.GetComponent<Slider>();
+        }
+        GameObject itemImage = GameObject.Find("RandomItem");
+        if (itemImage != null)
+        {
+            ItemImage = itemImage.GetComponent<Image>();
         }
         Debug.Log("Awake");
     }
@@ -85,6 +94,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
         if (isHolding)
         {
             HandleHolding();
+        }
+        if (itemCanUse && Input.GetKeyDown(KeyCode.E))
+        {
+            ItemUse(currentItem);
+            currentItem = null; // 현재 아이템 초기화
+            ItemImage.sprite = null; // UI 이미지 초기화
+            itemCanUse = false;
         }
     }
 
@@ -204,7 +220,21 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
     void ConsumeDangerTrash()
     {
-        if (trashManager.scary + Trashscary >= 100)
+        int randomIndex = Random.Range(0, ItemNames.Length); // 랜덤 인덱스 생성
+        string selectedOrderName = ItemNames[randomIndex]; // 랜덤으로 선택된 주문 이름
+        int index = System.Array.IndexOf(ItemNames, selectedOrderName); // 주문 이름의 인덱스 찾기
+
+        StartCoroutine(CollectItem(currentTrash));
+
+        if (index >= 0 && index < ItemSprites.Length)
+        {
+            ItemImage.sprite = ItemSprites[index]; // 해당 인덱스의 스프라이트로 이미지 변경
+            Debug.LogWarning(currentItem);
+            itemCanUse = true;
+        } // 선택된 주문 이름에 따라 이미지 업데이트
+
+        HideUI();
+        /*if (trashManager.scary + Trashscary >= 100)
         {
             return; // 공포치가 100 이상이면 소비하지 않음
         }
@@ -224,9 +254,19 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         photonView.RPC("UpdateTaskUI", RpcTarget.Others, objectName);
 
-        //photonView.RPC("RPC_CollectItem", RpcTarget.Others, objectName);
+        photonView.RPC("RPC_CollectItem", RpcTarget.Others, objectName);*/
     }
-
+    void ItemUse(string item)
+    {
+        switch(item)
+        {
+            case "qw":
+                break;
+            default:
+                break;
+        }
+        
+    }
     [PunRPC]
     void UpdateTaskUI(string objectName)
     {
