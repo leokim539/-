@@ -48,6 +48,7 @@ MonoBehaviour:
   - RPC_CollectItem
   - ToggleDrawerRPC
   - DisableMovement
+  - UpdatePosition
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
