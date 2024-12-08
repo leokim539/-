@@ -230,9 +230,9 @@ GameObject:
   - component: {fileID: 6967127152933504464}
   - component: {fileID: 1667295797079056806}
   - component: {fileID: 4652278823109680218}
-  - component: {fileID: 8789996166319371500}
   - component: {fileID: -4829004366119847647}
   - component: {fileID: 4690770212749161555}
+  - component: {fileID: 8690773646404098796}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -504,6 +504,7 @@ MonoBehaviour:
   interactUI: {fileID: 0}
   progressBar: {fileID: 0}
   maxHoldTime: 2
+  soundManager: {fileID: 8690773646404098796}
   playerTransform: {fileID: 0}
   ItemImage: {fileID: 0}
   ItemSprites:
@@ -522,27 +523,8 @@ MonoBehaviour:
   canvasPrefab: {fileID: 5561152691885889832, guid: 0daa0e974ddb57d45b6d038daa71e841, type: 3}
   effectDuration: 5
   trashCanSpawn: TrashCanSpawn
-  soundEffect: {fileID: 0}
   baNaNaPrefab: {fileID: 8547858439502069072, guid: 899a8647e9ebf504994212965913c3ac, type: 3}
---- !u!114 &8789996166319371500
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3527990153254771694}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec72980442fddac4d86e75ab24b4d027, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  character: {fileID: 4978887135667488676}
-  sensitivity: 2
-  smoothing: 1.5
-  playerCamera: {fileID: 1044452084491499104}
-  panel: {fileID: 0}
-  keyToPress: 9
-  settingsPanel: {fileID: 0}
+  hacking: 0
 --- !u!114 &-4829004366119847647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -576,6 +558,21 @@ MonoBehaviour:
   turnOff: {fileID: 7836629454276969071}
   on: 1
   off: 0
+--- !u!114 &8690773646404098796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3527990153254771694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43520f46e0e003d4b8cf0e0f41d7128b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poopSound: {fileID: 0}
+  onTVSound: {fileID: 0}
+  attackSound: {fileID: 0}
 --- !u!1 &5408255534115799117
 GameObject:
   m_ObjectHideFlags: 0
