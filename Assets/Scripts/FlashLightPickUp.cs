@@ -74,40 +74,34 @@ public class FlashLightPickUp : MonoBehaviour
     private IEnumerator CollectFlashlight()
     {
         isFlashlightCollected = true; // 손전등 수집 상태로 변경
+
         // UI 비활성화
         if (interactionUI != null)
         {
             interactionUI.SetActive(false);
         }
+
+        // 사운드 재생
+        PlayFlashlightPickupSound();
+
+        // 손전등 오브젝트 삭제
+        Destroy(gameObject); // 손전등 오브젝트 삭제
+
+        yield return null; // 코루틴 종료를 위한 반환값
+    }
+
+    private void PlayFlashlightPickupSound()
+    {
         if (flashlightPickupSound != null)
         {
             audioSource.PlayOneShot(flashlightPickupSound); // 손전등 수집 소리 재생
         }
-
-        // 손전등 수집 애니메이션 시작 (필요시 추가)
-        yield return StartCoroutine(CollectFlashlightAnimation()); // 애니메이션 코루틴 호출
-
-        // 손전등 오브젝트 삭제
-        Destroy(gameObject); // 손전등 오브젝트 삭제
-    }
-
-    private IEnumerator CollectFlashlightAnimation()
-    {
-        // 손전등 오브젝트가 제거되는 애니메이션을 구현할 수 있습니다.
-        // 예: 크기 감소 및 이동 애니메이션 등
-
-        // 애니메이션 구현 예시
-        Vector3 originalScale = transform.localScale;
-        Vector3 targetScale = Vector3.zero; // 최종 크기
-        float duration = 1f; // 이동 및 축소 시간
-        float elapsedTime = 0f;
-
-        // 애니메이션 수행
-        while (elapsedTime < duration)
+        else
         {
-            transform.localScale = Vector3.Lerp(originalScale, targetScale, elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            Debug.LogWarning("Flashlight pickup sound is not assigned."); // 경고 로그 추가
         }
     }
+
+
+
 }
