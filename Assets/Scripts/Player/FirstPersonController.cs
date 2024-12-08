@@ -37,7 +37,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     public KeyCode keyToPress; // 상태창을 활성화하는 키
     public GameObject settingsPanel; // 설정 창 패널을 연결
 
-    private bool canMove = true;
+    public bool canMove = true;
     void Awake()
     {
         character = GetComponent<FirstPersonController>().transform;
@@ -105,17 +105,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
     }
-    [PunRPC]
-    public void DisableMovement(float duration)
-    {
-        canMove = false; // 이동 비활성화
-        StartCoroutine(EnableMovementAfterDelay(duration)); // 일정 시간 후 이동 활성화
-    }
-    private IEnumerator EnableMovementAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        canMove = true; // 이동 활성화
-    }
+    
     private void ToggleSettingsPanel()
     {
         isSettingsOpen = !isSettingsOpen;

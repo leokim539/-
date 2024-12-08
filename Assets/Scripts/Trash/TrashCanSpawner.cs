@@ -12,7 +12,7 @@ public class TrashCanSpawner : MonoBehaviour
 
     private GameObject currentTrashCan; // 현재 존재하는 TrashCan
 
-    private void Start()
+    public void Start()
     {
         // TrashCan 생성
         currentTrashCan = Instantiate(trashCanPrefab, GetRandomSpawnPosition(), Quaternion.identity);
@@ -21,7 +21,7 @@ public class TrashCanSpawner : MonoBehaviour
         StartCoroutine(MoveTrashCan());
     }
 
-    private IEnumerator MoveTrashCan()
+    public IEnumerator MoveTrashCan()
     {
         while (true)
         {
@@ -38,7 +38,7 @@ public class TrashCanSpawner : MonoBehaviour
         }
     }
 
-    private void MoveToRandomPosition()
+    public void MoveToRandomPosition()
     {
         // SpawnPoints의 자식 오브젝트를 가져옴
         Transform[] spawnPoints = spawnPointsParent.GetComponentsInChildren<Transform>();

@@ -350,6 +350,7 @@ MonoBehaviour:
   panel: {fileID: 0}
   keyToPress: 9
   settingsPanel: {fileID: 0}
+  canMove: 1
 --- !u!82 &6967127152933504464
 AudioSource:
   m_ObjectHideFlags: 0
@@ -503,13 +504,18 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 061ced6659f6d334e83ab529a838f7e9, type: 3}
   - {fileID: 21300000, guid: 56bbc6b42271d4177ac313247f47ac1f, type: 3}
   ItemNames:
-  - "\uC2DC\uC57C\uAC00\uB9AC\uAE30"
-  - "\uD14C\uC774\uC800\uAC74"
-  - "\uC4F0\uB808\uAE30\uD1B5\uC704\uCE58\uBC14\uAFB8\uAE30"
-  - "\uBCC0\uBE44\uC57D"
+  - "\uC548\uB300\uD22C\uCC99"
+  - "\uC815\uC0C1\uC218"
+  - "\uBCC0\uD574\uB77C\uC58D"
+  - "\uC57D\uD1B5"
+  - "\uBE68\uB78F\uBC84\uC12F"
+  - "\uB290\uB837\uBC84\uC12F"
+  - "\uC5C6\uC12F\uBC84\uC12F"
   canvasPrefab: {fileID: 5561152691885889832, guid: 0daa0e974ddb57d45b6d038daa71e841, type: 3}
   effectDuration: 5
+  trashCanSpawn: TrashCanSpawn
   soundEffect: {fileID: 0}
+  baNaNaPrefab: {fileID: 8547858439502069072, guid: 899a8647e9ebf504994212965913c3ac, type: 3}
 --- !u!114 &8789996166319371500
 MonoBehaviour:
   m_ObjectHideFlags: 0
