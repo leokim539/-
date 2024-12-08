@@ -371,7 +371,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &45318776
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1986,6 +1986,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dbf4ae6cc172ec4da83b368d60941cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemImageRect: {fileID: 45318776}
+  itemImage: {fileID: 144780448}
+  slideDuration: 0.5
+  stayDuration: 1
+  startPosition: {x: -200, y: 0}
+  endPosition: {x: 95, y: 0}
+  gameObjects:
+  - {fileID: 1329713119}
+  objectImages:
+  - {fileID: 21300000, guid: a7d255cf3fd24c049b4b06c1b7d86f2c, type: 3}
+  trash2: {fileID: 4652278823109680218, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
 --- !u!1 &201497614
 GameObject:
   m_ObjectHideFlags: 0

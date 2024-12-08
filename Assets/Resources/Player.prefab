@@ -612,36 +612,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactDistance: 1.5
   Trashscary: 30
-  trash1: circle
-  trash2: cylinder
-  trash3: square
-  trash4: BeerCan
-  trash5: PetBottle
-  trash6: TrashBag
+  trash1: 
+  trash2: 
+  trash3: 
+  trash4: 
+  trash5: 
+  trash6: 
   ca: {fileID: 0}
   interactUI: {fileID: 0}
   progressBar: {fileID: 0}
   maxHoldTime: 2
-  soundManager: {fileID: 8690773646404098796}
+  soundManager: {fileID: 0}
   playerTransform: {fileID: 0}
   ItemImage: {fileID: 0}
-  ItemSprites:
-  - {fileID: -1046798902, guid: adfccc236aca6134a86aa272772477d9, type: 3}
-  - {fileID: 21300000, guid: a7d255cf3fd24c049b4b06c1b7d86f2c, type: 3}
-  - {fileID: 21300000, guid: 061ced6659f6d334e83ab529a838f7e9, type: 3}
-  - {fileID: 21300000, guid: 56bbc6b42271d4177ac313247f47ac1f, type: 3}
-  ItemNames:
-  - "\uC548\uB300\uD22C\uCC99"
-  - "\uC815\uC0C1\uC218"
-  - "\uBCC0\uD574\uB77C\uC58D"
-  - "\uC57D\uD1B5"
-  - "\uBE68\uB78F\uBC84\uC12F"
-  - "\uB290\uB837\uBC84\uC12F"
-  - "\uC5C6\uC12F\uBC84\uC12F"
-  canvasPrefab: {fileID: 5561152691885889832, guid: 0daa0e974ddb57d45b6d038daa71e841, type: 3}
+  ItemSprites: []
+  ItemNames: []
+  canvasPrefab: {fileID: 0}
   effectDuration: 5
   trashCanSpawn: TrashCanSpawn
-  baNaNaPrefab: {fileID: 8547858439502069072, guid: 899a8647e9ebf504994212965913c3ac, type: 3}
+  baNaNaPrefab: {fileID: 0}
   hacking: 0
 --- !u!114 &-4829004366119847647
 MonoBehaviour:
