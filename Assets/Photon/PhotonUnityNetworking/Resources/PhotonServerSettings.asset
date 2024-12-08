@@ -51,6 +51,17 @@ MonoBehaviour:
   - UpdatePosition
   - TrashCanSpawns
   - Teleport
+  - RPC_UpdateBeerCanCount
+  - RPC_UpdateCircleCount
+  - RPC_UpdateCylinderCount
+  - RPC_UpdatePetBottleCount
+  - RPC_UpdateSquareCount
+  - RPC_UpdateTrashBagCount
+  - RPC_StoreBeerCanCount
+  - RPC_StoreCircleCount
+  - RPC_StoreCylinderCount
+  - RPC_StoreSquareCount
+  - RPC_StoreTrashBagCount
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

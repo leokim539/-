@@ -240,29 +240,28 @@ public class Trash2 : MonoBehaviourPunCallbacks
     {
         if (objectName.Contains(trash1))
         {
-            taskUIManager.UpdateCircleCount();
+            taskUIManager.StoreCircleCount(); // 카운트 저장
         }
         else if (objectName.Contains(trash2))
         {
-            taskUIManager.UpdateCylinderCount();
+            taskUIManager.StoreCylinderCount(); // 카운트 저장
         }
         else if (objectName.Contains(trash3))
         {
-            taskUIManager.UpdateSquareCount();
+            taskUIManager.StoreSquareCount(); // 카운트 저장
         }
         else if (objectName.Contains(trash4))
         {
-            taskUIManager.UpdateBeerCanCount();
+            taskUIManager.StoreBeerCanCount(); // 카운트 저장
         }
         else if (objectName.Contains(trash5))
         {
-            taskUIManager.UpdatePetBottleCount();
+            taskUIManager.StorePetBottleCount(); // 카운트 저장
         }
         else if (objectName.Contains(trash6))
         {
-            taskUIManager.UpdateTrashBagCount();
+            taskUIManager.StoreTrashBagCount(); // 카운트 저장
         }
-        else return;
     }
     void ConsumeDangerTrash()
     {

@@ -20,7 +20,6 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
     public Image cylinderImage;
     public Image squareImage;
 
-
     [Header("쓰레기 빨간줄")]
     public GameObject circleStrikeThrough;
     public GameObject cylinderStrikeThrough;
@@ -29,72 +28,179 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
     public GameObject PetBottleStrikeThrough;
     public GameObject TrashBagStrikeThrough;
 
-    private int circleCount = 2;
-    private int cylinderCount = 2;
+    private int circleCount = 0;
+    private int cylinderCount = 0;
     private int squareCount = 0;
     private int BeerCanCount = 0;
     private int PetBottleCount = 0;
     private int TrashBagCount = 0;
 
-    private int totalCircle = 2;
-    private int totalCylinder = 2;
-    private int totalSquare = 1;
-    private int totalBeerCan = 2;
-    private int totalPetBottle = 2;
-    private int totalTrashBag = 2;
+    // 저장된 카운트 변수 추가
+    private int storedCircleCount = 0;
+    private int storedCylinderCount = 0;
+    private int storedSquareCount = 0;
+    private int storedBeerCanCount = 0;
+    private int storedPetBottleCount = 0;
+    private int storedTrashBagCount = 0;
 
-    public GameObject oneObject; // "One" 오브젝트를 참조할 변수
-    private EndLoad endLoadScript; // EndLoad 스크립트를 참조할 변수
+    private int totalCircle = 5;
+    private int totalCylinder = 5;
+    private int totalSquare = 5;
+    private int totalBeerCan = 5;
+    private int totalPetBottle = 5;
+    private int totalTrashBag = 5;
+
+
+    public int GetTotalTrashCount()
+    {
+        return circleCount + cylinderCount + squareCount + BeerCanCount + PetBottleCount + TrashBagCount;
+    }
 
     void Start()
     {
         UpdateUI();
-        oneObject = GameObject.Find("One");
-        if (oneObject != null)
+    }
+
+    public void StoreCircleCount()
+    {
+        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
         {
-            oneObject.SetActive(false);
-            endLoadScript = oneObject.GetComponent<EndLoad>(); // EndLoad 스크립트 참조
+            storedCircleCount++; // 저장된 카운트 증가
+            UpdateUI();
+
+            if (PhotonNetwork.IsConnected)
+            {
+                photonView.RPC("RPC_StoreCircleCount", RpcTarget.Others);
+            }
         }
     }
 
-    void Update()
-    {
 
-    }
-
-    public void UpdateCircleCount()
+    [PunRPC]
+    public void RPC_StoreCircleCount()
     {
-        circleCount++;
-        UpdateUI();
+        storedCircleCount++; // 저장된 카운트 증가
     }
 
-    public void UpdateCylinderCount()
+    public void StoreCylinderCount()
     {
-        cylinderCount++;
+        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
+        {
+            storedCylinderCount++; // 저장된 카운트 증가
+            UpdateUI();
+
+            if (PhotonNetwork.IsConnected)
+            {
+                photonView.RPC("RPC_StoreCylinderCount", RpcTarget.Others);
+            }
+        }
+    }
+
+    [PunRPC]
+    public void RPC_StoreCylinderCount()
+    {
+        storedCylinderCount++; // 저장된 카운트 증가
+    }
+
+    public void StoreSquareCount()
+    {
+        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
+        {
+            storedSquareCount++; // 저장된 카운트 증가
+            UpdateUI();
+
+            if (PhotonNetwork.IsConnected)
+            {
+                photonView.RPC("RPC_StoreSquareCount", RpcTarget.Others);
+            }
+        }
+    }
+
+    [PunRPC]
+    public void RPC_StoreSquareCount()
+    {
+        storedSquareCount++; // 저장된 카운트 증가
+    }
+
+    public void StoreBeerCanCount()
+    {
+        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
+        {
+            storedBeerCanCount++; // 저장된 카운트 증가
+            UpdateUI();
+
+            if (PhotonNetwork.IsConnected)
+            {
+                photonView.RPC("RPC_StoreBeerCanCount", RpcTarget.Others);
+            }
+        }
+    }
+
+    [PunRPC]
+    public void RPC_StoreBeerCanCount()
+    {
+        storedBeerCanCount++; // 저장된 카운트 증가
+    }
+
+    public void StorePetBottleCount()
+    {
+        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
+        {
+            storedPetBottleCount++; // 저장된 카운트 증가
+            UpdateUI();
+
+            if (PhotonNetwork.IsConnected)
+            {
+                photonView.RPC("RPC_StorePetBottleCount", RpcTarget.Others);
+            }
+        }
+    }
+
+    
+
+    public void StoreTrashBagCount()
+    {
+        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
+        {
+            storedTrashBagCount++; // 저장된 카운트 증가
+            UpdateUI();
+
+            if (PhotonNetwork.IsConnected)
+            {
+                photonView.RPC("RPC_StoreTrashBagCount", RpcTarget.Others);
+            }
+        }
+    }
+
+    [PunRPC]
+    public void RPC_StoreTrashBagCount()
+    {
+        storedTrashBagCount++; // 저장된 카운트 증가
+        UpdateUI(); // UI 업데이트
+    }
+
+    // TrashCan과 상호작용 시 호출할 메소드
+    public void ConfirmCollection()
+    {
+        // 저장된 카운트를 실제 카운트로 증가시키기
+        circleCount += storedCircleCount;
+        cylinderCount += storedCylinderCount;
+        squareCount += storedSquareCount;
+        BeerCanCount += storedBeerCanCount;
+        PetBottleCount += storedPetBottleCount;
+        TrashBagCount += storedTrashBagCount;
+
+        // 저장된 카운트 초기화
+        storedCircleCount = 0;
+        storedCylinderCount = 0;
+        storedSquareCount = 0;
+        storedBeerCanCount = 0;
+        storedPetBottleCount = 0;
+        storedTrashBagCount = 0;
+
         UpdateUI();
     }
 
-    public void UpdateSquareCount()
-    {
-        squareCount++;
-        UpdateUI();
-    }
-    public void UpdateBeerCanCount()
-    {
-        BeerCanCount++;
-        UpdateUI();
-    }
-    public void UpdatePetBottleCount()
-    {
-        PetBottleCount++;
-        UpdateUI();
-    }
-
-    public void UpdateTrashBagCount()
-    {
-        TrashBagCount++;
-        UpdateUI();
-    }
 
 
     public void UpdateUI()
@@ -102,53 +208,11 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
         if (circleText != null) circleText.text = $"{circleCount}/{totalCircle}";
         if (cylinderText != null) cylinderText.text = $"{cylinderCount}/{totalCylinder}";
         if (squareText != null) squareText.text = $"{squareCount}/{totalSquare}";
-        if (BeerCanText != null) BeerCanText.text = $"{BeerCanCount}/{totalBeerCan}"; // 수정된 부분
-        if (PetBottleText != null) PetBottleText.text = $"{PetBottleCount}/{totalPetBottle}"; // 수정된 부분
+        if (BeerCanText != null) BeerCanText.text = $"{BeerCanCount}/{totalBeerCan}";
+        if (PetBottleText != null) PetBottleText.text = $"{PetBottleCount}/{totalPetBottle}";
         if (TrashBagText != null) TrashBagText.text = $"{TrashBagCount}/{totalTrashBag}";
-        CheckCompletion(circleCount, totalCircle, circleText, circleStrikeThrough);
-        CheckCompletion(cylinderCount, totalCylinder, cylinderText, cylinderStrikeThrough);
-        CheckCompletion(squareCount, totalSquare, squareText, squareStrikeThrough);
-        CheckCompletion(BeerCanCount, totalBeerCan, BeerCanText, BeerCanStrikeThrough);
-        CheckCompletion(PetBottleCount, totalPetBottle, PetBottleText, PetBottleStrikeThrough);
-        CheckCompletion(TrashBagCount, totalTrashBag, TrashBagText, TrashBagStrikeThrough);
+
     }
 
-
-    void CheckCompletion(int count, int total, Text text, GameObject strikeThrough)
-    {
-        if (text == null || strikeThrough == null) return;
-
-        // 카운트가 목표 수에 도달했는지 확인
-        if (count >= total)
-        {
-            text.color = Color.red;
-            strikeThrough.SetActive(true);
-        }
-        else
-        {
-            text.color = Color.black;
-            strikeThrough.SetActive(false);
-        }
-
-        // 모든 쓰레기 종류의 StrikeThrough가 활성화되었는지 확인
-        if (circleStrikeThrough.activeSelf && cylinderStrikeThrough.activeSelf && squareStrikeThrough.activeSelf && BeerCanStrikeThrough && PetBottleStrikeThrough && TrashBagStrikeThrough)
-        {
-            ActivateOneObject();
-        }
-    }
-
-
-
-    void ActivateOneObject()
-    {
-        if (oneObject != null)
-        {
-            oneObject.SetActive(true);
-            if (endLoadScript != null)
-            {
-                endLoadScript.OnTriggerEnter(null); // OnCollisionEnter 호출
-            }
-        }
-    }
+    
 }
-

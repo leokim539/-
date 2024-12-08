@@ -7,18 +7,18 @@ public class TrashCan : MonoBehaviour
     private bool TrashCanInRange = false;
     public GameObject Manager;
     private TrashManager trashManager;
-    private EffectManager effectManager; // EffectManager 참조 추가
+    private EffectManager effectManager;
+    private TaskUIManager taskUIManager;
 
     public void Start()
     {
         Manager = GameObject.Find("Manager");
         trashManager = Manager.GetComponent<TrashManager>();
-
+        taskUIManager = Manager.GetComponent<TaskUIManager>(); // TaskUIManager 가져오기
 
         GameObject postProcessManager = GameObject.Find("PosProcessManager");
-        effectManager = postProcessManager.GetComponent<EffectManager>();  // EffectManager 찾기
+        effectManager = postProcessManager.GetComponent<EffectManager>();
 
-        // Debug 로그 추가
         if (effectManager == null)
         {
             Debug.LogError("EffectManager를 찾을 수 없습니다!");
@@ -36,6 +36,9 @@ public class TrashCan : MonoBehaviour
 
             // PostProcessVolume 비활성화
             effectManager.DeactivateAllChildObjects(); // 추가된 비활성화 기능 호출
+
+            // 저장된 카운트를 실제 카운트로 증가시키기
+            taskUIManager.ConfirmCollection();
         }
     }
 
