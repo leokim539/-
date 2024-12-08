@@ -38,7 +38,8 @@ public class Trash2 : MonoBehaviourPunCallbacks
     private GameObject currentTrash; // 현재 상호작용 중인 쓰레기
 
     private EffectTrash effectTrash;
-
+    [Header("사운드")]
+    public PlayerSound soundManager;
     [Header("플레이어 설정")]
     public Transform playerTransform; // 플레이어의 Transform을 드래그하여 할당
     [Header("랜덤 아이템")]
@@ -53,11 +54,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
     public float effectDuration = 5f; // 효과 지속 시간
     [Header("쓰레기통 위치변경 아이템")]
     public string trashCanSpawn = "TrashCanSpawn";
-    [Header("변비약")]
-    public AudioClip soundEffect;
-    private AudioSource audioSource;
     [Header("바나나")]
     public GameObject baNaNaPrefab;
+    [Header("너해킹")]
+    public bool hacking;
     void Awake()
     {
         //interactUI = GameObject.Find("F");
@@ -91,8 +91,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         effectTrash = FindObjectOfType<EffectTrash>();
 
-        audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.clip = soundEffect;
+        
     }
 
     void Update()
@@ -111,10 +110,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
         }
         if (itemCanUse && Input.GetKeyDown(KeyCode.E))
         {
-            ItemUse(currentItem);
-            currentItem = null; // 현재 아이템 초기화
-            ItemImage.sprite = null; // UI 이미지 초기화
-            itemCanUse = false;
+            if (!isDangerHolding)
+            {
+                ItemUse(currentItem);
+                currentItem = null; // 현재 아이템 초기화
+                ItemImage.sprite = null; // UI 이미지 초기화
+                itemCanUse = false;
+            } 
         }
     }
 
@@ -296,10 +298,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
         }
         HideUI();
     }
-    void Item()
-    {
-        
-    }
+    
     void ItemUse(string item)
     {
         switch(item)
@@ -310,7 +309,6 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     StartCoroutine(ApplyObscuringEffect());
                 }
                 else Debug.Log("안대투척");
-
                 break;
 
             case "정상수"://테이져건 상대 5초간 못움직임
@@ -319,7 +317,6 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     StartCoroutine(TaserGun());
                 }
                 else Debug.Log("정상수");
-
                 break;
 
             case "변해라얍"://쓰레기통 위치 렌덤 바꾸기
@@ -328,7 +325,6 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     photonView.RPC("TrashCanSpawns", RpcTarget.All);
                 }
                 else Debug.Log("변해라얍");
-
                 break;
 
             case "약통"://똥싸는소리(변비약)
@@ -337,7 +333,6 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     PlaySoundForLocalPlayer();
                 }
                 else Debug.Log("약통");
-
                 break;
 
             case "빨랏버섯"://빨라짐
@@ -349,7 +344,6 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     }
                     else Debug.Log("빨라버섯");
                 }
-
                 break;
 
             case "느렷버섯"://느려짐
@@ -358,12 +352,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     StartCoroutine(SpeedDown());
                 }
                 else Debug.Log("느려느려버섯");
-
                 break;
 
             case "없섯버섯"://아무효과없음
                 Debug.Log("없섯버섯");
-
                 break;
 
             case "노란바나나"://덫설치
@@ -372,9 +364,37 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     BaNaNa();
                 }
                 Debug.Log("노란바나나");
-
                 break;
 
+            case "너해킹"://상대 10초간 아이템 사용불가
+                if (PhotonNetwork.IsConnected)
+                {
+                    StartCoroutine(Hacking());
+                }
+                Debug.Log("너해킹");
+                break;
+
+            case "휴대용쓰레기통"://상대 10초간 아이템 사용불가
+                if (PhotonNetwork.IsConnected)
+                {
+                    if (photonView.IsMine)
+                    {
+                        UseTrashCan();
+                    }
+                }
+                Debug.Log("휴대용쓰레기통");
+                break;
+
+            case "리모컨 "://상대 10초간 아이템 사용불가
+                if (PhotonNetwork.IsConnected)
+                {
+                    if (photonView.IsMine)
+                    {
+                        TVOn();
+                    }
+                }
+                Debug.Log("리모컨");
+                break;
             default:
                 break;
         }
@@ -414,8 +434,8 @@ public class Trash2 : MonoBehaviourPunCallbacks
             }
         }
     }
-    [PunRPC]
-   
+    [PunRPC] 
+
     public void TrashCanSpawns()
     {
         GameObject trashCan = GameObject.Find(trashCanSpawn);
@@ -437,11 +457,14 @@ public class Trash2 : MonoBehaviourPunCallbacks
     {
         if (firstPersonController != null)
         {
-            float originalSpeed = firstPersonController.moveSpeed;
-            firstPersonController.moveSpeed += 30f;
+            float originalSpeed = firstPersonController.moveSpeed; 
+            float runSpeed = firstPersonController.runSpeed;
+            firstPersonController.moveSpeed += 5f; 
+            firstPersonController.runSpeed += 5f;
             yield return new WaitForSeconds(5);
 
-            firstPersonController.moveSpeed = originalSpeed;
+            firstPersonController.moveSpeed = originalSpeed; 
+            firstPersonController.runSpeed = runSpeed;
         }
         else
         {
@@ -456,10 +479,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
             if (player != gameObject) // 자신이 아닌 경우
             {
                 float originalSpeed = firstPersonController.moveSpeed;
+                float runSpeed = firstPersonController.runSpeed;
                 firstPersonController.moveSpeed -= 3f;
+                firstPersonController.runSpeed -= 3f;
                 yield return new WaitForSeconds(5);
 
                 firstPersonController.moveSpeed = originalSpeed;
+                firstPersonController.runSpeed = runSpeed;
             }
         }
     }
@@ -471,17 +497,36 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         Vector3 trapPosition = playerPosition - playerForward * 2;
 
-        GameObject trap = Instantiate(baNaNaPrefab, trapPosition, Quaternion.identity);
+        Instantiate(baNaNaPrefab, trapPosition, Quaternion.identity);
     }
-
-    [PunRPC]
-    void UpdatePosition(Vector3 newPosition)
+    public IEnumerator Hacking()
     {
-        transform.position = newPosition; // 위치 업데이트
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            if (player != gameObject) // 자신이 아닌 플레이어
+            {
+                Trash2 otherPlayer = player.GetComponent<Trash2>();
+                if (otherPlayer != null)
+                {
+                    otherPlayer.hacking = false;
+                    yield return new WaitForSeconds(5f);
+                    otherPlayer.hacking = true;
+                }
+            }
+        }
+    }
+    public void UseTrashCan()
+    {
+        trashManager.scary = 0;
+    }
+    public void TVOn()
+    {
+        soundManager.OnTVSound(); 
     }
     private void PlaySoundForLocalPlayer()
     {
-        audioSource.Play();
+        soundManager.PoopSound();
     }
     public IEnumerator CollectItem(GameObject item)
     {
