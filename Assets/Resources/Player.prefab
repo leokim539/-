@@ -612,12 +612,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactDistance: 1.5
   Trashscary: 30
-  trash1: 
-  trash2: 
-  trash3: 
-  trash4: 
-  trash5: 
-  trash6: 
+  trash1: circle
+  trash2: cylinder
+  trash3: square
+  trash4: BeerCan
+  trash5: PetBottle
+  trash6: TrashBag
   ca: {fileID: 0}
   interactUI: {fileID: 0}
   progressBar: {fileID: 0}
