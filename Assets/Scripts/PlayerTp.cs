@@ -1,7 +1,6 @@
 using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
 public class PlayerTp : MonoBehaviourPunCallbacks
 {
     [Header("순간이동위치")]
@@ -16,6 +15,7 @@ public class PlayerTp : MonoBehaviourPunCallbacks
         {
             isInZone = true;
             stayTimer = 0f;
+            Debug.Log("Player entered the teleport zone");
         }
     }
 
@@ -25,6 +25,7 @@ public class PlayerTp : MonoBehaviourPunCallbacks
         {
             isInZone = false;
             stayTimer = 0f;
+            Debug.Log("Player exited the teleport zone");
         }
     }
 
@@ -43,12 +44,26 @@ public class PlayerTp : MonoBehaviourPunCallbacks
 
     private void TeleportPlayerToLocation()
     {
+        if (photonView == null)
+        {
+            Debug.LogError("PhotonView is missing!");
+            return;
+        }
+
+        Debug.Log("Calling RPC to teleport player");
         photonView.RPC("Teleport", RpcTarget.All);
     }
 
     [PunRPC]
     private void Teleport()
     {
+        if (teleportLocation == null)
+        {
+            Debug.LogError("Teleport location is not set!");
+            return;
+        }
+
         transform.position = teleportLocation.position;
+        Debug.Log("Player teleported to location");
     }
 }

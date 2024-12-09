@@ -62,6 +62,16 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         // 스태미나를 최대값으로 초기화
         stamina = maxStamina;
 
+        if (staminaSlider == null)
+        {
+            GameObject sliderObject = GameObject.Find("StaminaSlider");
+            if (sliderObject != null)
+            {
+                staminaSlider = sliderObject.GetComponent<Slider>();
+            }
+        }
+
+
         // 슬라이더 설정
         if (staminaSlider != null)
         {
