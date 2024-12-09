@@ -1,28 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+using System.Collections; // IEnumerator를 사용하기 위해 추가
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TimeManager : MonoBehaviour
 {
-    public Image[] images; // 사용할 이미지 배열
-    public AudioClip[] audioClips; // 사용할 오디오 클립 배열
-    public AudioSource audioSource; // AudioSource 컴포넌트
-
     public Text timerText; // 시계
     public float totalTime; // 총 시간 (초 단위)
     private float remainingTime; // 줄어들 시간
 
-    // 승리 및 패배 UI
-    public GameObject WinUI;
-    public GameObject LoseUI;
+    // 게임 종료 UI
+    public GameObject GameEndUI;
 
     void Start()
     {
         remainingTime = totalTime; // 시간 초기화
-        WinUI.SetActive(false); // 초기 상태에서 비활성화
-        LoseUI.SetActive(false); // 초기 상태에서 비활성화
+        GameEndUI.SetActive(false); // 초기 상태에서 비활성화
     }
 
     void Update()
@@ -31,29 +23,12 @@ public class TimeManager : MonoBehaviour
         {
             remainingTime -= Time.deltaTime; // 시간 계산
             UpdateTimerDisplay(); // 시계 표시
-
-            // 이벤트 트리거
-            if (remainingTime <= 100f && remainingTime > 100f - Time.deltaTime)
-            {
-                StartCoroutine(TriggerEvent());
-                Debug.Log("100");
-            }
-            if (remainingTime <= 90f && remainingTime > 90f - Time.deltaTime)
-            {
-                StartCoroutine(TriggerEvent());
-                Debug.Log("90");
-            }
-            if (remainingTime <= 80f && remainingTime > 80f - Time.deltaTime)
-            {
-                StartCoroutine(TriggerEvent());
-                Debug.Log("80");
-            }
         }
         else
         {
             remainingTime = 0; // 남은 시간을 0으로 설정
             timerText.color = Color.red; // 시간이 끝났을 때 색상 변경
-            DetermineWinner(); // 승리자 결정
+            ShowGameEndUI(); // 게임 종료 UI 표시
         }
     }
 
@@ -62,6 +37,50 @@ public class TimeManager : MonoBehaviour
         int minutes = Mathf.FloorToInt(remainingTime / 60); // 분 계산
         int seconds = Mathf.FloorToInt(remainingTime % 60); // 초 계산
         timerText.text = string.Format("{0:D2}:{1:D2}", minutes, seconds); // 표시
+    }
+
+    void ShowGameEndUI()
+    {
+        GameEndUI.SetActive(true); // 게임 종료 UI 활성화
+        StopPlayerMovement(); // 플레이어의 움직임 중지
+        DetermineWinner(); // 승리자 결정
+    }
+
+    void StopPlayerMovement()
+    {
+        // "Player" 태그를 가진 모든 오브젝트 찾기
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject player in players)
+        {
+            FirstPersonController controller = player.GetComponent<FirstPersonController>();
+            if (controller != null)
+            {
+                controller.enabled = false; // FirstPersonController 스크립트 비활성화
+                Debug.Log($"Stopped movement for player: {player.name}"); // 디버그 로그 추가
+            }
+            else
+            {
+                Debug.LogWarning($"No FirstPersonController found on player: {player.name}"); // 경고 로그 추가
+            }
+        }
+
+        // 2초 후 Ending 씬 로드
+        StartCoroutine(LoadEndingSceneAfterDelay(2f));
+    }
+
+    private IEnumerator LoadEndingSceneAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay); // 딜레이
+        EndingScene endingScene = FindObjectOfType<EndingScene>(); // EndingScene 스크립트 찾기
+        if (endingScene != null)
+        {
+            endingScene.LoadEndingScene(); // Ending 씬 로드
+        }
+        else
+        {
+            Debug.LogWarning("EndingScene script not found in the scene."); // 경고 로그 추가
+        }
     }
 
     void DetermineWinner()
@@ -83,55 +102,21 @@ public class TimeManager : MonoBehaviour
             }
         }
 
-        // 승리 및 패배 UI 활성화
-        if (players.Length == 1)
+        // 승리자 결정 및 UI 처리
+        if (player1Count > player2Count)
         {
-            // 플레이어가 한 명일 경우, 자동으로 승리 처리
-            WinUI.SetActive(true);
-            LoseUI.SetActive(false);
-        }
-        else if (player1Count > player2Count)
-        {
-            WinUI.SetActive(true);
-            LoseUI.SetActive(false);
+            Debug.Log("Player 1 Wins!");
+            // 승리 애니메이션 또는 UI 처리
         }
         else if (player1Count < player2Count)
         {
-            WinUI.SetActive(false);
-            LoseUI.SetActive(true);
+            Debug.Log("Player 2 Wins!");
+            // 승리 애니메이션 또는 UI 처리
         }
         else
         {
-            // 무승부 처리 (원하는 경우)
-            WinUI.SetActive(false);
-            LoseUI.SetActive(false);
+            Debug.Log("It's a Draw!");
+            // 무승부 처리
         }
-    }
-
-
-    IEnumerator TriggerEvent()
-    {
-        int randomImageIndex = Random.Range(0, images.Length); // 랜덤 이미지 설정
-        foreach (var img in images)
-        {
-            img.gameObject.SetActive(false); // 모든 이미지 비활성화
-        }
-        images[randomImageIndex].gameObject.SetActive(true); // 랜덤 이미지 활성화
-
-        // 랜덤 소리 선택
-        int randomSoundIndex = Random.Range(0, audioClips.Length);
-        audioSource.clip = audioClips[randomSoundIndex]; // 랜덤 소리 설정
-        audioSource.Play(); // 소리 재생
-
-        if (images.Length == 0 || audioClips.Length == 0)
-        {
-            yield break;
-        }
-
-        yield return new WaitForSeconds(5);
-
-        // 비활성화
-        images[randomImageIndex].gameObject.SetActive(false); // 이미지 비활성화
-        audioSource.Stop(); // 소리 정지
     }
 }

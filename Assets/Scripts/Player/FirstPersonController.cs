@@ -129,7 +129,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
     }
-    
+
     private void ToggleSettingsPanel()
     {
         isSettingsOpen = !isSettingsOpen;
@@ -196,7 +196,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             }
             else
             {
-                StopPlayer(); // 계속 정지 상태 유지
+                StopMovement(); // 계속 정지 상태 유지
                 isRunning = false; // 소진 상태에서 뛰기 상태 해제
                 return;
             }
@@ -228,7 +228,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
                 isExhausted = true; // 소진 상태 활성화
                 isRunning = false; // 스프린트 중지
                 Debug.Log("Stamina is exhausted, stopping player. isRunning: " + isRunning);
-                StopPlayer(); // 캐릭터 멈춤
+                StopMovement(); // 캐릭터 멈춤
                 return;
             }
         }
@@ -259,28 +259,42 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
-
-    void StopPlayer()
+    public void StopMovement()
     {
-        rd.velocity = Vector3.zero; // 캐릭터의 속도를 0으로 설정
+        // Photon 네트워크 처리 (필요한 경우)
+        if (photonView != null && !photonView.IsMine) return;
 
-        // 애니메이션 중단
+        // 오디오 정지
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+
+        // 애니메이터 처리 (두 스크립트의 방식 모두 포함)
         if (animator != null)
         {
+            // Photon 스크립트 스타일
+            animator.SetBool("isWalk", false);
+            animator.SetBool("isCrouched", false);
+            animator.SetBool("isRunning", false);
+
+            // 기존 스크립트 스타일 추가
             animator.SetFloat("Forward", 0f);
             animator.SetFloat("Strafe", 0f);
             animator.SetFloat("isWalking", 0f);
         }
 
-        // isRunning 상태를 false로 설정
-        isRunning = false; // 멈출 때 isRunning을 false로 설정
-        Debug.Log("StopPlayer called. isRunning set to: " + isRunning); // 디버그 로그 추가
-
-        // 사운드 중단
-        if (audioSource != null && audioSource.isPlaying)
+        // 속도 초기화
+        if (rd != null)
         {
-            audioSource.Stop();
+            rd.velocity = Vector3.zero;
         }
+
+        // 선택적: isRunning 상태 설정
+        isRunning = false;
+
+        // 선택적: 디버그 로그
+        Debug.Log("StopMovement called. isRunning set to: " + isRunning);
     }
 
 
@@ -425,28 +439,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         runSpeed = originalRunSpeed;
     }
 
-    // 추가한 메서드
-    public void StopMovement()
-    {
-        if (!photonView.IsMine) return; // 로컬 플레이어만 처리
 
-        if (audioSource != null)
-        {
-            audioSource.Stop(); // 소리 정지
-        }
-
-        if (animator != null)
-        {
-            animator.SetBool("isWalk", false); // 걷기 애니메이션 중단
-            animator.SetBool("isCrouched", false); // 쪼그리기 애니메이션 중단
-            animator.SetBool("isRunning", false);
-        }
-
-        if (rd != null)
-        {
-            rd.velocity = Vector3.zero; // 캐릭터 속도 초기화
-        }
-    }
 
     // 추가한 메서드
     /*public void ResumeMovement()
