@@ -477,6 +477,7 @@ MonoBehaviour:
   keyToPress: 9
   settingsPanel: {fileID: 0}
   canMove: 1
+  bond: 1
 --- !u!82 &6967127152933504464
 AudioSource:
   m_ObjectHideFlags: 0
@@ -625,13 +626,49 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   playerTransform: {fileID: 0}
   ItemImage: {fileID: 0}
-  ItemSprites: []
-  ItemNames: []
+  ItemSprites:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  ItemNames:
+  - "\uC548\uB300\uD22C\uCC99"
+  - "\uC815\uC0C1\uC218"
+  - "\uBCC0\uD574\uB77C\uC58D"
+  - "\uC57D\uD1B5"
+  - "\uBE68\uB78F\uBC84\uC12F"
+  - "\uB290\uB837\uBC84\uC12F"
+  - "\uC5C6\uC12F\uBC84\uC12F"
+  - "\uB178\uB780\uBC14\uB098\uB098"
+  - "\uB108\uD574\uD0B9"
+  - "\uD734\uB300\uC6A9\uC4F0\uB808\uAE30\uD1B5"
+  - "\uB9AC\uBAA8\uCEE8"
+  - "\uC2A4\uB9C8\uD2B8\uD3F0"
+  - "\uD578\uB4DC\uD06C\uB9BC"
+  - "\uAC15\uB825\uBCF8\uB4DC"
+  - "\uCEE4\uD53C"
+  - "\uAC04\uC7A5"
+  - "\uC21F\uAC00\uB77D"
   canvasPrefab: {fileID: 0}
   effectDuration: 5
   trashCanSpawn: TrashCanSpawn
   baNaNaPrefab: {fileID: 0}
   hacking: 0
+  smartPhone: 1
+  handCream: 0
 --- !u!114 &-4829004366119847647
 MonoBehaviour:
   m_ObjectHideFlags: 0

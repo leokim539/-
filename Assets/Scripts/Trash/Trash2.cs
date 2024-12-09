@@ -57,7 +57,14 @@ public class Trash2 : MonoBehaviourPunCallbacks
     [Header("바나나")]
     public GameObject baNaNaPrefab;
     [Header("너해킹")]
-    public bool hacking;
+    public bool hacking; 
+    [Header("스마트폰")]
+    public bool smartPhone = true;
+    [Header("핸드크림")]
+    public bool handCream; 
+    [Header("숟가락")]
+    public bool spoon;
+
     void Awake()
     {
         //interactUI = GameObject.Find("F");
@@ -112,10 +119,19 @@ public class Trash2 : MonoBehaviourPunCallbacks
         {
             if (!isDangerHolding)
             {
-                ItemUse(currentItem);
-                currentItem = null; // 현재 아이템 초기화
-                ItemImage.sprite = null; // UI 이미지 초기화
-                itemCanUse = false;
+                if (smartPhone)
+                {
+                    ItemUse(currentItem);
+                    currentItem = null; // 현재 아이템 초기화
+                    ItemImage.sprite = null; // UI 이미지 초기화
+                    itemCanUse = false;
+                }
+                else if(!smartPhone)
+                {
+                    currentItem = null; // 현재 아이템 초기화
+                    ItemImage.sprite = null; // UI 이미지 초기화
+                    itemCanUse = false;
+                }
             } 
         }
     }
@@ -156,23 +172,27 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
-            if (hit.collider.CompareTag("Trash") || hit.collider.CompareTag("GroundTrash"))
+            if (handCream)
             {
-                ShowUITrash(hit.collider.gameObject, false);
+                if (hit.collider.CompareTag("Trash") || hit.collider.CompareTag("GroundTrash"))
+                {
+                    ShowUITrash(hit.collider.gameObject, false);
+                }
+                else if (hit.collider.CompareTag("UseItem"))
+                {
+                    ShowUITrash(hit.collider.gameObject, true);
+                }
+                else if (hit.collider.CompareTag("Item"))
+                {
+                    item = hit.collider.gameObject.name;
+                    ShowUITrash(hit.collider.gameObject, true);
+                }
+                else
+                {
+                    HideUI();
+                }
             }
-            else if (hit.collider.CompareTag("UseItem"))
-            {
-                ShowUITrash(hit.collider.gameObject, true);
-            }
-            else if (hit.collider.CompareTag("Item"))
-            {
-                item = hit.collider.gameObject.name;
-                ShowUITrash(hit.collider.gameObject, true);
-            }
-            else
-            {
-                HideUI();
-            }
+            
         }
         else
         {
@@ -385,7 +405,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 Debug.Log("휴대용쓰레기통");
                 break;
 
-            case "리모컨 "://상대 10초간 아이템 사용불가
+            case "리모컨"://티비소리나옴
                 if (PhotonNetwork.IsConnected)
                 {
                     if (photonView.IsMine)
@@ -395,6 +415,57 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 }
                 Debug.Log("리모컨");
                 break;
+
+            case "스마트폰"://적이 사용하는 다음 아이템 무력화 
+                if (PhotonNetwork.IsConnected)
+                {
+                    SmartPhone();
+                }
+                Debug.Log("스마트폰");
+                break;
+
+            case "핸드크림":// 5초간 아무것도 수집할 수 없게 만듦
+                if (PhotonNetwork.IsConnected)
+                {
+                    StartCoroutine(HandCream());
+                }
+                Debug.Log("핸드크림");
+                break;
+
+            case "강력본드":// 상대 플레이어가 5초간 달릴 수 없게 함
+                if (PhotonNetwork.IsConnected)
+                {
+                    StartCoroutine(Bond());
+                }
+                Debug.Log("강력본드");
+                break;
+
+            case "커피"://5초 동안 사용한 플레이어의 스태미너 소모없이 달릴 수 있음
+                if (PhotonNetwork.IsConnected)
+                {
+                    if (photonView.IsMine)
+                        StartCoroutine(Coffee());
+                }
+                Debug.Log("커피");
+                break;
+
+            case "간장"://사용한 플레이어의 스태미너를 즉시 0으로 만듦
+                if (PhotonNetwork.IsConnected)
+                {
+                    if (photonView.IsMine)
+                        StartCoroutine(Soy());
+                }
+                Debug.Log("간장");
+                break;
+
+            case "숟가락"://사용한 플레이어의 스태미너를 즉시 0으로 만듦
+                if (PhotonNetwork.IsConnected)
+                {
+                    if (photonView.IsMine)
+                        StartCoroutine(Spoon());
+                }
+                Debug.Log("숟가락");
+                break;
             default:
                 break;
         }
@@ -402,40 +473,47 @@ public class Trash2 : MonoBehaviourPunCallbacks
     
     private IEnumerator ApplyObscuringEffect()
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in players)
+        if (spoon)
         {
-            if (player != gameObject) // 자신이 아닌 경우
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
             {
-                GameObject canvasInstance = PhotonNetwork.Instantiate(canvasPrefab.name, player.transform.position, Quaternion.identity, 0);
-                canvasInstance.transform.SetParent(player.transform); // 상대방 오브젝트의 자식으로 설정
+                if (player != gameObject) // 자신이 아닌 경우
+                {
+                    GameObject canvasInstance = PhotonNetwork.Instantiate(canvasPrefab.name, player.transform.position, Quaternion.identity, 0);
+                    canvasInstance.transform.SetParent(player.transform); // 상대방 오브젝트의 자식으로 설정
 
-                RectTransform rectTransform = canvasInstance.GetComponent<RectTransform>();
-                rectTransform.localPosition = Vector3.zero;
-                rectTransform.localScale = new Vector3(1, 1, 1);
+                    RectTransform rectTransform = canvasInstance.GetComponent<RectTransform>();
+                    rectTransform.localPosition = Vector3.zero;
+                    rectTransform.localScale = new Vector3(1, 1, 1);
 
-                yield return new WaitForSeconds(effectDuration);
+                    yield return new WaitForSeconds(effectDuration);
 
-                PhotonNetwork.Destroy(canvasInstance);
+                    PhotonNetwork.Destroy(canvasInstance);
+                }
             }
         }
+        else yield return null;
     }
 
     public IEnumerator TaserGun()
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in players)
+        if (spoon)
         {
-            if (player != gameObject) // 자신이 아닌 플레이어
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
             {
-                firstPersonController.canMove = false;
-                yield return new WaitForSeconds(5f);
-                firstPersonController.canMove = true;
+                if (player != gameObject) // 자신이 아닌 플레이어
+                {
+                    firstPersonController.canMove = false;
+                    yield return new WaitForSeconds(5f);
+                    firstPersonController.canMove = true;
+                }
             }
         }
+        else yield return null;
     }
     [PunRPC] 
-
     public void TrashCanSpawns()
     {
         GameObject trashCan = GameObject.Find(trashCanSpawn);
@@ -473,21 +551,25 @@ public class Trash2 : MonoBehaviourPunCallbacks
     }
     private IEnumerator SpeedDown()
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in players)
+        if (spoon)
         {
-            if (player != gameObject) // 자신이 아닌 경우
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
             {
-                float originalSpeed = firstPersonController.moveSpeed;
-                float runSpeed = firstPersonController.runSpeed;
-                firstPersonController.moveSpeed -= 3f;
-                firstPersonController.runSpeed -= 3f;
-                yield return new WaitForSeconds(5);
+                if (player != gameObject) // 자신이 아닌 경우
+                {
+                    float originalSpeed = firstPersonController.moveSpeed;
+                    float runSpeed = firstPersonController.runSpeed;
+                    firstPersonController.moveSpeed -= 3f;
+                    firstPersonController.runSpeed -= 3f;
+                    yield return new WaitForSeconds(5);
 
-                firstPersonController.moveSpeed = originalSpeed;
-                firstPersonController.runSpeed = runSpeed;
+                    firstPersonController.moveSpeed = originalSpeed;
+                    firstPersonController.runSpeed = runSpeed;
+                }
             }
         }
+        else yield return null;
     }
 
     public void BaNaNa()
@@ -501,20 +583,24 @@ public class Trash2 : MonoBehaviourPunCallbacks
     }
     public IEnumerator Hacking()
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in players)
+        if (spoon)
         {
-            if (player != gameObject) // 자신이 아닌 플레이어
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
             {
-                Trash2 otherPlayer = player.GetComponent<Trash2>();
-                if (otherPlayer != null)
+                if (player != gameObject) // 자신이 아닌 플레이어
                 {
-                    otherPlayer.hacking = false;
-                    yield return new WaitForSeconds(5f);
-                    otherPlayer.hacking = true;
+                    Trash2 otherPlayer = player.GetComponent<Trash2>();
+                    if (otherPlayer != null)
+                    {
+                        otherPlayer.hacking = false;
+                        yield return new WaitForSeconds(5f);
+                        otherPlayer.hacking = true;
+                    }
                 }
             }
         }
+        else yield return null;
     }
     public void UseTrashCan()
     {
@@ -523,6 +609,92 @@ public class Trash2 : MonoBehaviourPunCallbacks
     public void TVOn()
     {
         soundManager.OnTVSound(); 
+    }
+    public void SmartPhone()
+    {
+        if (spoon)
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
+            {
+                if (player != gameObject) // 자신이 아닌 플레이어
+                {
+                    smartPhone = false;
+                }
+            }
+        }
+        else return;
+    }
+    public IEnumerator HandCream()
+    {
+        if (spoon)
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
+            {
+                if (player != gameObject) // 자신이 아닌 플레이어
+                {
+                    handCream = false;
+                    yield return new WaitForSeconds(10);
+                    handCream = true;
+                }
+            }
+        }
+        else yield return null;
+    }
+    public IEnumerator Bond()
+    {
+        if (spoon)
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
+            {
+                if (player != gameObject) // 자신이 아닌 경우
+                {
+                    if (firstPersonController != null)
+                    {
+                        firstPersonController.bond = false;
+                        yield return new WaitForSeconds(5);
+                        firstPersonController.bond = true;
+                    }
+                }
+            }
+        }
+        else yield return null;
+    }
+    public IEnumerator Coffee()
+    {
+        if (firstPersonController != null)
+        {
+            firstPersonController.coffee = false;
+            yield return new WaitForSeconds(5);
+            firstPersonController.coffee = true;
+        }
+    }
+    public IEnumerator Soy()
+    {
+        if (firstPersonController != null)
+        {
+            firstPersonController.stamina = 0;
+            yield return null;
+        }
+    }
+    public IEnumerator Spoon()
+    {
+        if (spoon)
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
+            {
+                if (player != gameObject) // 자신이 아닌 경우
+                {
+                    spoon = false;
+                    yield return new WaitForSeconds(10);
+                    spoon = true;
+                }
+            }
+        }
+        else yield return null;
     }
     private void PlaySoundForLocalPlayer()
     {

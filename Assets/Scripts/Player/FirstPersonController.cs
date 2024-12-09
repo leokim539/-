@@ -50,7 +50,9 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     public KeyCode keyToPress; // 상태창을 활성화하는 키
     public GameObject settingsPanel; // 설정 창 패널을 연결
 
-    public bool canMove = true;
+    public bool canMove = true; 
+    public bool bond = true;
+    public bool coffee = true;
     void Awake()
     {
         character = GetComponent<FirstPersonController>().transform;
@@ -221,26 +223,31 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
 
         // 이동 여부 및 스프린트 여부 확인
         bool isMoving = Mathf.Abs(x) > 0 || Mathf.Abs(z) > 0; // 이동 여부
-        isRunning = isMoving && Input.GetKey(runningKey) && stamina > 0; // 스프린트 여부 설정
+        if (bond)
+            isRunning = isMoving && Input.GetKey(runningKey) && stamina > 0; // 스프린트 여부 설정
 
         // 스프린트 시 속도 및 스태미나 소모 처리
         float targetMovingSpeed = isRunning ? runSpeed : moveSpeed;
 
         if (isRunning) // 스프린트 시 스태미나 소모
         {
-            stamina -= staminaDrainRate * Time.deltaTime; // 초당 소모
-            stamina = Mathf.Clamp(stamina, 0, maxStamina); // 스태미나 범위 제한
-
-            UpdateStaminaBar(); // 슬라이더 업데이트
-
-            if (stamina <= 0) // 스태미나가 소진되면
+            if (coffee)
             {
-                isExhausted = true; // 소진 상태 활성화
-                isRunning = false; // 스프린트 중지
-                Debug.Log("Stamina is exhausted, stopping player. isRunning: " + isRunning);
-                StopMovement(); // 캐릭터 멈춤
-                return;
+                stamina -= staminaDrainRate * Time.deltaTime; // 초당 소모
+                stamina = Mathf.Clamp(stamina, 0, maxStamina); // 스태미나 범위 제한
+
+                UpdateStaminaBar(); // 슬라이더 업데이트
+
+                if (stamina <= 0) // 스태미나가 소진되면
+                {
+                    isExhausted = true; // 소진 상태 활성화
+                    isRunning = false; // 스프린트 중지
+                    Debug.Log("Stamina is exhausted, stopping player. isRunning: " + isRunning);
+                    StopMovement(); // 캐릭터 멈춤
+                    return;
+                }
             }
+            
         }
 
 
