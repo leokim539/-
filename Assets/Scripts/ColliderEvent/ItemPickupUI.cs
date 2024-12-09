@@ -16,16 +16,23 @@ public class ItemPickupUI : MonoBehaviour
     public GameObject[] gameObjects; // 게임 오브젝트 배열
     public Sprite[] objectImages; // 게임 오브젝트에 매칭될 이미지 배열
 
-    [Header("Trash2 참조")]
-    public Trash2 trash2; // Trash2 컴포넌트를 참조
+    [Header("상호작용 거리")]
+    public float interactionDistance = 5f; // 상호작용 거리
 
+    private Transform playerTransform; // 플레이어 Transform
     private bool isSliding = false; // 현재 슬라이드 애니메이션 진행 중인지 여부
 
     void Start()
     {
-        if (trash2 == null)
+        // Player 태그를 가진 오브젝트의 Transform을 찾음
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
         {
-            Debug.LogWarning("Trash2 컴포넌트가 연결되지 않았습니다. Manager에서 Trash2를 연결해주세요.");
+            playerTransform = player.transform;
+        }
+        else
+        {
+            Debug.LogError("Player 태그를 가진 오브젝트를 찾을 수 없습니다. Player 태그를 확인해주세요.");
         }
 
         itemImageRect.anchoredPosition = startPosition;
@@ -34,7 +41,7 @@ public class ItemPickupUI : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && trash2 != null)
+        if (Input.GetKeyDown(KeyCode.F) && playerTransform != null)
         {
             HandleInteraction();
         }
@@ -42,16 +49,33 @@ public class ItemPickupUI : MonoBehaviour
 
     private void HandleInteraction()
     {
-        // Trash2의 첫 번째 gameObjects 오브젝트와 상호작용
-        if (gameObjects.Length > 0 && gameObjects[0] != null)
+        // 배열에서 유효한 첫 번째 오브젝트 찾기
+        for (int i = 0; i < gameObjects.Length; i++)
         {
-            // UI 표시 및 첫 번째 오브젝트 제거
-            ShowItemUI(objectImages[0]);
-            Destroy(gameObjects[0]);
+            if (gameObjects[i] != null)
+            {
+                // 오브젝트와의 거리 계산
+                float distance = Vector3.Distance(playerTransform.position, gameObjects[i].transform.position);
 
-            // 배열 정리 (필요시)
-            gameObjects[0] = null; // 첫 번째 오브젝트를 null 처리
+                // 거리 조건 확인
+                if (distance <= interactionDistance)
+                {
+                    // UI 표시 및 오브젝트 제거
+                    ShowItemUI(objectImages[i]);
+                    Destroy(gameObjects[i]);
+
+                    // 배열 정리
+                    gameObjects[i] = null;
+                    return;
+                }
+                else
+                {
+                    Debug.Log($"오브젝트가 너무 멀어서 상호작용할 수 없습니다. 현재 거리: {distance}");
+                }
+            }
         }
+
+        Debug.Log("상호작용 가능한 오브젝트가 없습니다.");
     }
 
     public void ShowItemUI(Sprite sprite)
