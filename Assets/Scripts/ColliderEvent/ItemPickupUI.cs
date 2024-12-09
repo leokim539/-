@@ -24,32 +24,39 @@ public class ItemPickupUI : MonoBehaviour
 
     void Start()
     {
-        // Player 태그를 가진 오브젝트의 Transform을 찾음
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            playerTransform = player.transform;
-        }
-        else
-        {
-            Debug.LogError("Player 태그를 가진 오브젝트를 찾을 수 없습니다. Player 태그를 확인해주세요.");
-        }
-
+        StartCoroutine(FindPlayerTransform());
         itemImageRect.anchoredPosition = startPosition;
         itemImageRect.gameObject.SetActive(false);
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && playerTransform != null)
+        if (playerTransform != null && Input.GetKeyDown(KeyCode.F))
         {
             HandleInteraction();
         }
     }
 
+    private IEnumerator FindPlayerTransform()
+    {
+        while (playerTransform == null)
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                playerTransform = player.transform;
+                Debug.Log("Player의 Transform을 성공적으로 설정했습니다.");
+            }
+            else
+            {
+                Debug.LogWarning("Player 태그를 가진 오브젝트를 찾을 수 없습니다. 다시 시도합니다...");
+            }
+            yield return new WaitForSeconds(0.5f); // 0.5초마다 재시도
+        }
+    }
+
     private void HandleInteraction()
     {
-        // 배열에서 유효한 첫 번째 오브젝트 찾기
         for (int i = 0; i < gameObjects.Length; i++)
         {
             if (gameObjects[i] != null)
@@ -57,7 +64,6 @@ public class ItemPickupUI : MonoBehaviour
                 // 오브젝트와의 거리 계산
                 float distance = Vector3.Distance(playerTransform.position, gameObjects[i].transform.position);
 
-                // 거리 조건 확인
                 if (distance <= interactionDistance)
                 {
                     // UI 표시 및 오브젝트 제거
@@ -74,7 +80,6 @@ public class ItemPickupUI : MonoBehaviour
                 }
             }
         }
-
         Debug.Log("상호작용 가능한 오브젝트가 없습니다.");
     }
 
