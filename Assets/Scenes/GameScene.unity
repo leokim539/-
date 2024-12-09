@@ -1996,7 +1996,7 @@ MonoBehaviour:
   - {fileID: 1329713119}
   objectImages:
   - {fileID: 21300000, guid: a7d255cf3fd24c049b4b06c1b7d86f2c, type: 3}
-  trash2: {fileID: 4652278823109680218, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
+  interactionDistance: 5
 --- !u!1 &201497614
 GameObject:
   m_ObjectHideFlags: 0
@@ -10841,7 +10841,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 958893611}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 14ebfa44a72e4a9478af5330b92aca7c, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
