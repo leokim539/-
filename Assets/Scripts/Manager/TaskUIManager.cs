@@ -158,10 +158,18 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
 
         // UI 업데이트
         UpdateUI(); // UI 업데이트
+
+        // 플레이어 정보 동기화
+        photonView.RPC("SyncPlayerInfo", RpcTarget.All, playerIndex, playerInfos[playerIndex].totalTrashCount);
     }
 
 
-
+    [PunRPC]
+    public void SyncPlayerInfo(int playerIndex, int totalTrashCount)
+    {
+        playerInfos[playerIndex].totalTrashCount = totalTrashCount;
+        UpdateUI(); // UI 업데이트
+    }
 
 
 
