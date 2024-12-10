@@ -13,6 +13,17 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     private float isWalking; // 걷기 상태 (0 또는 1)
     private bool isRunning = false; // 뛰는 애니메이션 상태
 
+    private Vector3 networkPosition; // 네트워크에서 수신한 위치
+    private Quaternion networkRotation; // 네트워크에서 수신한 회전
+    private float lerpRate = 10f; // 보간 속도
+
+    // 애니메이션 상태 변수
+    private bool networkIsRunning; // 네트워크에서 수신한 달리기 상태
+    private float networkForward; // 네트워크에서 수신한 Forward 애니메이션 값
+    private float networkStrafe; // 네트워크에서 수신한 Strafe 애니메이션 값
+    private float networkIsWalking; // 네트워크에서 수신한 걷기 상태
+
+
 
     private Animator animator; // 애니메이터
     private AudioSource audioSource; // 오디오 소스
@@ -139,6 +150,12 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             {
                 panel.SetActive(false);
             }
+        }
+        else
+        {
+            InterpolateMovement();
+            UpdateAnimatorFromNetwork();
+
         }
     }
 
@@ -366,6 +383,22 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         animator.SetBool("isRunning", isRunning); // isRunning 파라미터 설정
     }
 
+    private void InterpolateMovement()
+    {
+        // 네트워크 위치와 회전으로 보간
+        transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * lerpRate);
+        transform.rotation = Quaternion.Slerp(transform.rotation, networkRotation, Time.deltaTime * lerpRate);
+    }
+
+    private void UpdateAnimatorFromNetwork()
+    {
+        // 네트워크에서 수신한 애니메이션 상태 업데이트
+        animator.SetFloat("Forward", networkForward);
+        animator.SetFloat("Strafe", networkStrafe);
+        animator.SetFloat("isWalking", networkIsWalking);
+        animator.SetBool("isRunning", networkIsRunning);
+    }
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -373,23 +406,23 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             // 내 위치와 회전 정보를 전송
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
-            stream.SendNext(forward); // Forward 전송
-            stream.SendNext(strafe);  // Strafe 전송
-            stream.SendNext(isWalking); // isWalking 전송
+            stream.SendNext(forward);
+            stream.SendNext(strafe);
+            stream.SendNext(isWalking);
+            stream.SendNext(isRunning); // 달리기 상태도 전송
         }
         else
         {
             // 다른 플레이어의 위치와 회전 정보를 수신
-            transform.position = (Vector3)stream.ReceiveNext();
-            transform.rotation = (Quaternion)stream.ReceiveNext();
-            forward = (float)stream.ReceiveNext(); // Forward 수신
-            strafe = (float)stream.ReceiveNext();  // Strafe 수신
-            isWalking = (float)stream.ReceiveNext(); // isWalking 수신
+            networkPosition = (Vector3)stream.ReceiveNext();
+            networkRotation = (Quaternion)stream.ReceiveNext();
+            networkForward = (float)stream.ReceiveNext(); // Forward 수신
+            networkStrafe = (float)stream.ReceiveNext();  // Strafe 수신
+            networkIsWalking = (float)stream.ReceiveNext(); // isWalking 수신
+            networkIsRunning = (bool)stream.ReceiveNext(); // isRunning 수신
 
             // 애니메이터 업데이트
-            animator.SetFloat("Forward", forward); // Forward 애니메이터에 설정
-            animator.SetFloat("Strafe", strafe);   // Strafe 애니메이터에 설정
-            animator.SetFloat("isWalking", isWalking); // isWalking 애니메이터에 설정
+            UpdateAnimatorFromNetwork();
         }
     }
     void CameraRotation()
