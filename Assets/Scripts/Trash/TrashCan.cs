@@ -25,14 +25,32 @@ public class TrashCan : MonoBehaviour
         }
     }
 
-    public void TrashCans()
+    void Update()
     {
-        trashManager.scary = 0; // 공포치 초기화
-        trashManager.UpdateScaryBar(); // 공포 이미지 관리
-        trashManager.isEffectActive = false; // 효과 비활성화
+        if (TrashCanInRange && Input.GetKeyDown(KeyCode.F))
+        {
+            // 쓰레기통과 상호작용 시
+            trashManager.scary = 0; // 공포치 초기화
+            trashManager.UpdateScaryBar(); // 공포 이미지 관리
+            trashManager.isEffectActive = false; // 효과 비활성화
 
-        effectManager.DeactivateAllChildObjects(); // 추가된 비활성화 기능 호출
+            // PostProcessVolume 비활성화
+            effectManager.DeactivateAllChildObjects(); // 추가된 비활성화 기능 호출
 
-        taskUIManager.ConfirmCollection(); // UI 매니저의 ConfirmCollection 호출 
+            // 저장된 카운트를 실제 카운트로 증가시키기
+            taskUIManager.ConfirmCollection(); // UI 매니저의 ConfirmCollection 호출
+        }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+            TrashCanInRange = true; // 플레이어가 쓰레기통에 접근했음을 기록
+    }
+
+    public void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+            TrashCanInRange = false; // 플레이어가 쓰레기통에서 나갔음을 기록
     }
 }

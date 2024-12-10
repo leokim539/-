@@ -62,7 +62,6 @@ MonoBehaviour:
   - RPC_StoreCylinderCount
   - RPC_StoreSquareCount
   - RPC_StoreTrashBagCount
-<<<<<<< HEAD
   - SendScoreToPlayers
   - UpdatePlayerScore
   - SyncTrashCount
@@ -77,10 +76,6 @@ MonoBehaviour:
   - AddTrashRPC
   - SpawnParticleEffect
   - TeleportTo
-=======
-  - TeleportTo
-  - SpawnParticleEffect
->>>>>>> parent of e49dc20 (ㅇㅁㅇㅁㅇ)
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

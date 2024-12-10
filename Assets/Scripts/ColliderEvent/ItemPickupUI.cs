@@ -20,7 +20,7 @@ public class ItemPickupUI : MonoBehaviour
     public float interactionDistance = 5f; // 상호작용 거리
 
     private Transform playerTransform; // 플레이어 Transform
-    private Coroutine currentSlideCoroutine = null; // 현재 실행 중인 슬라이드 Coroutine
+    private bool isSliding = false; // 현재 슬라이드 애니메이션 진행 중인지 여부
 
     void Start()
     {
@@ -85,15 +85,16 @@ public class ItemPickupUI : MonoBehaviour
 
     public void ShowItemUI(Sprite sprite)
     {
-        if (currentSlideCoroutine != null)
+        if (!isSliding)
         {
-            StopCoroutine(currentSlideCoroutine);
+            StartCoroutine(SlideUI(sprite));
         }
-        currentSlideCoroutine = StartCoroutine(SlideUI(sprite));
     }
 
     IEnumerator SlideUI(Sprite sprite)
     {
+        isSliding = true;
+
         // 이미지 설정
         itemImage.sprite = sprite;
         itemImageRect.gameObject.SetActive(true);
@@ -110,7 +111,7 @@ public class ItemPickupUI : MonoBehaviour
         // UI 비활성화
         itemImageRect.gameObject.SetActive(false);
 
-        currentSlideCoroutine = null;
+        isSliding = false;
     }
 
     IEnumerator Slide(Vector2 from, Vector2 to, float duration)
