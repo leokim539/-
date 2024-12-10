@@ -351,6 +351,7 @@ GameObject:
   - component: {fileID: -4829004366119847647}
   - component: {fileID: 4690770212749161555}
   - component: {fileID: 8690773646404098796}
+  - component: {fileID: -6649472389531605645}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -667,10 +668,10 @@ MonoBehaviour:
   effectDuration: 5
   trashCanSpawn: TrashCanSpawn
   baNaNaPrefab: {fileID: 0}
-  hacking: 0
+  hacking: 1
   smartPhone: 1
-  handCream: 0
-  spoon: 0
+  handCream: 1
+  spoon: 1
 --- !u!114 &-4829004366119847647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -719,6 +720,19 @@ MonoBehaviour:
   poopSound: {fileID: 0}
   onTVSound: {fileID: 0}
   attackSound: {fileID: 0}
+--- !u!114 &-6649472389531605645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3527990153254771694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11abf543bdacb9d4c9b28a4e91b6ff10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalTrashCount: 0
 --- !u!1 &5408255534115799117
 GameObject:
   m_ObjectHideFlags: 0

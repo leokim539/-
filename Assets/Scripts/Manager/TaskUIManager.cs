@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
-using UnityEngine.SceneManagement;
 
 public class TaskUIManager : MonoBehaviourPunCallbacks
 {
@@ -15,19 +14,6 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
     public Text PetBottleText;
     public Text TrashBagText;
 
-    [Header("쓰레기 사진")]
-    public Image circleImage;
-    public Image cylinderImage;
-    public Image squareImage;
-
-    [Header("쓰레기 빨간줄")]
-    public GameObject circleStrikeThrough;
-    public GameObject cylinderStrikeThrough;
-    public GameObject squareStrikeThrough;
-    public GameObject BeerCanStrikeThrough;
-    public GameObject PetBottleStrikeThrough;
-    public GameObject TrashBagStrikeThrough;
-
     private int circleCount = 0;
     private int cylinderCount = 0;
     private int squareCount = 0;
@@ -35,7 +21,6 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
     private int PetBottleCount = 0;
     private int TrashBagCount = 0;
 
-    // 저장된 카운트 변수 추가
     private int storedCircleCount = 0;
     private int storedCylinderCount = 0;
     private int storedSquareCount = 0;
@@ -43,145 +28,118 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
     private int storedPetBottleCount = 0;
     private int storedTrashBagCount = 0;
 
-    private int totalCircle = 5;
-    private int totalCylinder = 5;
-    private int totalSquare = 5;
-    private int totalBeerCan = 5;
-    private int totalPetBottle = 5;
-    private int totalTrashBag = 5;
+    private PlayerInfo[] playerInfos = new PlayerInfo[2]; // 두 명의 플레이어 정보 저장
 
+    private TrashCount[] trashCounts; // TrashCount 배열 선언
 
-    public int GetTotalTrashCount()
+    public override void OnJoinedRoom()
     {
-        return circleCount + cylinderCount + squareCount + BeerCanCount + PetBottleCount + TrashBagCount;
+        Start(); // 방에 들어간 후 초기화
     }
-
     void Start()
     {
+        int playerCount = PhotonNetwork.PlayerList.Length;
+        playerInfos = new PlayerInfo[playerCount];
+        trashCounts = new TrashCount[playerCount];
+
+        Debug.Log($"Total Players: {playerCount}");
+
+        for (int i = 0; i < playerCount; i++)
+        {
+            playerInfos[i] = new PlayerInfo(PhotonNetwork.PlayerList[i].NickName, 0);
+
+            // 플레이어 GameObject 가져오기
+            GameObject playerObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
+            if (playerObject != null)
+            {
+                Debug.Log($"Found Player Object: {playerObject.name}");
+
+                // TrashCount 찾기
+                TrashCount trashCount = playerObject.GetComponent<TrashCount>();
+                if (trashCount != null)
+                {
+                    trashCounts[i] = trashCount;
+                    Debug.Log($"Player {i}: {playerInfos[i].playerName}, TrashCount Found: {trashCounts[i] != null}");
+                }
+                else
+                {
+                    Debug.LogError($"TrashCount not found for player: {playerInfos[i].playerName}");
+                }
+            }
+            else
+            {
+                Debug.LogError($"Player Object is null for index: {i}");
+            }
+        }
+
         UpdateUI();
     }
 
+
+
     public void StoreCircleCount()
     {
-        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
-        {
-            storedCircleCount++; // 저장된 카운트 증가
-            UpdateUI();
-
-            if (PhotonNetwork.IsConnected)
-            {
-                photonView.RPC("RPC_StoreCircleCount", RpcTarget.Others);
-            }
-        }
-    }
-
-
-    [PunRPC]
-    public void RPC_StoreCircleCount()
-    {
         storedCircleCount++; // 저장된 카운트 증가
+        UpdateUI(); // UI 업데이트
     }
 
     public void StoreCylinderCount()
     {
-        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
-        {
-            storedCylinderCount++; // 저장된 카운트 증가
-            UpdateUI();
-
-            if (PhotonNetwork.IsConnected)
-            {
-                photonView.RPC("RPC_StoreCylinderCount", RpcTarget.Others);
-            }
-        }
-    }
-
-    [PunRPC]
-    public void RPC_StoreCylinderCount()
-    {
         storedCylinderCount++; // 저장된 카운트 증가
+        UpdateUI(); // UI 업데이트
     }
 
     public void StoreSquareCount()
     {
-        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
-        {
-            storedSquareCount++; // 저장된 카운트 증가
-            UpdateUI();
-
-            if (PhotonNetwork.IsConnected)
-            {
-                photonView.RPC("RPC_StoreSquareCount", RpcTarget.Others);
-            }
-        }
-    }
-
-    [PunRPC]
-    public void RPC_StoreSquareCount()
-    {
         storedSquareCount++; // 저장된 카운트 증가
+        UpdateUI(); // UI 업데이트
     }
 
     public void StoreBeerCanCount()
     {
-        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
-        {
-            storedBeerCanCount++; // 저장된 카운트 증가
-            UpdateUI();
-
-            if (PhotonNetwork.IsConnected)
-            {
-                photonView.RPC("RPC_StoreBeerCanCount", RpcTarget.Others);
-            }
-        }
-    }
-
-    [PunRPC]
-    public void RPC_StoreBeerCanCount()
-    {
         storedBeerCanCount++; // 저장된 카운트 증가
+        UpdateUI(); // UI 업데이트
     }
 
     public void StorePetBottleCount()
     {
-        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
-        {
-            storedPetBottleCount++; // 저장된 카운트 증가
-            UpdateUI();
-
-            if (PhotonNetwork.IsConnected)
-            {
-                photonView.RPC("RPC_StorePetBottleCount", RpcTarget.Others);
-            }
-        }
+        storedPetBottleCount++; // 저장된 카운트 증가
+        UpdateUI(); // UI 업데이트
     }
-
-    
 
     public void StoreTrashBagCount()
-    {
-        if (PhotonNetwork.IsMessageQueueRunning || !PhotonNetwork.IsConnected)
-        {
-            storedTrashBagCount++; // 저장된 카운트 증가
-            UpdateUI();
-
-            if (PhotonNetwork.IsConnected)
-            {
-                photonView.RPC("RPC_StoreTrashBagCount", RpcTarget.Others);
-            }
-        }
-    }
-
-    [PunRPC]
-    public void RPC_StoreTrashBagCount()
     {
         storedTrashBagCount++; // 저장된 카운트 증가
         UpdateUI(); // UI 업데이트
     }
 
-    // TrashCan과 상호작용 시 호출할 메소드
     public void ConfirmCollection()
     {
+        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber - 1;
+
+        // 안전한 인덱스 확인
+        if (playerIndex < 0 || playerIndex >= trashCounts.Length)
+        {
+            Debug.LogError($"Invalid player index: {playerIndex}");
+            return;
+        }
+
+        // 실제 카운트로 증가시키기
+        int totalToAdd = (storedCircleCount + storedCylinderCount + storedSquareCount + storedBeerCanCount + storedPetBottleCount + storedTrashBagCount);
+
+        // 플레이어 정보 업데이트
+        playerInfos[playerIndex].totalTrashCount += totalToAdd;
+
+        // TrashCount 업데이트
+        if (trashCounts[playerIndex] != null)
+        {
+            trashCounts[playerIndex].AddTrash(totalToAdd); // TrashCount 업데이트
+        }
+        else
+        {
+            Debug.LogError($"TrashCount not found for player index: {playerIndex}");
+        }
+
         // 저장된 카운트를 실제 카운트로 증가시키기
         circleCount += storedCircleCount;
         cylinderCount += storedCylinderCount;
@@ -198,21 +156,55 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
         storedPetBottleCount = 0;
         storedTrashBagCount = 0;
 
-        UpdateUI();
+        // UI 업데이트
+        UpdateUI(); // UI 업데이트
     }
+
+
+
 
 
 
     public void UpdateUI()
     {
-        if (circleText != null) circleText.text = $"{circleCount}/{totalCircle}";
-        if (cylinderText != null) cylinderText.text = $"{cylinderCount}/{totalCylinder}";
-        if (squareText != null) squareText.text = $"{squareCount}/{totalSquare}";
-        if (BeerCanText != null) BeerCanText.text = $"{BeerCanCount}/{totalBeerCan}";
-        if (PetBottleText != null) PetBottleText.text = $"{PetBottleCount}/{totalPetBottle}";
-        if (TrashBagText != null) TrashBagText.text = $"{TrashBagCount}/{totalTrashBag}";
+        if (circleText != null) circleText.text = $"{circleCount}/5"; // 예시로 최대 개수 5
+        if (cylinderText != null) cylinderText.text = $"{cylinderCount}/5";
+        if (squareText != null) squareText.text = $"{squareCount}/5";
+        if (BeerCanText != null) BeerCanText.text = $"{BeerCanCount}/5";
+        if (PetBottleText != null) PetBottleText.text = $"{PetBottleCount}/5";
+        if (TrashBagText != null) TrashBagText.text = $"{TrashBagCount}/5";
 
+        // 플레이어 정보 출력
+        foreach (var playerInfo in playerInfos)
+        {
+            Debug.Log($"Player Name: {playerInfo.playerName}, Total Trash Collected: {playerInfo.totalTrashCount}");
+        }
     }
 
-    
+    public PlayerInfo[] GetPlayerInfos()
+    {
+        return playerInfos; // 플레이어 정보 반환
+    }
+
+    public void EndGame()
+    {
+        for (int i = 0; i < playerInfos.Length; i++)
+        {
+            // PlayerPrefs에 총 쓰레기 개수 저장
+            PlayerPrefs.SetInt("Player" + i + "TrashCount", playerInfos[i].totalTrashCount);
+            PlayerPrefs.SetString("Player" + i + "Name", playerInfos[i].playerName);
+        }
+
+        // ResultUIManager 인스턴스 찾기
+        ResultUIManager resultUIManager = FindObjectOfType<ResultUIManager>();
+        if (resultUIManager != null)
+        {
+            resultUIManager.UpdateResult(playerInfos); // 플레이어 정보 전달
+        }
+
+        // 여기서는 씬 전환을 하지 않음
+        Debug.Log("Game ended and data saved."); // 디버그 로그 추가
+    }
+
+
 }

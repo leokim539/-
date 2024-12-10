@@ -57,13 +57,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
     [Header("바나나")]
     public GameObject baNaNaPrefab;
     [Header("너해킹")]
-    public bool hacking; 
+    public bool hacking = true; 
     [Header("스마트폰")]
     public bool smartPhone = true;
     [Header("핸드크림")]
-    public bool handCream; 
+    public bool handCream = true; 
     [Header("숟가락")]
-    public bool spoon;
+    public bool spoon = true;
 
     void Awake()
     {
