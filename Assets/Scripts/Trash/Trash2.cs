@@ -17,6 +17,8 @@ public class Trash2 : MonoBehaviourPunCallbacks
     private TrashManager trashManager;
     private TaskUIManager taskUIManager;
     private FirstPersonController firstPersonController;
+    private GameObject TrashCan;
+    private TrashCan trashCan;
     [Header("쓰레기 이름")]
     public string trash1;
     public string trash2;
@@ -31,13 +33,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
     public GameObject interactUI; // F키 UI
     public Slider progressBar; // 원형 게이지 슬라이더
     public float maxHoldTime = 2f; // 최대 홀드 시간
-    private float currentHoldTime = 0f; // 현재 누르고 있는 시간
-    private bool isHolding = false; // F키를 누르고 있는지 여부
-    private bool isDangerHolding = false; // F키를 누르고 있는지 여부
-
+    public float currentHoldTime = 0f; // 현재 누르고 있는 시간
     private GameObject currentTrash; // 현재 상호작용 중인 쓰레기
-
     private EffectTrash effectTrash;
+    private bool _trashCan= false;
     [Header("사운드")]
     public PlayerSound soundManager;
     [Header("플레이어 설정")]
@@ -49,6 +48,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     private bool itemCanUse = false;
     private string currentItem; // 현재 획득한 아이템 이름
     private string item; // 현재 획득한 아이템 이름
+    public GameObject speedUPParticleEffectPrefab;
     [Header("시야 가리기 아이템")]
     public GameObject canvasPrefab; // 시야를 가릴 Canvas 프리팹
     public float effectDuration = 5f; // 효과 지속 시간
@@ -90,34 +90,25 @@ public class Trash2 : MonoBehaviourPunCallbacks
         Manager = GameObject.Find("Manager");
         trashManager = Manager.GetComponent<TrashManager>();
         taskUIManager = Manager.GetComponent<TaskUIManager>();
+
+        TrashCan = GameObject.Find("TrashCan(Clone)");
+        trashCan = TrashCan.GetComponent<TrashCan>();
         firstPersonController = GetComponent<FirstPersonController>();
         //progressBar.maxValue = maxHoldTime; // 슬라이더의 최대 값 설정
         //progressBar.value = 0; // 슬라이더 초기화
 
         ca = GetComponentInChildren<Camera>();
 
-        effectTrash = FindObjectOfType<EffectTrash>();
-
-        
+        effectTrash = FindObjectOfType<EffectTrash>();       
     }
 
     void Update()
     {
         if (photonView.IsMine)
         {
-            CheckForObject();
-        }
-        if (isDangerHolding)
-        {
-            HandleHolding();
-        }
-        if (isHolding)
-        {
-            HandleHolding();
-        }
-        if (itemCanUse && Input.GetKeyDown(KeyCode.E))
-        {
-            if (!isDangerHolding)
+            CheckForObject();//확인
+            
+            if (itemCanUse && Input.GetKeyDown(KeyCode.E))
             {
                 if (smartPhone)
                 {
@@ -126,45 +117,33 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     ItemImage.sprite = null; // UI 이미지 초기화
                     itemCanUse = false;
                 }
-                else if(!smartPhone)
+                else if (!smartPhone)
                 {
                     currentItem = null; // 현재 아이템 초기화
                     ItemImage.sprite = null; // UI 이미지 초기화
                     itemCanUse = false;
                 }
-            } 
-        }
-    }
-
-    void HandleHolding()
-    {
-        if (Input.GetKey(KeyCode.F))
-        {
-            currentHoldTime += Time.deltaTime; // 초당 1씩 증가
-
-            // 슬라이더 값 업데이트
-            progressBar.value = currentHoldTime;
-
-            // 슬라이더 값이 최대값에 도달했을 때
-            if (currentHoldTime >= maxHoldTime)
-            {
-                if (isDangerHolding)
-                {
-                    ConsumeDangerTrash();
-                }
-                if(isHolding)
-                {
-                    ConsumeTrash();
-                }
             }
         }
-        else
+        if (_trashCan)
         {
-            // F키를 떼면 초기화
-            ResetHold();
+            if (Input.GetKey(KeyCode.F))
+            {
+                currentHoldTime += Time.deltaTime; // 초당 1씩 증가
+                progressBar.value = currentHoldTime;
+                if (currentHoldTime >= maxHoldTime)
+                {
+                    trashCan.TrashCans();
+                    ResetHold();
+                }
+            }
+            else
+            {
+                ResetHold();
+            }
         }
     }
-
+    
     void CheckForObject()
     {
         RaycastHit hit;
@@ -172,60 +151,61 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
+            interactUI.SetActive(true); // UI 표시
+            progressBar.gameObject.SetActive(true); // 진행 바 표시
             if (handCream)
             {
-                if (hit.collider.CompareTag("Trash") || hit.collider.CompareTag("GroundTrash"))
+                if (hit.collider.CompareTag("TrashCan"))
                 {
-                    ShowUITrash(hit.collider.gameObject, false);
+                    _trashCan = true;
+                }
+                else if (hit.collider.CompareTag("Trash"))
+                {
+                    if (Input.GetKey(KeyCode.F))
+                    {
+                        currentTrash = hit.collider.gameObject;
+                        ConsumeTrash();
+                    }
                 }
                 else if (hit.collider.CompareTag("UseItem"))
                 {
-                    ShowUITrash(hit.collider.gameObject, true);
+                    if (Input.GetKey(KeyCode.F))
+                    {
+                        currentTrash = hit.collider.gameObject;
+                        ConsumeDangerTrash();
+                    } 
                 }
                 else if (hit.collider.CompareTag("Item"))
                 {
-                    item = hit.collider.gameObject.name;
-                    ShowUITrash(hit.collider.gameObject, true);
+                    if (Input.GetKey(KeyCode.F))
+                    {
+                        item = hit.collider.gameObject.name;
+                        currentTrash = hit.collider.gameObject;
+                        ConsumeDangerTrash();
+                    }
                 }
                 else
                 {
                     HideUI();
                 }
             }
-            
         }
         else
         {
             HideUI();
         }
     }
-    void ShowUITrash(GameObject trashObject, bool isDanger)
-    {
-        currentTrash = trashObject; // 상호작용할 오브젝트 저장
-        interactUI.SetActive(true); // UI 표시
-        progressBar.gameObject.SetActive(true); // 진행 바 표시
-        if (isDanger)
-        {
-            isDangerHolding = true; // 위험 쓰레기 상태 설정
-        }
-        else
-        {
-            isHolding = true; // 일반 쓰레기 상태 설정
-        }
-    }
+
     void HideUI()
     {
         interactUI.SetActive(false); // UI 숨김
         progressBar.gameObject.SetActive(false); // 진행 바 숨김
-        ResetHold(); // F키 누르는 상태 초기화
     }
 
     void ResetHold()
     {
         currentHoldTime = 0f;
-        progressBar.value = 0f; // 슬라이더 값 초기화
-        isHolding = false;
-        isDangerHolding = false; // 위험 쓰레기 초기화
+        progressBar.value = 0f; 
     }
 
     void ConsumeTrash()
@@ -240,21 +220,8 @@ public class Trash2 : MonoBehaviourPunCallbacks
         trashManager.scary += Trashscary;
         trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
 
-        if (currentTrash.CompareTag("GroundTrash"))
-        {
-            FirstPersonController firstPersonController = FindObjectOfType<FirstPersonController>();
-            if (firstPersonController != null)
-            {
-                firstPersonController.PickingUp(); // PickingUp 메서드 호출
-            }
-        }
-        // 쓰레기 종류에 따른 UI 업데이트
         UpdateTaskUI(objectName);
 
-        // 초기화
-        HideUI();
-
-        //photonView.RPC("UpdateTaskUI", RpcTarget.Others, objectName);
 
         //photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash.GetPhotonView().ViewID);
     }
@@ -361,6 +328,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     if (photonView.IsMine)
                     {
                         StartCoroutine(SpeedUP());
+                        photonView.RPC("SpawnParticleEffect", RpcTarget.All, transform.position);
                     }
                     else Debug.Log("빨라버섯");
                 }
@@ -548,6 +516,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
         {
             Debug.Log("씨발 속도가 안변하잖아!!!!!!!!!!!!!");
         }
+    }
+    [PunRPC]
+    private void SpawnParticleEffect(Vector3 position)
+    {
+        // 파티클 이펙트를 생성
+        GameObject particleEffect = Instantiate(speedUPParticleEffectPrefab, position, Quaternion.identity);
+        Destroy(particleEffect, 2f); // 2초 후에 파티클 이펙트 삭제
     }
     private IEnumerator SpeedDown()
     {

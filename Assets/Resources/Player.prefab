@@ -613,7 +613,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f850f8954e658f5468e473994f436b51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactDistance: 1.5
+  interactDistance: 3
   Trashscary: 30
   trash1: circle
   trash2: cylinder
@@ -621,37 +621,38 @@ MonoBehaviour:
   trash4: BeerCan
   trash5: PetBottle
   trash6: TrashBag
-  ca: {fileID: 0}
+  ca: {fileID: 1044452084491499104}
   interactUI: {fileID: 0}
   progressBar: {fileID: 0}
   maxHoldTime: 2
+  currentHoldTime: 0
   soundManager: {fileID: 0}
   playerTransform: {fileID: 0}
   ItemImage: {fileID: 0}
   ItemSprites:
+  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
   - {fileID: 21300000, guid: 3dec6fc9eec1d93498d7aa780a39f08b, type: 3}
+  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
+  - {fileID: 21300000, guid: cb206d1c7517a814ea4b69bb583d9e24, type: 3}
+  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
+  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
+  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
+  - {fileID: 21300000, guid: 116a8ce2eba389249bcca6303ea55a95, type: 3}
+  - {fileID: 21300000, guid: 5d5ecd1331a78d143af721edc3732757, type: 3}
+  - {fileID: 21300000, guid: c584ebba8d9dc1c42a6788f2ed727c43, type: 3}
   - {fileID: 21300000, guid: 1bc8b96be881f6843b996c94a87d2995, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 246ce2693008c7548b8113c9c80f9130, type: 3}
+  - {fileID: 21300000, guid: c59cdc506cc328a49ae51c25cc7ec830, type: 3}
+  - {fileID: 21300000, guid: e3611c3e8be74ab43bcb19f9508014fe, type: 3}
+  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
+  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
+  - {fileID: 21300000, guid: 1d546b150b742a5469a866140f68a1da, type: 3}
   ItemNames:
   - "\uC548\uB300\uD22C\uCC99"
-  - "\uBE68\uB78F\uBC84\uC12F"
   - "\uC815\uC0C1\uC218"
   - "\uBCC0\uD574\uB77C\uC58D"
   - "\uC57D\uD1B5"
+  - "\uBE68\uB78F\uBC84\uC12F"
   - "\uB290\uB837\uBC84\uC12F"
   - "\uC5C6\uC12F\uBC84\uC12F"
   - "\uB178\uB780\uBC14\uB098\uB098"
@@ -664,6 +665,7 @@ MonoBehaviour:
   - "\uCEE4\uD53C"
   - "\uAC04\uC7A5"
   - "\uC21F\uAC00\uB77D"
+  speedUPParticleEffectPrefab: {fileID: 3987662806311205799, guid: 6817fc0d3b28dcb44ba2fae7f82663ce, type: 3}
   canvasPrefab: {fileID: 0}
   effectDuration: 5
   trashCanSpawn: TrashCanSpawn
