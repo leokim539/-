@@ -478,6 +478,7 @@ MonoBehaviour:
   settingsPanel: {fileID: 0}
   canMove: 1
   bond: 1
+  coffee: 1
 --- !u!82 &6967127152933504464
 AudioSource:
   m_ObjectHideFlags: 0
@@ -627,8 +628,8 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   ItemImage: {fileID: 0}
   ItemSprites:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 3dec6fc9eec1d93498d7aa780a39f08b, type: 3}
+  - {fileID: 21300000, guid: 1bc8b96be881f6843b996c94a87d2995, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -646,10 +647,10 @@ MonoBehaviour:
   - {fileID: 0}
   ItemNames:
   - "\uC548\uB300\uD22C\uCC99"
+  - "\uBE68\uB78F\uBC84\uC12F"
   - "\uC815\uC0C1\uC218"
   - "\uBCC0\uD574\uB77C\uC58D"
   - "\uC57D\uD1B5"
-  - "\uBE68\uB78F\uBC84\uC12F"
   - "\uB290\uB837\uBC84\uC12F"
   - "\uC5C6\uC12F\uBC84\uC12F"
   - "\uB178\uB780\uBC14\uB098\uB098"
@@ -666,9 +667,10 @@ MonoBehaviour:
   effectDuration: 5
   trashCanSpawn: TrashCanSpawn
   baNaNaPrefab: {fileID: 0}
-  hacking: 0
+  hacking: 1
   smartPhone: 1
-  handCream: 0
+  handCream: 1
+  spoon: 1
 --- !u!114 &-4829004366119847647
 MonoBehaviour:
   m_ObjectHideFlags: 0
