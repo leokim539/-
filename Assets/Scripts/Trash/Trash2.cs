@@ -261,14 +261,14 @@ public class Trash2 : MonoBehaviourPunCallbacks
             currentItem = item;
             int index = System.Array.IndexOf(ItemNames, currentItem); // 아이템 이름의 인덱스 찾기
 
-            StartCoroutine(CollectItem(currentTrash));
+            //StartCoroutine(CollectItem(currentTrash));
             if (index >= 0 && index < ItemSprites.Length)
             {
                 ItemImage.sprite = ItemSprites[index]; // 해당 인덱스의 스프라이트로 이미지 변경
                 Debug.LogWarning(currentItem);
                 itemCanUse = true;
             } // 선택된 주문 이름에 따라 이미지 업데이트
-            photonView.RPC("DestroyItem", RpcTarget.Others, currentTrash);
+            photonView.RPC("DestroyItem", RpcTarget.All, currentTrash);
         }        
         else if (currentTrash.CompareTag("UseItem"))
         {
@@ -276,14 +276,14 @@ public class Trash2 : MonoBehaviourPunCallbacks
             currentItem = ItemNames[randomIndex]; // 랜덤으로 선택된 아이템 이름
             int index = System.Array.IndexOf(ItemNames, currentItem); // 아이템 이름의 인덱스 찾기
 
-            StartCoroutine(CollectItem(currentTrash));
+            //StartCoroutine(CollectItem(currentTrash));
             if (index >= 0 && index < ItemSprites.Length)
             {
                 ItemImage.sprite = ItemSprites[index]; // 해당 인덱스의 스프라이트로 이미지 변경
                 Debug.LogWarning(currentItem);
                 itemCanUse = true;
             } // 선택된 주문 이름에 따라 이미지 업데이트
-            photonView.RPC("DestroyItem", RpcTarget.Others, currentTrash);
+            photonView.RPC("DestroyItem", RpcTarget.All, currentTrash);
         }
         HideUI();
     }
