@@ -488,7 +488,12 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         moveSpeed = originalMoveSpeed;
         runSpeed = originalRunSpeed;
     }
-
+    [PunRPC]
+    public void TeleportTo(Vector3 targetPosition)
+    {
+        transform.position = targetPosition;
+        Debug.Log("Player teleported to: " + targetPosition);
+    }
 
 
     // 추가한 메서드

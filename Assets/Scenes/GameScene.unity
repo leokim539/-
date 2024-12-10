@@ -244,7 +244,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4528f80beaaf4a64aacbdaceb1adb11d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teleportLocation: {fileID: 0}
+  portal1: {fileID: 0}
+  portal2: {fileID: 0}
   stayDuration: 2
 --- !u!65 &27220365
 BoxCollider:
@@ -8807,7 +8808,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4528f80beaaf4a64aacbdaceb1adb11d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teleportLocation: {fileID: 27220368}
+  portal1: {fileID: 850717136}
+  portal2: {fileID: 27220368}
   stayDuration: 2
 --- !u!65 &850717133
 BoxCollider:

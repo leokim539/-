@@ -613,7 +613,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f850f8954e658f5468e473994f436b51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactDistance: 1.5
+  interactDistance: 3
   Trashscary: 30
   trash1: circle
   trash2: cylinder
@@ -621,10 +621,11 @@ MonoBehaviour:
   trash4: BeerCan
   trash5: PetBottle
   trash6: TrashBag
-  ca: {fileID: 0}
+  ca: {fileID: 1044452084491499104}
   interactUI: {fileID: 0}
   progressBar: {fileID: 0}
   maxHoldTime: 2
+  currentHoldTime: 0
   soundManager: {fileID: 0}
   playerTransform: {fileID: 0}
   ItemImage: {fileID: 0}
@@ -664,6 +665,7 @@ MonoBehaviour:
   - "\uCEE4\uD53C"
   - "\uAC04\uC7A5"
   - "\uC21F\uAC00\uB77D"
+  speedUPParticleEffectPrefab: {fileID: 3987662806311205799, guid: 6817fc0d3b28dcb44ba2fae7f82663ce, type: 3}
   canvasPrefab: {fileID: 0}
   effectDuration: 5
   trashCanSpawn: TrashCanSpawn

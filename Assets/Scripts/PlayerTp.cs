@@ -18,18 +18,7 @@ public class PlayerTp : MonoBehaviourPunCallbacks
             isInZone = true;
             stayTimer = 0f;
             playerPhotonView = other.GetComponent<PhotonView>(); // 충돌한 플레이어의 PhotonView 저장
-            if (playerPhotonView != null)
-            {
-                // 현재 위치에 따라 포탈 A 또는 B로 순간이동
-                if (Vector3.Distance(other.transform.position, portal1.position) < 1f)
-                {
-                    playerPhotonView.RPC("TeleportTo", RpcTarget.All, portal2.position);
-                }
-                else if (Vector3.Distance(other.transform.position, portal2.position) < 1f)
-                {
-                    playerPhotonView.RPC("TeleportTo", RpcTarget.All, portal1.position);
-                }
-            }
+            Debug.Log("Player entered the teleport zone");
         }
     }
 
@@ -65,7 +54,14 @@ public class PlayerTp : MonoBehaviourPunCallbacks
             return;
         }
 
-        Debug.Log("Calling RPC to teleport player");
-        playerPhotonView.RPC("Teleport", RpcTarget.All);
+        // 현재 위치에 따라 포탈 A 또는 B로 순간이동
+        Vector3 targetPosition = Vector3.Distance(playerPhotonView.transform.position, portal1.position) < 1f ? portal2.position : portal1.position;
+
+        Debug.Log("Calling RPC to teleport player to: " + targetPosition);
+        playerPhotonView.RPC("TeleportTo", RpcTarget.All, targetPosition);
+
+        // 이동 후 상태 초기화
+        isInZone = false;
+        stayTimer = 0f;
     }
 }
