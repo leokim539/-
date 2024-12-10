@@ -1,10 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+<<<<<<< HEAD
 using UnityEngine.UI; // UI 관련 네임스페이스 추가
 using Photon.Pun; // 포톤 관련 네임스페이스 추가
 
 public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상속
+=======
+using UnityEngine.UI; // UI ���� ���ӽ����̽� �߰�
+
+public class TrashCanSpawner : MonoBehaviour
+>>>>>>> parent of e49dc20 (ㅇㅁㅇㅁㅇ)
 {
     public GameObject trashCanPrefab; // TrashCan 프리팹
     public float spawnInterval = 30f; // 스폰 간격 (30초)
@@ -15,6 +21,7 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상�
 
     public void Start()
     {
+<<<<<<< HEAD
         // 마스터 클라이언트에서만 TrashCan 생성
         if (PhotonNetwork.IsMasterClient)
         {
@@ -58,6 +65,15 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상�
     }
 
 
+=======
+        // TrashCan ����
+        currentTrashCan = Instantiate(trashCanPrefab, GetRandomSpawnPosition(), Quaternion.identity);
+
+        // �ڷ�ƾ ����
+        StartCoroutine(MoveTrashCan());
+    }
+
+>>>>>>> parent of e49dc20 (ㅇㅁㅇㅁㅇ)
     public IEnumerator MoveTrashCan()
     {
         while (true)
@@ -93,6 +109,7 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상�
             int randomIndex = Random.Range(0, validSpawnPoints.Count);
             Vector3 newPosition = validSpawnPoints[randomIndex].position;
 
+<<<<<<< HEAD
             // TrashCan 이동
             Debug.Log("Moving TrashCan to: " + newPosition); // 이동 위치 디버깅
             photonView.RPC("MoveTrashCanRPC", RpcTarget.All, newPosition); // 모든 클라이언트에서 이동
@@ -111,6 +128,10 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상�
         {
             currentTrashCan.transform.position = newPosition;
             Debug.Log("TrashCan moved to: " + newPosition); // 이동한 위치 로그
+=======
+            // TrashCan �̵�
+            currentTrashCan.transform.position = newPosition;
+>>>>>>> parent of e49dc20 (ㅇㅁㅇㅁㅇ)
         }
     }
 
@@ -133,8 +154,12 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상�
             return validSpawnPoints[randomIndex].position;
         }
 
+<<<<<<< HEAD
         Debug.LogError("No valid spawn points found! Returning Vector3.zero."); // 유효한 스폰 포인트가 없을 때 에러 메시지
         return Vector3.zero; // 기본값
+=======
+        return Vector3.zero; // �⺻��
+>>>>>>> parent of e49dc20 (ㅇㅁㅇㅁㅇ)
     }
 
     private void ShowWarningUI()
