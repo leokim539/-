@@ -2,61 +2,98 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.UI; // UI °ü·Ã ³×ÀÓ½ºÆäÀÌ½º Ãß°¡
+using UnityEngine.UI; // UI ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ß°ï¿½
+using Photon.Pun; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ß°ï¿½
 
 public class TrashCanSpawner : MonoBehaviourPunCallbacks
+public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour ï¿½ï¿½ï¿½
 {
-    public GameObject trashCanPrefab; // TrashCan ÇÁ¸®ÆÕ
-    public float spawnInterval = 30f; // ½ºÆù °£°Ý (30ÃÊ)
-    public Transform spawnPointsParent; // ½ºÆù Æ÷ÀÎÆ®¸¦ °¡Áø ºó °ÔÀÓ ¿ÀºêÁ§Æ®
-    public GameObject warningUI; // °æ°í UI °´Ã¼
+    public GameObject trashCanPrefab; // TrashCan ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    public float spawnInterval = 30f; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (30ï¿½ï¿½)
+    public Transform spawnPointsParent; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    public GameObject warningUI; // ï¿½ï¿½ï¿½ UI ï¿½ï¿½Ã¼
 
-    private GameObject currentTrashCan; // ÇöÀç Á¸ÀçÇÏ´Â TrashCan
+    private GameObject currentTrashCan; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ TrashCan
 
     public void Start()
     {
-        // TrashCan »ý¼º
+        // TrashCan ï¿½ï¿½ï¿½ï¿½
         SpawnTrashCan();
-        // ÄÚ·çÆ¾ ½ÃÀÛ
+        // ï¿½Ú·ï¿½Æ¾ ï¿½ï¿½ï¿½ï¿½
         StartCoroutine(MoveTrashCan());
     }
+
+    private IEnumerator SpawnTrashCanCoroutine()
+    {
+        // ï¿½ï¿½ï¿½ï¿½ TrashCan
+        photonView.RPC("SpawnTrashCan", RpcTarget.All);
+        yield return null; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾î°¨
+    }
+
+    [PunRPC]
+    private void SpawnTrashCan()
+    {
+        // ï¿½Ì¹ï¿½ TrashCanï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        if (currentTrashCan != null)
+        {
+            Debug.Log("TrashCan already exists. Not spawning a new one.");
+            return;
+        }
+
+        Vector3 spawnPosition = GetRandomSpawnPosition();
+        Debug.Log("Spawning TrashCan at: " + spawnPosition); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½
+
+        // TrashCan ï¿½Î½ï¿½ï¿½Ï½ï¿½È­
+        currentTrashCan = PhotonNetwork.Instantiate(trashCanPrefab.name, spawnPosition, Quaternion.identity);
+
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ TrashCanï¿½ï¿½ È°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
+        if (currentTrashCan != null)
+        {
+            Debug.Log("TrashCan spawned successfully. Active: " + currentTrashCan.activeSelf);
+        }
+        else
+        {
+            Debug.LogError("Failed to spawn TrashCan. CurrentTrashCan is null.");
+        }
+    }
+
 
     public IEnumerator MoveTrashCan()
     {
         while (true)
         {
-            // 10ÃÊ Àü¿¡ UI È°¼ºÈ­
+            // 10ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ UI È°ï¿½ï¿½È­
             yield return new WaitForSeconds(spawnInterval - 10f);
             ShowWarningUI();
 
-            // ÁöÁ¤µÈ ½Ã°£ µ¿¾È ´ë±â
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
             yield return new WaitForSeconds(5f);
             HideWarningUI();
 
-            // ·£´ý À§Ä¡·Î TrashCan ÀÌµ¿
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ TrashCan ï¿½Ìµï¿½
             MoveToRandomPosition();
         }
     }
 
     public void MoveToRandomPosition()
     {
-        // SpawnPointsÀÇ ÀÚ½Ä ¿ÀºêÁ§Æ®¸¦ °¡Á®¿È
+        // SpawnPointsï¿½ï¿½ ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         Transform[] spawnPoints = spawnPointsParent.GetComponentsInChildren<Transform>();
 
-        // Ã¹ ¹øÂ° ÀÚ½Ä(ºó °ÔÀÓ ¿ÀºêÁ§Æ® ÀÚ½Å)À» Á¦¿Ü
+        // Ã¹ ï¿½ï¿½Â° ï¿½Ú½ï¿½(ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ú½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         List<Transform> validSpawnPoints = new List<Transform>();
         for (int i = 1; i < spawnPoints.Length; i++)
         {
             validSpawnPoints.Add(spawnPoints[i]);
         }
 
-        // À¯È¿ÇÑ ½ºÆù Æ÷ÀÎÆ®°¡ ÀÖÀ» ¶§ ·£´ý ¼±ÅÃ
+        // ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (validSpawnPoints.Count > 0)
         {
             int randomIndex = Random.Range(0, validSpawnPoints.Count);
             Vector3 newPosition = validSpawnPoints[randomIndex].position;
 
-            // TrashCan ÀÌµ¿
+            // TrashCan ï¿½Ìµï¿½
             if (currentTrashCan != null)
             {
                 currentTrashCan.transform.position = newPosition;
@@ -70,33 +107,34 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks
     }
     private Vector3 GetRandomSpawnPosition()
     {
-        // SpawnPointsÀÇ ÀÚ½Ä ¿ÀºêÁ§Æ®¸¦ °¡Á®¿È
+        // SpawnPointsï¿½ï¿½ ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         Transform[] spawnPoints = spawnPointsParent.GetComponentsInChildren<Transform>();
 
-        // Ã¹ ¹øÂ° ÀÚ½Ä(ºó °ÔÀÓ ¿ÀºêÁ§Æ® ÀÚ½Å)À» Á¦¿Ü
+        // Ã¹ ï¿½ï¿½Â° ï¿½Ú½ï¿½(ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ú½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         List<Transform> validSpawnPoints = new List<Transform>();
         for (int i = 1; i < spawnPoints.Length; i++)
         {
             validSpawnPoints.Add(spawnPoints[i]);
         }
 
-        // À¯È¿ÇÑ ½ºÆù Æ÷ÀÎÆ®°¡ ÀÖÀ» ¶§ ·£´ý ¼±ÅÃ
+        // ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (validSpawnPoints.Count > 0)
         {
             int randomIndex = Random.Range(0, validSpawnPoints.Count);
             return validSpawnPoints[randomIndex].position;
         }
 
-        return Vector3.zero; // ±âº»°ª
+        Debug.LogError("No valid spawn points found! Returning Vector3.zero."); // ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½
+        return Vector3.zero; // ï¿½âº»ï¿½ï¿½
     }
 
     private void ShowWarningUI()
     {
-        warningUI.SetActive(true); // UI È°¼ºÈ­
+        warningUI.SetActive(true); // UI È°ï¿½ï¿½È­
     }
 
     private void HideWarningUI()
     {
-        warningUI.SetActive(false); // UI ºñÈ°¼ºÈ­
+        warningUI.SetActive(false); // UI ï¿½ï¿½È°ï¿½ï¿½È­
     }
 }

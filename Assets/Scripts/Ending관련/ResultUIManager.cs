@@ -10,7 +10,7 @@ public class ResultUIManager : MonoBehaviour
 
     void Start()
     {
-        UpdateResult();
+        UpdateResult(); // 초기 UI 업데이트
     }
 
     public void UpdateResult()
@@ -55,4 +55,16 @@ public class ResultUIManager : MonoBehaviour
         }
     }
 
+    public void UpdateResultFromTrashCounts(TrashCount[] trashCounts)
+    {
+        if (trashCounts != null && trashCounts.Length >= 2)
+        {
+            player1TotalText.text = trashCounts[0].GetTotalTrashCount().ToString();
+            player2TotalText.text = trashCounts[1].GetTotalTrashCount().ToString();
+        }
+        else
+        {
+            Debug.LogError("Trash counts are null or insufficient.");
+        }
+    }
 }
