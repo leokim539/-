@@ -223,7 +223,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
         UpdateTaskUI(objectName);
 
 
-        //photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash.GetPhotonView().ViewID);
+        photonView.RPC("DestroyItem", RpcTarget.Others, currentTrash);
     }
     void UpdateTaskUI(string objectName)
     {
@@ -268,6 +268,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 Debug.LogWarning(currentItem);
                 itemCanUse = true;
             } // 선택된 주문 이름에 따라 이미지 업데이트
+            photonView.RPC("DestroyItem", RpcTarget.Others, currentTrash);
         }        
         else if (currentTrash.CompareTag("UseItem"))
         {
@@ -282,6 +283,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 Debug.LogWarning(currentItem);
                 itemCanUse = true;
             } // 선택된 주문 이름에 따라 이미지 업데이트
+            photonView.RPC("DestroyItem", RpcTarget.Others, currentTrash);
         }
         HideUI();
     }
@@ -301,7 +303,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             case "정상수"://테이져건 상대 5초간 못움직임
                 if (PhotonNetwork.IsConnected)
                 {
-                    StartCoroutine(TaserGun());
+                    photonView.RPC("TaserGuns" , RpcTarget.Others);
                 }
                 else Debug.Log("정상수");
                 break;
@@ -463,21 +465,25 @@ public class Trash2 : MonoBehaviourPunCallbacks
         }
         else yield return null;
     }
-
+    [PunRPC]
+    public void TaserGuns()
+    {
+        StartCoroutine(TaserGun());
+    }
     public IEnumerator TaserGun()
     {
         if (spoon)
         {
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            /*GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in players)
             {
                 if (player != gameObject) // 자신이 아닌 플레이어
-                {
+                {*/
                     firstPersonController.canMove = false;
                     yield return new WaitForSeconds(5f);
                     firstPersonController.canMove = true;
-                }
-            }
+                /*}
+            }*/
         }
         else yield return null;
     }
@@ -674,6 +680,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
     private void PlaySoundForLocalPlayer()
     {
         soundManager.PoopSound();
+    }
+    public void DestroyItem(GameObject item)
+    {
+        item.SetActive(false);
     }
     public IEnumerator CollectItem(GameObject item)
     {
