@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI; // UI를 사용하기 위한 네임스페이스
 using Photon.Pun;
 using Unity.VisualScripting;
+using Photon.Realtime;
 
 public class Trash2 : MonoBehaviourPunCallbacks
 {
@@ -164,7 +165,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     if (Input.GetKey(KeyCode.F))
                     {
                         currentTrash = hit.collider.gameObject;
-                        ConsumeTrash();
+                        if (currentTrash != null) // currentTrash가 null인지 확인
+                        {
+                            ConsumeTrash(currentTrash); // currentTrash를 인자로 전달
+                        }
                     }
                 }
                 else if (hit.collider.CompareTag("UseItem"))
@@ -172,7 +176,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     if (Input.GetKey(KeyCode.F))
                     {
                         currentTrash = hit.collider.gameObject;
-                        ConsumeDangerTrash();
+                        ConsumeDangerTrash(currentTrash);
                     } 
                 }
                 else if (hit.collider.CompareTag("Item"))
@@ -181,7 +185,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     {
                         item = hit.collider.gameObject.name;
                         currentTrash = hit.collider.gameObject;
-                        ConsumeDangerTrash();
+                        ConsumeDangerTrash(currentTrash);
                     }
                 }
                 else
@@ -208,22 +212,32 @@ public class Trash2 : MonoBehaviourPunCallbacks
         progressBar.value = 0f; 
     }
 
-    void ConsumeTrash()
+    void ConsumeTrash(GameObject trash)
     {
+        if (trash == null) // trash가 null인지 확인
+        {
+            Debug.LogError("Trash object is null!");
+            return; // null인 경우 메서드 종료
+        }
+
+        if (trashManager == null) // trashManager가 null인지 확인
+        {
+            Debug.LogError("TrashManager is null!");
+            return; // null인 경우 메서드 종료
+        }
         if (trashManager.scary + Trashscary >= 100)
         {
             return; // 공포치가 100 이상이면 소비하지 않음
         }
 
-        string objectName = currentTrash.name;
+        string objectName = trash.name;
         StartCoroutine(CollectItem(currentTrash)); // 아이템 수집 효과 실행
         trashManager.scary += Trashscary;
         trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
 
         UpdateTaskUI(objectName);
 
-
-        photonView.RPC("DestroyItem", RpcTarget.Others, currentTrash);
+        photonView.RPC("DestroyItem", RpcTarget.Others, trash.GetComponent<PhotonView>().ViewID);
     }
     void UpdateTaskUI(string objectName)
     {
@@ -252,11 +266,11 @@ public class Trash2 : MonoBehaviourPunCallbacks
             taskUIManager.StoreTrashBagCount(); // 카운트 저장
         }
     }
-    void ConsumeDangerTrash()
+    void ConsumeDangerTrash(GameObject trash)
     {
         currentItem = null; // 현재 아이템 초기화
         ItemImage.sprite = null; // UI 이미지 초기화
-        if (currentTrash.CompareTag("Item"))
+        if (trash.CompareTag("Item"))
         {
             currentItem = item;
             int index = System.Array.IndexOf(ItemNames, currentItem); // 아이템 이름의 인덱스 찾기
@@ -268,9 +282,18 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 Debug.LogWarning(currentItem);
                 itemCanUse = true;
             } // 선택된 주문 이름에 따라 이미지 업데이트
-            photonView.RPC("DestroyItem", RpcTarget.All, currentTrash);
+            PhotonView trashPhotonView = trash.GetComponent<PhotonView>();
+            if (trashPhotonView != null)
+            {
+                Debug.Log(trashPhotonView.ViewID);
+                photonView.RPC("DestroyItem", RpcTarget.All, trashPhotonView.ViewID);
+            }
+            else
+            {
+                Debug.LogError("지금 못찾음");
+            }
         }        
-        else if (currentTrash.CompareTag("UseItem"))
+        else if (trash.CompareTag("UseItem"))
         {
             int randomIndex = Random.Range(0, ItemNames.Length); // 랜덤 인덱스 생성
             currentItem = ItemNames[randomIndex]; // 랜덤으로 선택된 아이템 이름
@@ -283,12 +306,20 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 Debug.LogWarning(currentItem);
                 itemCanUse = true;
             } // 선택된 주문 이름에 따라 이미지 업데이트
-            photonView.RPC("DestroyItem", RpcTarget.All, currentTrash);
+            PhotonView trashPhotonView = trash.GetComponent<PhotonView>();
+            if (trashPhotonView != null)
+            {
+                photonView.RPC("DestroyItem", RpcTarget.All, trashPhotonView.ViewID);
+            }
+            else
+            {
+                Debug.LogError("지금 못찾음");
+            }
         }
         HideUI();
     }
     
-    void ItemUse(string item)
+    public void ItemUse(string item)
     {
         switch(item)
         {
@@ -303,8 +334,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
             case "정상수"://테이져건 상대 5초간 못움직임
                 if (PhotonNetwork.IsConnected)
                 {
+                    Debug.Log("123");
                     photonView.RPC("TaserGuns", RpcTarget.Others);
-                    
+                    Debug.Log("567");
                 }
                 else Debug.Log("정상수");
                 break;
@@ -470,19 +502,23 @@ public class Trash2 : MonoBehaviourPunCallbacks
     [PunRPC]
     public void TaserGuns()
     {
+        Debug.Log("456");
         StartCoroutine(TaserGun());
+        
     }
     public IEnumerator TaserGun()
     {
         if (spoon)
         {
-            
-                    firstPersonController.canMove = false;
-                    yield return new WaitForSeconds(5f);
-                    firstPersonController.canMove = true;
-                
+            if (firstPersonController != null)
+            {
+                Debug.Log("코루틴 진입");
+                firstPersonController.canMove = false; // 상대방의 이동 비활성화
+                yield return new WaitForSeconds(5f); // 5초 대기
+                firstPersonController.canMove = true; // 상대방의 이동 활성화
+            }
         }
-        else yield return null;
+        else yield return null; // 타겟이 없을 경우
     }
     [PunRPC] 
     public void TrashCanSpawns()
@@ -678,9 +714,15 @@ public class Trash2 : MonoBehaviourPunCallbacks
     {
         soundManager.PoopSound();
     }
-    public void DestroyItem(GameObject item)
+    [PunRPC]
+    public void DestroyItem(int viewID)
     {
-        item.SetActive(false);
+        PhotonView view = PhotonView.Find(viewID);
+        Debug.Log("viewID");
+        if (view != null)
+        {
+            Destroy(view.gameObject); // 해당 오브젝트 삭제
+        }
     }
     public IEnumerator CollectItem(GameObject item)
     {

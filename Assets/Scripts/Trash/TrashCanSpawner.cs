@@ -23,7 +23,7 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상속
         }
     }
 
-    private IEnumerator SpawnTrashCanCoroutine()
+    public IEnumerator SpawnTrashCanCoroutine()
     {
         // 스폰 TrashCan
         photonView.RPC("SpawnTrashCan", RpcTarget.All);
@@ -31,7 +31,7 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상속
     }
 
     [PunRPC]
-    private void SpawnTrashCan()
+    public void SpawnTrashCan()
     {
         // 이미 TrashCan이 존재하는 경우, 새로 생성하지 않음
         if (currentTrashCan != null)
