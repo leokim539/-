@@ -667,10 +667,10 @@ MonoBehaviour:
   effectDuration: 5
   trashCanSpawn: TrashCanSpawn
   baNaNaPrefab: {fileID: 0}
-  hacking: 0
+  hacking: 1
   smartPhone: 1
-  handCream: 0
-  spoon: 0
+  handCream: 1
+  spoon: 1
 --- !u!114 &-4829004366119847647
 MonoBehaviour:
   m_ObjectHideFlags: 0
