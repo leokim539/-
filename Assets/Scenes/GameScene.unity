@@ -697,7 +697,6 @@ RectTransform:
   - {fileID: 862151949}
   - {fileID: 1548865299}
   - {fileID: 85989989}
-  - {fileID: 982814248}
   - {fileID: 2053443832}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7620,6 +7619,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 706953348}
+  - component: {fileID: 706953350}
   - component: {fileID: 706953349}
   m_Layer: 0
   m_Name: TrashSpawn
@@ -7677,8 +7677,30 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a7c69e2803a36fd4f8d037a01028cd9d, type: 2}
   trashBagTypes:
   - {fileID: 11400000, guid: 73cd465487637814f8dabdefa7982e93, type: 2}
-  objectsPerType: 5
+  objectsPerType: 2
   spawnPointsParent: {fileID: 706953348}
+--- !u!114 &706953350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706953347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 12
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!4 &710611643 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6374892919127208961, guid: 6ad89da712c5f7644a57fc65ee38b3ee, type: 3}
@@ -8045,8 +8067,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1235616795}
-  totalTime: 60
-  GameEndUI: {fileID: 1223218264}
+  totalTime: 80
+  GameEndUI: {fileID: 1444120271}
 --- !u!4 &749116330
 Transform:
   m_ObjectHideFlags: 0
@@ -8836,6 +8858,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 848987021}
+  - component: {fileID: 848987023}
   - component: {fileID: 848987022}
   m_Layer: 0
   m_Name: TrashCanSpawn
@@ -8884,6 +8907,28 @@ MonoBehaviour:
   spawnInterval: 60
   spawnPointsParent: {fileID: 848987021}
   warningUI: {fileID: 125251918}
+--- !u!114 &848987023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848987020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 13
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &850717131
 GameObject:
   m_ObjectHideFlags: 0
@@ -11337,6 +11382,7 @@ GameObject:
   - component: {fileID: 982814247}
   - component: {fileID: 982814246}
   - component: {fileID: 982814245}
+  - component: {fileID: 982814249}
   m_Layer: 5
   m_Name: Canvas_End
   m_TagString: Untagged
@@ -11414,19 +11460,31 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 982814244}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.41666663, y: 0.41666663, z: 0.41666663}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1444120272}
-  m_Father: {fileID: 84809174}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 400.00006, y: 225.00003}
-  m_SizeDelta: {x: 1920, y: 1080}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
+--- !u!114 &982814249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982814244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b18b9a72189e83e44b4d87d9a469479e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &999205843
 GameObject:
   m_ObjectHideFlags: 0
@@ -19508,7 +19566,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 50}
+  m_SizeDelta: {x: 1000, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1223218266
 MonoBehaviour:
@@ -31305,3 +31363,4 @@ SceneRoots:
   - {fileID: 1549806789}
   - {fileID: 850717136}
   - {fileID: 27220368}
+  - {fileID: 982814248}

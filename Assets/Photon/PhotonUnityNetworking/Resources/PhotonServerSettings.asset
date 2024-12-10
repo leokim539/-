@@ -62,6 +62,18 @@ MonoBehaviour:
   - RPC_StoreCylinderCount
   - RPC_StoreSquareCount
   - RPC_StoreTrashBagCount
+  - SendScoreToPlayers
+  - UpdatePlayerScore
+  - SyncTrashCount
+  - UpdateResultUI
+  - RPC_MoveTrashCan
+  - RPC_ShowWarningUI
+  - RPC_SpawnObjects
+  - SpawnObjects
+  - SpawnTrashCan
+  - SyncPlayerInfo
+  - MoveTrashCanRPC
+  - AddTrashRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
