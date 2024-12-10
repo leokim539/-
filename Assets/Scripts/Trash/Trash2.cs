@@ -222,8 +222,8 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         UpdateTaskUI(objectName);
 
-
-        //photonView.RPC("RPC_CollectItem", RpcTarget.Others, currentTrash.GetPhotonView().ViewID);
+        
+        photonView.RPC("DestroyItem", RpcTarget.Others, currentTrash);
     }
     void UpdateTaskUI(string objectName)
     {
@@ -268,6 +268,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 Debug.LogWarning(currentItem);
                 itemCanUse = true;
             } // 선택된 주문 이름에 따라 이미지 업데이트
+            photonView.RPC("DestroyItem", RpcTarget.Others, currentTrash);
         }        
         else if (currentTrash.CompareTag("UseItem"))
         {
@@ -282,6 +283,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 Debug.LogWarning(currentItem);
                 itemCanUse = true;
             } // 선택된 주문 이름에 따라 이미지 업데이트
+            photonView.RPC("DestroyItem", RpcTarget.Others, currentTrash);
         }
         HideUI();
     }
@@ -674,6 +676,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
     private void PlaySoundForLocalPlayer()
     {
         soundManager.PoopSound();
+    }
+    public void DestroyItem(GameObject item)
+    {
+        item.SetActive(false);
     }
     public IEnumerator CollectItem(GameObject item)
     {

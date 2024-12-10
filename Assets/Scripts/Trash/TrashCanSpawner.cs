@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 using UnityEngine.UI; // UI 관련 네임스페이스 추가
 
-public class TrashCanSpawner : MonoBehaviour
+public class TrashCanSpawner : MonoBehaviourPunCallbacks
 {
     public GameObject trashCanPrefab; // TrashCan 프리팹
     public float spawnInterval = 30f; // 스폰 간격 (30초)
@@ -15,8 +16,7 @@ public class TrashCanSpawner : MonoBehaviour
     public void Start()
     {
         // TrashCan 생성
-        currentTrashCan = Instantiate(trashCanPrefab, GetRandomSpawnPosition(), Quaternion.identity);
-
+        SpawnTrashCan();
         // 코루틴 시작
         StartCoroutine(MoveTrashCan());
     }
@@ -57,10 +57,17 @@ public class TrashCanSpawner : MonoBehaviour
             Vector3 newPosition = validSpawnPoints[randomIndex].position;
 
             // TrashCan 이동
-            currentTrashCan.transform.position = newPosition;
+            if (currentTrashCan != null)
+            {
+                currentTrashCan.transform.position = newPosition;
+            }
         }
     }
-
+    public void SpawnTrashCan()
+    {
+        Vector3 spawnPosition = GetRandomSpawnPosition();
+        currentTrashCan = PhotonNetwork.Instantiate(trashCanPrefab.name, spawnPosition, Quaternion.identity, 0);
+    }
     private Vector3 GetRandomSpawnPosition()
     {
         // SpawnPoints의 자식 오브젝트를 가져옴
