@@ -2009,9 +2009,9 @@ MonoBehaviour:
   - {fileID: 177881319}
   - {fileID: 850067731}
   objectImages:
-  - {fileID: 21300000, guid: a7d255cf3fd24c049b4b06c1b7d86f2c, type: 3}
-  - {fileID: 21300000, guid: 3dec6fc9eec1d93498d7aa780a39f08b, type: 3}
-  - {fileID: 21300000, guid: 5d5ecd1331a78d143af721edc3732757, type: 3}
+  - {fileID: 21300000, guid: f2dc0b18f76656043a0ec49d02f225ce, type: 3}
+  - {fileID: 21300000, guid: 73bacb84dd9efb941931f19cda5e6ea5, type: 3}
+  - {fileID: 21300000, guid: 73bacb84dd9efb941931f19cda5e6ea5, type: 3}
   interactionDistance: 5
 --- !u!1 &201497614
 GameObject:

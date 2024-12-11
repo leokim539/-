@@ -630,13 +630,13 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   ItemImage: {fileID: 0}
   ItemSprites:
-  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
+  - {fileID: 21300000, guid: d8115e9efebf4194b8262456b1bf664a, type: 3}
   - {fileID: 21300000, guid: 3dec6fc9eec1d93498d7aa780a39f08b, type: 3}
   - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
   - {fileID: 21300000, guid: cb206d1c7517a814ea4b69bb583d9e24, type: 3}
-  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
-  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
-  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
+  - {fileID: 21300000, guid: 73bacb84dd9efb941931f19cda5e6ea5, type: 3}
+  - {fileID: 21300000, guid: 73bacb84dd9efb941931f19cda5e6ea5, type: 3}
+  - {fileID: 21300000, guid: 73bacb84dd9efb941931f19cda5e6ea5, type: 3}
   - {fileID: 21300000, guid: 116a8ce2eba389249bcca6303ea55a95, type: 3}
   - {fileID: 21300000, guid: 5d5ecd1331a78d143af721edc3732757, type: 3}
   - {fileID: 21300000, guid: c584ebba8d9dc1c42a6788f2ed727c43, type: 3}
@@ -644,8 +644,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 246ce2693008c7548b8113c9c80f9130, type: 3}
   - {fileID: 21300000, guid: c59cdc506cc328a49ae51c25cc7ec830, type: 3}
   - {fileID: 21300000, guid: e3611c3e8be74ab43bcb19f9508014fe, type: 3}
-  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
-  - {fileID: 21300000, guid: 7eed5e5b8f9edba47942287dd2341d22, type: 3}
+  - {fileID: 21300000, guid: bc148a83e28ed3d4d80d41aca1e114b2, type: 3}
+  - {fileID: 21300000, guid: bc148a83e28ed3d4d80d41aca1e114b2, type: 3}
   - {fileID: 21300000, guid: 1d546b150b742a5469a866140f68a1da, type: 3}
   ItemNames:
   - "\uC548\uB300\uD22C\uCC99"
