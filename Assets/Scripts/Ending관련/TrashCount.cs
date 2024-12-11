@@ -4,56 +4,29 @@ using Photon.Pun;
 public class TrashCount : MonoBehaviourPunCallbacks
 {
     [SerializeField] private int totalTrashCount = 0;
-    private TrashCount[] trashCounts; // TrashCount 배열 선언
 
     public void AddTrash(int count)
     {
-        if (count > 0)
+        // 오직 이 플레이어 오브젝트의 소유자만 카운트 추가 가능
+        if (photonView.IsMine)
         {
-            // 포톤 RPC를 통해 쓰레기 수를 추가
-            photonView.RPC("AddTrashRPC", RpcTarget.All, count);
+            totalTrashCount += count;
+
+            // 모든 클라이언트에 동기화
+            photonView.RPC("SyncTrashCount", RpcTarget.All, totalTrashCount);
         }
     }
 
     [PunRPC]
-    private void AddTrashRPC(int count)
+    private void SyncTrashCount(int count)
     {
-        if (count > 0)
-        {
-            totalTrashCount += count;
-            LogTrashCount(); // 쓰레기 수 로그 출력
+        totalTrashCount = count;
 
-            // 모든 플레이어의 쓰레기 수를 업데이트
-            UpdateAllPlayerInfos();
-        }
-    }
-
-    private void UpdateAllPlayerInfos()
-    {
+        // 모든 클라이언트의 ResultUIManager 업데이트
         ResultUIManager resultUIManager = FindObjectOfType<ResultUIManager>();
         if (resultUIManager != null)
         {
-            PlayerInfo[] playerInfos = new PlayerInfo[PhotonNetwork.PlayerList.Length];
-
-            for (int i = 0; i < playerInfos.Length; i++)
-            {
-                string playerName = PhotonNetwork.PlayerList[i].NickName;
-
-                // 각 플레이어의 쓰레기 수를 가져오기
-                int trashCount = 0;
-                if (trashCounts != null && trashCounts[i] != null)
-                {
-                    trashCount = trashCounts[i].GetTotalTrashCount(); // 각 플레이어의 쓰레기 수를 가져옴
-                }
-
-                playerInfos[i] = new PlayerInfo(playerName, trashCount);
-            }
-
-            resultUIManager.UpdateResult(playerInfos);
-        }
-        else
-        {
-            Debug.LogError("ResultUIManager not found in the scene.");
+            resultUIManager.UpdateResultFromTrashCounts(FindObjectsOfType<TrashCount>());
         }
     }
 

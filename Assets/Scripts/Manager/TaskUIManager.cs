@@ -207,10 +207,10 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
         ResultUIManager resultUIManager = FindObjectOfType<ResultUIManager>();
         if (resultUIManager != null)
         {
-            resultUIManager.UpdateResult(playerInfos); // 플레이어 정보 전달
+            // PlayerInfo 배열을 사용하여 결과 업데이트
+            resultUIManager.UpdateResultFromTrashCounts(FindObjectsOfType<TrashCount>());
         }
 
-        // 여기서는 씬 전환을 하지 않음
         Debug.Log("Game ended and data saved."); // 디버그 로그 추가
     }
 
