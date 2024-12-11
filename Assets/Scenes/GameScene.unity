@@ -2957,7 +2957,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4539135129340528, guid: 0b50edd1ab1ea9c4ba8edc42f1b15181, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 2.38
       objectReference: {fileID: 0}
     - target: {fileID: 4539135129340528, guid: 0b50edd1ab1ea9c4ba8edc42f1b15181, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2965,7 +2965,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4539135129340528, guid: 0b50edd1ab1ea9c4ba8edc42f1b15181, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1.76
       objectReference: {fileID: 0}
     - target: {fileID: 4539135129340528, guid: 0b50edd1ab1ea9c4ba8edc42f1b15181, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3004,6 +3004,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b50edd1ab1ea9c4ba8edc42f1b15181, type: 3}
+--- !u!1 &274115463 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1244528808271462, guid: 0b50edd1ab1ea9c4ba8edc42f1b15181, type: 3}
+  m_PrefabInstance: {fileID: 274115462}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &278117392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7725,7 +7730,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a7c69e2803a36fd4f8d037a01028cd9d, type: 2}
   trashBagTypes:
   - {fileID: 11400000, guid: 73cd465487637814f8dabdefa7982e93, type: 2}
-  objectsPerType: 2
+  objectsPerType: 5
   spawnPointsParent: {fileID: 706953348}
 --- !u!114 &706953350
 MonoBehaviour:
@@ -9096,7 +9101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48ac6770b1f0812479c3e98b210a7138, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trashCanPrefab: {fileID: 1244528808271462, guid: 0b50edd1ab1ea9c4ba8edc42f1b15181, type: 3}
+  trashCan: {fileID: 274115463}
   spawnInterval: 60
   spawnPointsParent: {fileID: 848987021}
   warningUI: {fileID: 125251918}

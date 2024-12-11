@@ -4,19 +4,22 @@ using Photon.Pun;
 
 public class TrashSpawner : MonoBehaviourPunCallbacks
 {
-    public BeerCanObjectData[] beerCanTypes;
-    public PetBottleObjectData[] petBottleTypes;
-    public TrashBagObjectData[] trashBagTypes;
-    public int objectsPerType = 5;
-    public Transform spawnPointsParent;
+    public BeerCanObjectData[] beerCanTypes; // BeerCanObjectData 배열
+    public PetBottleObjectData[] petBottleTypes; // PetBottleObjectData 배열
+    public TrashBagObjectData[] trashBagTypes; // TrashBagObjectData 배열
+    public int objectsPerType = 5; // 각 타입당 생성할 객체 수
+    public Transform spawnPointsParent; // 스폰 포인트 부모 객체
 
-    private HashSet<Vector3> occupiedPositions = new HashSet<Vector3>();
-    private bool hasSpawned = false;
+    private HashSet<Vector3> occupiedPositions = new HashSet<Vector3>(); // 이미 점유된 위치
+    private bool hasSpawned = false; // 스폰 상태
 
     void Start()
     {
-        // 모든 클라이언트에서 스폰 실행
-        SpawnObjects();
+        // 마스터 클라이언트에서만 스폰 실행
+        if (PhotonNetwork.IsMasterClient)
+        {
+            SpawnObjects();
+        }
     }
 
     void SpawnObjects()
@@ -25,23 +28,6 @@ public class TrashSpawner : MonoBehaviourPunCallbacks
         if (hasSpawned)
         {
             Debug.Log("스폰 이미 완료됨. 종료.");
-            return;
-        }
-
-        // 모든 클라이언트에게 스폰을 알리기 위해 RPC 호출
-        photonView.RPC("RPC_SpawnObjects", RpcTarget.All);
-    }
-
-    [PunRPC]
-    void RPC_SpawnObjects()
-    {
-        // 메서드 호출 로그
-        Debug.Log("RPC_SpawnObjects 호출됨");
-
-        // 이미 스폰된 경우 종료
-        if (hasSpawned)
-        {
-            Debug.Log("이미 스폰됨. 종료.");
             return;
         }
 
@@ -59,53 +45,53 @@ public class TrashSpawner : MonoBehaviourPunCallbacks
         }
 
         // 각 타입에 대해 오브젝트 생성
-        SpawnTrash(beerCanTypes, validSpawnPoints);
-        SpawnTrash(petBottleTypes, validSpawnPoints);
-        SpawnTrash(trashBagTypes, validSpawnPoints);
+        SpawnBeerCans(validSpawnPoints);
+        SpawnPetBottles(validSpawnPoints);
+        SpawnTrashBags(validSpawnPoints);
 
-        Debug.Log("RPC_SpawnObjects 실행 완료");
+        Debug.Log("스폰 객체 생성 완료");
     }
 
-    void SpawnTrash(BeerCanObjectData[] trashTypes, List<Transform> validSpawnPoints)
+    void SpawnBeerCans(List<Transform> validSpawnPoints)
     {
-        foreach (var trash in trashTypes)
+        foreach (var beerCan in beerCanTypes)
         {
             for (int i = 0; i < objectsPerType; i++)
             {
                 Vector3 spawnPosition = GetUniqueSpawnPosition(validSpawnPoints);
                 if (spawnPosition == Vector3.zero) break; // 유효한 위치가 없으면 종료
 
-                PhotonNetwork.Instantiate(trash.prefab.name, spawnPosition, Quaternion.identity, 0);
+                PhotonNetwork.Instantiate(beerCan.prefab.name, spawnPosition, Quaternion.identity, 0);
                 occupiedPositions.Add(spawnPosition);
             }
         }
     }
 
-    void SpawnTrash(PetBottleObjectData[] trashTypes, List<Transform> validSpawnPoints)
+    void SpawnPetBottles(List<Transform> validSpawnPoints)
     {
-        foreach (var trash in trashTypes)
+        foreach (var petBottle in petBottleTypes)
         {
             for (int i = 0; i < objectsPerType; i++)
             {
                 Vector3 spawnPosition = GetUniqueSpawnPosition(validSpawnPoints);
                 if (spawnPosition == Vector3.zero) break; // 유효한 위치가 없으면 종료
 
-                PhotonNetwork.Instantiate(trash.prefab.name, spawnPosition, Quaternion.identity, 0);
+                PhotonNetwork.Instantiate(petBottle.prefab.name, spawnPosition, Quaternion.identity, 0);
                 occupiedPositions.Add(spawnPosition);
             }
         }
     }
 
-    void SpawnTrash(TrashBagObjectData[] trashTypes, List<Transform> validSpawnPoints)
+    void SpawnTrashBags(List<Transform> validSpawnPoints)
     {
-        foreach (var trash in trashTypes)
+        foreach (var trashBag in trashBagTypes)
         {
             for (int i = 0; i < objectsPerType; i++)
             {
                 Vector3 spawnPosition = GetUniqueSpawnPosition(validSpawnPoints);
                 if (spawnPosition == Vector3.zero) break; // 유효한 위치가 없으면 종료
 
-                PhotonNetwork.Instantiate(trash.prefab.name, spawnPosition, Quaternion.identity, 0);
+                PhotonNetwork.Instantiate(trashBag.prefab.name, spawnPosition, Quaternion.identity, 0);
                 occupiedPositions.Add(spawnPosition);
             }
         }
