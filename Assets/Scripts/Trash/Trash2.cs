@@ -101,6 +101,11 @@ public class Trash2 : MonoBehaviourPunCallbacks
         effectTrash = FindObjectOfType<EffectTrash>();
     }
 
+    public void UpdateTrashCanReference(GameObject trashCanReference)
+    {
+        trashCan = trashCanReference.GetComponent<TrashCan>();
+    }
+
     void Update()
     {
         if (photonView.IsMine)
