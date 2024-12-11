@@ -33,20 +33,25 @@ public class TrashCount : MonoBehaviourPunCallbacks
         if (resultUIManager != null)
         {
             PlayerInfo[] playerInfos = new PlayerInfo[PhotonNetwork.PlayerList.Length];
+
             for (int i = 0; i < playerInfos.Length; i++)
             {
                 string playerName = PhotonNetwork.PlayerList[i].NickName;
 
-                // 각 플레이어의 쓰레기 수를 저장
-                int trashCount = (PhotonNetwork.PlayerList[i].ActorNumber == photonView.Owner.ActorNumber)
-                                 ? totalTrashCount
-                                 : 0; // 상대방의 쓰레기 수는 0으로 초기화
+                // 각 플레이어의 쓰레기 수를 가져오기
+                int trashCount = 0;
+                if (trashCounts[i] != null)
+                {
+                    trashCount = trashCounts[i].GetTotalTrashCount(); // 각 플레이어의 쓰레기 수를 가져옴
+                }
 
                 playerInfos[i] = new PlayerInfo(playerName, trashCount);
             }
+
             resultUIManager.UpdateResult(playerInfos);
         }
     }
+
 
     public int GetTotalTrashCount()
     {
