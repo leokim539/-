@@ -1,30 +1,36 @@
 using UnityEngine;
-using Photon.Pun; // 포톤 관련 네임스페이스 추가
+using Photon.Pun;
 
 public class TrashCount : MonoBehaviourPunCallbacks
 {
-    [SerializeField] private int totalTrashCount;
+    [SerializeField] private int totalTrashCount = 0;
 
     public void AddTrash(int count)
     {
-        if (count > 0)
+        // 오직 이 플레이어 오브젝트의 소유자만 카운트 추가 가능
+        if (photonView.IsMine)
         {
-            // 포톤 RPC를 통해 쓰레기 수를 추가
-            photonView.RPC("AddTrashRPC", RpcTarget.All, count);
+            totalTrashCount += count;
+
+            // 모든 클라이언트에 동기화
+            photonView.RPC("SyncTrashCount", RpcTarget.All, totalTrashCount);
         }
     }
 
     [PunRPC]
-    private void AddTrashRPC(int count)
+    private void SyncTrashCount(int count)
     {
-        if (count > 0)
+        totalTrashCount = count;
+
+        // 모든 클라이언트의 ResultUIManager 업데이트
+        ResultUIManager resultUIManager = FindObjectOfType<ResultUIManager>();
+        if (resultUIManager != null)
         {
-            totalTrashCount += count;
-            LogTrashCount(); // 쓰레기 수 로그 출력
+            resultUIManager.UpdateResultFromTrashCounts(FindObjectsOfType<TrashCount>());
         }
     }
 
-    public int GetTotalTrashCount() // 이 메서드는 public으로 정의되어야 합니다.
+    public int GetTotalTrashCount()
     {
         return totalTrashCount;
     }

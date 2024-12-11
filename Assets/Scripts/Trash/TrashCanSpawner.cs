@@ -1,17 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // UI 관련 네임스페이스 추가
-using Photon.Pun; // 포톤 관련 네임스페이스 추가
+using UnityEngine.UI;
+using Photon.Pun;
 
-public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상속
+public class TrashCanSpawner : MonoBehaviourPunCallbacks
 {
-    public GameObject trashCanPrefab; // TrashCan 프리팹
-    public float spawnInterval = 30f; // 스폰 간격 (30초)
-    public Transform spawnPointsParent; // 스폰 포인트를 가진 빈 게임 오브젝트
-    public GameObject warningUI; // 경고 UI 객체
+    public GameObject trashCanPrefab;
+    public float spawnInterval = 30f;
+    public Transform spawnPointsParent;
+    public GameObject warningUI;
 
-    private GameObject currentTrashCan; // 현재 존재하는 TrashCan
+    private GameObject currentTrashCan;
 
     public void Start()
     {
@@ -27,7 +27,7 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상속
     {
         // 스폰 TrashCan
         photonView.RPC("SpawnTrashCan", RpcTarget.All);
-        yield return null; // 다음 프레임으로 넘어감
+        yield return null;
     }
 
     [PunRPC]
@@ -41,22 +41,35 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상속
         }
 
         Vector3 spawnPosition = GetRandomSpawnPosition();
-        Debug.Log("Spawning TrashCan at: " + spawnPosition); // 스폰 위치 디버깅
+        Debug.Log("Spawning TrashCan at: " + spawnPosition);
 
-        // TrashCan 인스턴스화
-        currentTrashCan = PhotonNetwork.Instantiate(trashCanPrefab.name, spawnPosition, Quaternion.identity);
+        // TrashCan 인스턴스화 - 주요 변경 부분
+        if (PhotonNetwork.IsMasterClient)
+        {
+            currentTrashCan = PhotonNetwork.Instantiate(trashCanPrefab.name, spawnPosition, Quaternion.identity);
 
-        // 생성된 TrashCan의 활성 상태 확인
-        if (currentTrashCan != null)
-        {
-            Debug.Log("TrashCan spawned successfully. Active: " + currentTrashCan.activeSelf);
-        }
-        else
-        {
-            Debug.LogError("Failed to spawn TrashCan. CurrentTrashCan is null.");
+            // 트래시캔 활성화 확인 및 강제 활성화
+            if (currentTrashCan != null)
+            {
+                PhotonView photonView = currentTrashCan.GetComponent<PhotonView>();
+                if (photonView != null)
+                {
+                    photonView.RPC("SetActiveRPC", RpcTarget.All, true);
+                }
+            }
         }
     }
 
+    // 새로 추가된 RPC 메서드
+    [PunRPC]
+    public void SetActiveRPC(bool active)
+    {
+        if (currentTrashCan != null)
+        {
+            currentTrashCan.SetActive(active);
+            Debug.Log($"TrashCan active state set to: {active}");
+        }
+    }
 
     public IEnumerator MoveTrashCan()
     {
@@ -64,15 +77,35 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상속
         {
             // 10초 전에 UI 활성화
             yield return new WaitForSeconds(spawnInterval - 10f);
-            ShowWarningUI();
+
+            // 모든 클라이언트에서 UI 활성화
+            photonView.RPC("ShowWarningUIRPC", RpcTarget.All);
 
             // 지정된 시간 동안 대기
             yield return new WaitForSeconds(5f);
-            HideWarningUI();
 
-            // 랜덤 위치로 TrashCan 이동
-            MoveToRandomPosition();
+            // 모든 클라이언트에서 UI 비활성화
+            photonView.RPC("HideWarningUIRPC", RpcTarget.All);
+
+            // 랜덤 위치로 TrashCan 이동 (마스터 클라이언트에서만 실행)
+            if (PhotonNetwork.IsMasterClient)
+            {
+                MoveToRandomPosition();
+            }
         }
+    }
+
+    // UI 관련 RPC 메서드 추가
+    [PunRPC]
+    private void ShowWarningUIRPC()
+    {
+        warningUI.SetActive(true);
+    }
+
+    [PunRPC]
+    private void HideWarningUIRPC()
+    {
+        warningUI.SetActive(false);
     }
 
     public void MoveToRandomPosition()
@@ -93,13 +126,15 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상속
             int randomIndex = Random.Range(0, validSpawnPoints.Count);
             Vector3 newPosition = validSpawnPoints[randomIndex].position;
 
-            // TrashCan 이동
-            Debug.Log("Moving TrashCan to: " + newPosition); // 이동 위치 디버깅
-            photonView.RPC("MoveTrashCanRPC", RpcTarget.All, newPosition); // 모든 클라이언트에서 이동
+            // TrashCan 이동 (마스터 클라이언트에서 모든 클라이언트에 RPC 호출)
+            if (PhotonNetwork.IsMasterClient)
+            {
+                photonView.RPC("MoveTrashCanRPC", RpcTarget.All, newPosition);
+            }
         }
         else
         {
-            Debug.LogWarning("No valid spawn points available!"); // 유효한 스폰 포인트가 없을 때 경고
+            Debug.LogWarning("No valid spawn points available!");
         }
     }
 
@@ -109,8 +144,14 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks // PhotonBehaviour 상속
         // 모든 클라이언트에서 TrashCan을 새로운 위치로 이동
         if (currentTrashCan != null)
         {
-            currentTrashCan.transform.position = newPosition;
-            Debug.Log("TrashCan moved to: " + newPosition); // 이동한 위치 로그
+            // PhotonView를 통해 네트워크 동기화 보장
+            PhotonView photonView = currentTrashCan.GetComponent<PhotonView>();
+            if (photonView != null && photonView.IsMine)
+            {
+                currentTrashCan.transform.position = newPosition;
+            }
+
+            Debug.Log("TrashCan moved to: " + newPosition);
         }
     }
 

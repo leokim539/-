@@ -1,15 +1,15 @@
 using Photon.Pun;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI; // UI¸¦ »ç¿ëÇÏ±â À§ÇÑ ³×ÀÓ½ºÆäÀÌ½º
+using UnityEngine.UI; // UIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½
 
 public class Trash2 : MonoBehaviourPunCallbacks
 {
-    [Header("»óÈ£ÀÛ¿ë °Å¸®")]
-    public float interactDistance = 5f; // ÇÃ·¹ÀÌ¾î¿Í ¿ÀºêÁ§Æ® °£ÀÇ ÃÖ´ë »óÈ£ÀÛ¿ë °Å¸®
+    [Header("ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½Å¸ï¿½")]
+    public float interactDistance = 5f; // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½Å¸ï¿½
 
-    [Header("¾²·¹±â ¸ÔÀ¸¸é ´Ã¾î³ª´Â ¾ç")]
-    public int Trashscary; // ¾²·¹±â ¸ÔÀ¸¸é Áõ°¡ÇÏ´Â °øÆ÷Ä¡
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¾î³ªï¿½ï¿½ ï¿½ï¿½")]
+    public int Trashscary; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
 
     private GameObject Manager;
     private TrashManager trashManager;
@@ -18,7 +18,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     private GameObject TrashCan;
     private TrashCan trashCan;
 
-    [Header("¾²·¹±â ÀÌ¸§")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½")]
     public string trash1;
     public string trash2;
     public string trash3;
@@ -28,40 +28,40 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
     public Camera ca;
 
-    [Header("UI °ü·Ã")]
+    [Header("UI ï¿½ï¿½ï¿½ï¿½")]
     public GameObject interactUI; // FÅ° UI
-    public Slider progressBar; // ¿øÇü °ÔÀÌÁö ½½¶óÀÌ´õ
-    public float maxHoldTime = 2f; // ÃÖ´ë È¦µå ½Ã°£
-    public float currentHoldTime = 0f; // ÇöÀç ´©¸£°í ÀÖ´Â ½Ã°£
-    private GameObject currentTrash; // ÇöÀç »óÈ£ÀÛ¿ë ÁßÀÎ ¾²·¹±â
+    public Slider progressBar; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½
+    public float maxHoldTime = 2f; // ï¿½Ö´ï¿½ È¦ï¿½ï¿½ ï¿½Ã°ï¿½
+    public float currentHoldTime = 0f; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ã°ï¿½
+    private GameObject currentTrash; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     private EffectTrash effectTrash;
     private bool _trashCan = false;
-    [Header("»ç¿îµå")]
+    [Header("ï¿½ï¿½ï¿½ï¿½")]
     public PlayerSound soundManager;
-    [Header("ÇÃ·¹ÀÌ¾î ¼³Á¤")]
-    public Transform playerTransform; // ÇÃ·¹ÀÌ¾îÀÇ TransformÀ» µå·¡±×ÇÏ¿© ÇÒ´ç
-    [Header("·£´ý ¾ÆÀÌÅÛ")]
-    public Image ItemImage; // ¾ÆÀÌÅÛ¸¦ Ç¥½ÃÇÒ UI Image
-    public Sprite[] ItemSprites; // ÁÖ¹® ÀÌ¸§¿¡ µû¶ó »ç¿ëÇÒ ½ºÇÁ¶óÀÌÆ® ¹è¿­
-    public string[] ItemNames; // ÁÖ¹® ÀÌ¸§ ¹è¿­
+    [Header("ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½")]
+    public Transform playerTransform; // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ Transformï¿½ï¿½ ï¿½å·¡ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ò´ï¿½
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    public Image ItemImage; // ï¿½ï¿½ï¿½ï¿½ï¿½Û¸ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ UI Image
+    public Sprite[] ItemSprites; // ï¿½Ö¹ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½è¿­
+    public string[] ItemNames; // ï¿½Ö¹ï¿½ ï¿½Ì¸ï¿½ ï¿½è¿­
     private bool itemCanUse = false;
-    private string currentItem; // ÇöÀç È¹µæÇÑ ¾ÆÀÌÅÛ ÀÌ¸§
-    private string item; // ÇöÀç È¹µæÇÑ ¾ÆÀÌÅÛ ÀÌ¸§
+    private string currentItem; // ï¿½ï¿½ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½
+    private string item; // ï¿½ï¿½ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½
     public GameObject speedUPParticleEffectPrefab;
-    [Header("½Ã¾ß °¡¸®±â ¾ÆÀÌÅÛ")]
-    public GameObject canvasPrefab; // ½Ã¾ß¸¦ °¡¸± Canvas ÇÁ¸®ÆÕ
-    public float effectDuration = 5f; // È¿°ú Áö¼Ó ½Ã°£
-    [Header("¾²·¹±âÅë À§Ä¡º¯°æ ¾ÆÀÌÅÛ")]
+    [Header("ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    public GameObject canvasPrefab; // ï¿½Ã¾ß¸ï¿½ ï¿½ï¿½ï¿½ï¿½ Canvas ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    public float effectDuration = 5f; // È¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
     public string trashCanSpawn = "TrashCanSpawn";
-    [Header("¹Ù³ª³ª")]
+    [Header("ï¿½Ù³ï¿½ï¿½ï¿½")]
     public GameObject baNaNaPrefab;
-    [Header("³ÊÇØÅ·")]
+    [Header("ï¿½ï¿½ï¿½ï¿½Å·")]
     public bool hacking = true;
-    [Header("½º¸¶Æ®Æù")]
+    [Header("ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½")]
     public bool smartPhone = true;
-    [Header("ÇÚµåÅ©¸²")]
+    [Header("ï¿½Úµï¿½Å©ï¿½ï¿½")]
     public bool handCream = true;
-    [Header("¼ù°¡¶ô")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
     public bool spoon = true;
 
     void Awake()
@@ -81,7 +81,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     }
     void Start()
     {
-        interactUI = GameObject.Find("F"); // Start¿¡¼­ Ã£±â
+        interactUI = GameObject.Find("F"); // Startï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½
         if (interactUI == null)
         {
             Debug.LogError("Interact UI not found!");
@@ -93,8 +93,8 @@ public class Trash2 : MonoBehaviourPunCallbacks
         TrashCan = GameObject.Find("TrashCan");
         trashCan = TrashCan.GetComponent<TrashCan>();
         //firstPersonController = GetComponent<FirstPersonController>();
-        //progressBar.maxValue = maxHoldTime; // ½½¶óÀÌ´õÀÇ ÃÖ´ë °ª ¼³Á¤
-        //progressBar.value = 0; // ½½¶óÀÌ´õ ÃÊ±âÈ­
+        //progressBar.maxValue = maxHoldTime; // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        //progressBar.value = 0; // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½Ê±ï¿½È­
 
         ca = GetComponentInChildren<Camera>();
 
@@ -105,21 +105,21 @@ public class Trash2 : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
-            CheckForObject();//È®ÀÎ
+            CheckForObject();//È®ï¿½ï¿½
 
             if (itemCanUse && Input.GetKeyDown(KeyCode.E))
             {
                 if (smartPhone)
                 {
                     ItemUse(currentItem);
-                    currentItem = null; // ÇöÀç ¾ÆÀÌÅÛ ÃÊ±âÈ­
-                    ItemImage.sprite = null; // UI ÀÌ¹ÌÁö ÃÊ±âÈ­
+                    currentItem = null; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
+                    ItemImage.sprite = null; // UI ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
                     itemCanUse = false;
                 }
                 else if (!smartPhone)
                 {
-                    currentItem = null; // ÇöÀç ¾ÆÀÌÅÛ ÃÊ±âÈ­
-                    ItemImage.sprite = null; // UI ÀÌ¹ÌÁö ÃÊ±âÈ­
+                    currentItem = null; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
+                    ItemImage.sprite = null; // UI ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
                     itemCanUse = false;
                 }
             }
@@ -128,7 +128,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
         {
             if (Input.GetKey(KeyCode.F))
             {
-                currentHoldTime += Time.deltaTime; // ÃÊ´ç 1¾¿ Áõ°¡
+                currentHoldTime += Time.deltaTime; // ï¿½Ê´ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 progressBar.value = currentHoldTime;
                 if (currentHoldTime >= maxHoldTime)
                 {
@@ -150,8 +150,8 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
-            interactUI.SetActive(true); // UI Ç¥½Ã
-            progressBar.gameObject.SetActive(true); // ÁøÇà ¹Ù Ç¥½Ã
+            interactUI.SetActive(true); // UI Ç¥ï¿½ï¿½
+            progressBar.gameObject.SetActive(true); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ç¥ï¿½ï¿½
             if (handCream)
             {
                 if (hit.collider.CompareTag("TrashCan"))
@@ -163,9 +163,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     if (Input.GetKey(KeyCode.F))
                     {
                         currentTrash = hit.collider.gameObject;
-                        if (currentTrash != null) // currentTrash°¡ nullÀÎÁö È®ÀÎ
+                        if (currentTrash != null) // currentTrashï¿½ï¿½ nullï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
                         {
-                            ConsumeTrash(currentTrash); // currentTrash¸¦ ÀÎÀÚ·Î Àü´Þ
+                            ConsumeTrash(currentTrash); // currentTrashï¿½ï¿½ ï¿½ï¿½ï¿½Ú·ï¿½ ï¿½ï¿½ï¿½ï¿½
                         }
                     }
                 }
@@ -200,8 +200,8 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
     void HideUI()
     {
-        interactUI.SetActive(false); // UI ¼û±è
-        progressBar.gameObject.SetActive(false); // ÁøÇà ¹Ù ¼û±è
+        interactUI.SetActive(false); // UI ï¿½ï¿½ï¿½ï¿½
+        progressBar.gameObject.SetActive(false); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
     void ResetHold()
@@ -212,26 +212,26 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
     void ConsumeTrash(GameObject trash)
     {
-        if (trash == null) // trash°¡ nullÀÎÁö È®ÀÎ
+        if (trash == null) // trashï¿½ï¿½ nullï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         {
             Debug.LogError("Trash object is null!");
-            return; // nullÀÎ °æ¿ì ¸Þ¼­µå Á¾·á
+            return; // nullï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
 
-        if (trashManager == null) // trashManager°¡ nullÀÎÁö È®ÀÎ
+        if (trashManager == null) // trashManagerï¿½ï¿½ nullï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         {
             Debug.LogError("TrashManager is null!");
-            return; // nullÀÎ °æ¿ì ¸Þ¼­µå Á¾·á
+            return; // nullï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
         if (trashManager.scary + Trashscary >= 100)
         {
-            return; // °øÆ÷Ä¡°¡ 100 ÀÌ»óÀÌ¸é ¼ÒºñÇÏÁö ¾ÊÀ½
+            return; // ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ 100 ï¿½Ì»ï¿½ï¿½Ì¸ï¿½ ï¿½Òºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
 
         string objectName = trash.name;
-        StartCoroutine(CollectItem(currentTrash)); // ¾ÆÀÌÅÛ ¼öÁý È¿°ú ½ÇÇà
+        StartCoroutine(CollectItem(currentTrash)); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         trashManager.scary += Trashscary;
-        trashManager.UpdateScaryBar(); // °øÆ÷Ä¡ UI ¾÷µ¥ÀÌÆ®
+        trashManager.UpdateScaryBar(); // ï¿½ï¿½ï¿½ï¿½Ä¡ UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
         UpdateTaskUI(objectName);
 
@@ -241,45 +241,45 @@ public class Trash2 : MonoBehaviourPunCallbacks
     {
         if (objectName.Contains(trash1))
         {
-            taskUIManager.StoreCircleCount(); // Ä«¿îÆ® ÀúÀå
+            taskUIManager.StoreCircleCount(); // Ä«ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         }
         else if (objectName.Contains(trash2))
         {
-            taskUIManager.StoreCylinderCount(); // Ä«¿îÆ® ÀúÀå
+            taskUIManager.StoreCylinderCount(); // Ä«ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         }
         else if (objectName.Contains(trash3))
         {
-            taskUIManager.StoreSquareCount(); // Ä«¿îÆ® ÀúÀå
+            taskUIManager.StoreSquareCount(); // Ä«ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         }
         else if (objectName.Contains(trash4))
         {
-            taskUIManager.StoreBeerCanCount(); // Ä«¿îÆ® ÀúÀå
+            taskUIManager.StoreBeerCanCount(); // Ä«ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         }
         else if (objectName.Contains(trash5))
         {
-            taskUIManager.StorePetBottleCount(); // Ä«¿îÆ® ÀúÀå
+            taskUIManager.StorePetBottleCount(); // Ä«ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         }
         else if (objectName.Contains(trash6))
         {
-            taskUIManager.StoreTrashBagCount(); // Ä«¿îÆ® ÀúÀå
+            taskUIManager.StoreTrashBagCount(); // Ä«ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         }
     }
     void ConsumeDangerTrash(GameObject trash)
     {
-        currentItem = null; // ÇöÀç ¾ÆÀÌÅÛ ÃÊ±âÈ­
-        ItemImage.sprite = null; // UI ÀÌ¹ÌÁö ÃÊ±âÈ­
+        currentItem = null; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
+        ItemImage.sprite = null; // UI ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
         if (trash.CompareTag("Item"))
         {
             currentItem = item;
-            int index = System.Array.IndexOf(ItemNames, currentItem); // ¾ÆÀÌÅÛ ÀÌ¸§ÀÇ ÀÎµ¦½º Ã£±â
+            int index = System.Array.IndexOf(ItemNames, currentItem); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ Ã£ï¿½ï¿½
 
             //StartCoroutine(CollectItem(currentTrash));
             if (index >= 0 && index < ItemSprites.Length)
             {
-                ItemImage.sprite = ItemSprites[index]; // ÇØ´ç ÀÎµ¦½ºÀÇ ½ºÇÁ¶óÀÌÆ®·Î ÀÌ¹ÌÁö º¯°æ
+                ItemImage.sprite = ItemSprites[index]; // ï¿½Ø´ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 Debug.LogWarning(currentItem);
                 itemCanUse = true;
-            } // ¼±ÅÃµÈ ÁÖ¹® ÀÌ¸§¿¡ µû¶ó ÀÌ¹ÌÁö ¾÷µ¥ÀÌÆ®
+            } // ï¿½ï¿½ï¿½Ãµï¿½ ï¿½Ö¹ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
             PhotonView trashPhotonView = trash.GetComponent<PhotonView>();
             if (trashPhotonView != null)
             {
@@ -288,22 +288,22 @@ public class Trash2 : MonoBehaviourPunCallbacks
             }
             else
             {
-                Debug.LogError("Áö±Ý ¸øÃ£À½");
+                Debug.LogError("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã£ï¿½ï¿½");
             }
         }
         else if (trash.CompareTag("UseItem"))
         {
-            int randomIndex = Random.Range(0, ItemNames.Length); // ·£´ý ÀÎµ¦½º »ý¼º
-            currentItem = ItemNames[randomIndex]; // ·£´ýÀ¸·Î ¼±ÅÃµÈ ¾ÆÀÌÅÛ ÀÌ¸§
-            int index = System.Array.IndexOf(ItemNames, currentItem); // ¾ÆÀÌÅÛ ÀÌ¸§ÀÇ ÀÎµ¦½º Ã£±â
+            int randomIndex = Random.Range(0, ItemNames.Length); // ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            currentItem = ItemNames[randomIndex]; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½
+            int index = System.Array.IndexOf(ItemNames, currentItem); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ Ã£ï¿½ï¿½
 
             //StartCoroutine(CollectItem(currentTrash));
             if (index >= 0 && index < ItemSprites.Length)
             {
-                ItemImage.sprite = ItemSprites[index]; // ÇØ´ç ÀÎµ¦½ºÀÇ ½ºÇÁ¶óÀÌÆ®·Î ÀÌ¹ÌÁö º¯°æ
+                ItemImage.sprite = ItemSprites[index]; // ï¿½Ø´ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 Debug.LogWarning(currentItem);
                 itemCanUse = true;
-            } // ¼±ÅÃµÈ ÁÖ¹® ÀÌ¸§¿¡ µû¶ó ÀÌ¹ÌÁö ¾÷µ¥ÀÌÆ®
+            } // ï¿½ï¿½ï¿½Ãµï¿½ ï¿½Ö¹ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
             PhotonView trashPhotonView = trash.GetComponent<PhotonView>();
             if (trashPhotonView != null)
             {
@@ -311,7 +311,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             }
             else
             {
-                Debug.LogError("Áö±Ý ¸øÃ£À½");
+                Debug.LogError("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã£ï¿½ï¿½");
             }
         }
         HideUI();
@@ -321,40 +321,40 @@ public class Trash2 : MonoBehaviourPunCallbacks
     {
         switch (item)
         {
-            case "¾È´ëÅõÃ´"://»ó´ë ½Ã¾ß 5ÃÊ°£ ¾Èº¸ÀÓ
+            case "ï¿½È´ï¿½ï¿½ï¿½Ã´"://ï¿½ï¿½ï¿½ ï¿½Ã¾ï¿½ 5ï¿½Ê°ï¿½ ï¿½Èºï¿½ï¿½ï¿½
                 if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
                 {
                     ItemManager.instane.RPCUseSkill0();
                 }
-                else Debug.Log("¾È´ëÅõÃ´");
+                else Debug.Log("ï¿½È´ï¿½ï¿½ï¿½Ã´");
                 break;
 
-            case "Á¤»ó¼ö"://Å×ÀÌÁ®°Ç »ó´ë 5ÃÊ°£ ¸ø¿òÁ÷ÀÓ
+            case "ï¿½ï¿½ï¿½ï¿½ï¿½"://ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ 5ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
                     ItemManager.instane.RPCUseSkill1();
                 }
-                else Debug.Log("Á¤»ó¼ö");
+                else Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½");
                 break;
 
-            case "º¯ÇØ¶ó¾å"://¾²·¹±âÅë À§Ä¡ ·»´ý ¹Ù²Ù±â
+            case "ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½"://ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Ù±ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
 
                     photonView.RPC("TrashCanSpawns", RpcTarget.All);
                 }
-                else Debug.Log("º¯ÇØ¶ó¾å");
+                else Debug.Log("ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½");
                 break;
 
-            case "¾àÅë"://¶Ë½Î´Â¼Ò¸®(º¯ºñ¾à)
+            case "ï¿½ï¿½ï¿½ï¿½"://ï¿½Ë½Î´Â¼Ò¸ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½)
                 if (PhotonNetwork.IsConnected)
                 {
                     PlaySoundForLocalPlayer();
                 }
-                else Debug.Log("¾àÅë");
+                else Debug.Log("ï¿½ï¿½ï¿½ï¿½");
                 break;
 
-            case "»¡¶ù¹ö¼¸"://»¡¶óÁü
+            case "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"://ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
                     if (photonView.IsMine)
@@ -362,40 +362,40 @@ public class Trash2 : MonoBehaviourPunCallbacks
                         StartCoroutine(SpeedUP());
                         photonView.RPC("SpawnParticleEffect", RpcTarget.All, transform.position);
                     }
-                    else Debug.Log("»¡¶ó¹ö¼¸");
+                    else Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 }
                 break;
 
-            case "´À·Ç¹ö¼¸"://´À·ÁÁü
+            case "ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½ï¿½"://ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
 
                     StartCoroutine(SpeedDown());
                 }
-                else Debug.Log("´À·Á´À·Á¹ö¼¸");
+                else Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 break;
 
-            case "¾ø¼¸¹ö¼¸"://¾Æ¹«È¿°ú¾øÀ½
-                Debug.Log("¾ø¼¸¹ö¼¸");
+            case "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"://ï¿½Æ¹ï¿½È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 break;
 
-            case "³ë¶õ¹Ù³ª³ª"://µ£¼³Ä¡
+            case "ï¿½ï¿½ï¿½ï¿½Ù³ï¿½ï¿½ï¿½"://ï¿½ï¿½ï¿½ï¿½Ä¡
                 if (PhotonNetwork.IsConnected)
                 {
                     BaNaNa();
                 }
-                Debug.Log("³ë¶õ¹Ù³ª³ª");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½Ù³ï¿½ï¿½ï¿½");
                 break;
 
-            case "³ÊÇØÅ·"://»ó´ë 10ÃÊ°£ ¾ÆÀÌÅÛ »ç¿ëºÒ°¡
+            case "ï¿½ï¿½ï¿½ï¿½Å·"://ï¿½ï¿½ï¿½ 10ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò°ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
                     StartCoroutine(Hacking());
                 }
-                Debug.Log("³ÊÇØÅ·");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½Å·");
                 break;
 
-            case "ÈÞ´ë¿ë¾²·¹±âÅë"://»ó´ë 10ÃÊ°£ ¾ÆÀÌÅÛ »ç¿ëºÒ°¡
+            case "ï¿½Þ´ï¿½ë¾²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"://ï¿½ï¿½ï¿½ 10ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò°ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
                     if (photonView.IsMine)
@@ -403,10 +403,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
                         UseTrashCan();
                     }
                 }
-                Debug.Log("ÈÞ´ë¿ë¾²·¹±âÅë");
+                Debug.Log("ï¿½Þ´ï¿½ë¾²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 break;
 
-            case "¸®¸ðÄÁ"://Æ¼ºñ¼Ò¸®³ª¿È
+            case "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"://Æ¼ï¿½ï¿½Ò¸ï¿½ï¿½ï¿½ï¿½ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
                     if (photonView.IsMine)
@@ -414,58 +414,58 @@ public class Trash2 : MonoBehaviourPunCallbacks
                         TVOn();
                     }
                 }
-                Debug.Log("¸®¸ðÄÁ");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 break;
 
-            case "½º¸¶Æ®Æù"://ÀûÀÌ »ç¿ëÇÏ´Â ´ÙÀ½ ¾ÆÀÌÅÛ ¹«·ÂÈ­ 
+            case "ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½"://ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ 
                 if (PhotonNetwork.IsConnected)
                 {
                     SmartPhone();
                 }
-                Debug.Log("½º¸¶Æ®Æù");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½");
                 break;
 
-            case "ÇÚµåÅ©¸²":// 5ÃÊ°£ ¾Æ¹«°Íµµ ¼öÁýÇÒ ¼ö ¾ø°Ô ¸¸µê
+            case "ï¿½Úµï¿½Å©ï¿½ï¿½":// 5ï¿½Ê°ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
                     StartCoroutine(HandCream());
                 }
-                Debug.Log("ÇÚµåÅ©¸²");
+                Debug.Log("ï¿½Úµï¿½Å©ï¿½ï¿½");
                 break;
 
-            case "°­·Âº»µå":// »ó´ë ÇÃ·¹ÀÌ¾î°¡ 5ÃÊ°£ ´Þ¸± ¼ö ¾ø°Ô ÇÔ
+            case "ï¿½ï¿½ï¿½Âºï¿½ï¿½ï¿½":// ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î°¡ 5ï¿½Ê°ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
                     StartCoroutine(Bond());
                 }
-                Debug.Log("°­·Âº»µå");
+                Debug.Log("ï¿½ï¿½ï¿½Âºï¿½ï¿½ï¿½");
                 break;
 
-            case "Ä¿ÇÇ"://5ÃÊ µ¿¾È »ç¿ëÇÑ ÇÃ·¹ÀÌ¾îÀÇ ½ºÅÂ¹Ì³Ê ¼Ò¸ð¾øÀÌ ´Þ¸± ¼ö ÀÖÀ½
+            case "Ä¿ï¿½ï¿½"://5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¹Ì³ï¿½ ï¿½Ò¸ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
                     if (photonView.IsMine)
                         StartCoroutine(Coffee());
                 }
-                Debug.Log("Ä¿ÇÇ");
+                Debug.Log("Ä¿ï¿½ï¿½");
                 break;
 
-            case "°£Àå"://»ç¿ëÇÑ ÇÃ·¹ÀÌ¾îÀÇ ½ºÅÂ¹Ì³Ê¸¦ Áï½Ã 0À¸·Î ¸¸µê
+            case "ï¿½ï¿½ï¿½ï¿½"://ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¹Ì³Ê¸ï¿½ ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
                     if (photonView.IsMine)
                         StartCoroutine(Soy());
                 }
-                Debug.Log("°£Àå");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½");
                 break;
 
-            case "¼ù°¡¶ô"://»ç¿ëÇÑ ÇÃ·¹ÀÌ¾îÀÇ ½ºÅÂ¹Ì³Ê¸¦ Áï½Ã 0À¸·Î ¸¸µê
+            case "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"://ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¹Ì³Ê¸ï¿½ ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 if (PhotonNetwork.IsConnected)
                 {
                     if (photonView.IsMine)
                         StartCoroutine(Spoon());
                 }
-                Debug.Log("¼ù°¡¶ô");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 break;
             default:
                 break;
@@ -483,12 +483,12 @@ public class Trash2 : MonoBehaviourPunCallbacks
             TrashCanSpawner trashCanScript = trashCan.GetComponent<TrashCanSpawner>();
             if (trashCanScript != null)
             {
-                // ÄÚ·çÆ¾ ½ÃÀÛ
+                // ï¿½Ú·ï¿½Æ¾ ï¿½ï¿½ï¿½ï¿½
                 StartCoroutine(trashCanScript.MoveTrashCan());
             }
             else
             {
-                Debug.LogError("Å¸°Ù ¿ÀºêÁ§Æ®¿¡ TrashCanSpawner ½ºÅ©¸³Æ®°¡ ¾ø½À´Ï´Ù.");
+                Debug.LogError("Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ TrashCanSpawner ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
             }
         }
     }
@@ -507,15 +507,15 @@ public class Trash2 : MonoBehaviourPunCallbacks
         }
         else
         {
-            Debug.Log("¾¾¹ß ¼Óµµ°¡ ¾Èº¯ÇÏÀÝ¾Æ!!!!!!!!!!!!!");
+            Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½Èºï¿½ï¿½ï¿½ï¿½Ý¾ï¿½!!!!!!!!!!!!!");
         }
     }
     [PunRPC]
     private void SpawnParticleEffect(Vector3 position)
     {
-        // ÆÄÆ¼Å¬ ÀÌÆåÆ®¸¦ »ý¼º
+        // ï¿½ï¿½Æ¼Å¬ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         GameObject particleEffect = Instantiate(speedUPParticleEffectPrefab, position, Quaternion.identity);
-        Destroy(particleEffect, 2f); // 2ÃÊ ÈÄ¿¡ ÆÄÆ¼Å¬ ÀÌÆåÆ® »èÁ¦
+        Destroy(particleEffect, 2f); // 2ï¿½ï¿½ ï¿½Ä¿ï¿½ ï¿½ï¿½Æ¼Å¬ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
     }
     private IEnumerator SpeedDown()
     {
@@ -524,7 +524,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in players)
             {
-                if (player != gameObject) // ÀÚ½ÅÀÌ ¾Æ´Ñ °æ¿ì
+                if (player != gameObject) // ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½
                 {
                     float originalSpeed = firstPersonController.moveSpeed;
                     float runSpeed = firstPersonController.runSpeed;
@@ -555,7 +555,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in players)
             {
-                if (player != gameObject) // ÀÚ½ÅÀÌ ¾Æ´Ñ ÇÃ·¹ÀÌ¾î
+                if (player != gameObject) // ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½
                 {
                     Trash2 otherPlayer = player.GetComponent<Trash2>();
                     if (otherPlayer != null)
@@ -584,7 +584,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in players)
             {
-                if (player != gameObject) // ÀÚ½ÅÀÌ ¾Æ´Ñ ÇÃ·¹ÀÌ¾î
+                if (player != gameObject) // ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½
                 {
                     smartPhone = false;
                 }
@@ -599,7 +599,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in players)
             {
-                if (player != gameObject) // ÀÚ½ÅÀÌ ¾Æ´Ñ ÇÃ·¹ÀÌ¾î
+                if (player != gameObject) // ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½
                 {
                     handCream = false;
                     yield return new WaitForSeconds(10);
@@ -616,7 +616,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in players)
             {
-                if (player != gameObject) // ÀÚ½ÅÀÌ ¾Æ´Ñ °æ¿ì
+                if (player != gameObject) // ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½
                 {
                     if (firstPersonController != null)
                     {
@@ -653,7 +653,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in players)
             {
-                if (player != gameObject) // ÀÚ½ÅÀÌ ¾Æ´Ñ °æ¿ì
+                if (player != gameObject) // ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½
                 {
                     spoon = false;
                     yield return new WaitForSeconds(10);
@@ -674,43 +674,43 @@ public class Trash2 : MonoBehaviourPunCallbacks
         Debug.Log("viewID");
         if (view != null)
         {
-            Destroy(view.gameObject); // ÇØ´ç ¿ÀºêÁ§Æ® »èÁ¦
+            Destroy(view.gameObject); // ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         }
     }
     public IEnumerator CollectItem(GameObject item)
     {
-        // ÄÝ¶óÀÌ´õ °¡Á®¿À±â ¹× ºñÈ°¼ºÈ­
+        // ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
         Collider itemCollider = item.GetComponent<Collider>();
         if (itemCollider != null)
         {
-            itemCollider.enabled = false; // ÄÝ¶óÀÌ´õ ºñÈ°¼ºÈ­
+            itemCollider.enabled = false; // ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
         }
 
         Vector3 originalScale = item.transform.localScale;
-        Vector3 targetScale = Vector3.zero; // ÃÖÁ¾ Å©±â
-        float duration = 1f; // ÀÌµ¿ ¹× Ãà¼Ò ½Ã°£
+        Vector3 targetScale = Vector3.zero; // ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½
+        float duration = 1f; // ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
         float elapsedTime = 0f;
 
-        // EffectTrash ÄÄÆ÷³ÍÆ® È®ÀÎ
+        // EffectTrash ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® È®ï¿½ï¿½
         EffectTrash itemEffectTrash = item.GetComponent<EffectTrash>();
 
         Vector3 myPosition = transform.position;
 
         while (elapsedTime < duration)
         {
-            // ÇÃ·¹ÀÌ¾î ¹æÇâÀ¸·Î ÀÌµ¿
+            // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
             Vector3 dir = myPosition - item.transform.position;
-            dir.y = 0; // YÃàÀ» 0À¸·Î ¼³Á¤ÇÏ¿© ¼öÆò ÀÌµ¿¸¸ ÇÏµµ·Ï ÇÔ
-            dir.Normalize(); // ¹æÇâ º¤ÅÍ Á¤±ÔÈ­
+            dir.y = 0; // Yï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½
+            dir.Normalize(); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­
 
-            // ¾ÆÀÌÅÛÀ» ÇÃ·¹ÀÌ¾î ÂÊÀ¸·Î ÀÌµ¿
-            item.transform.position += dir * (3f * Time.deltaTime); // ¼Óµµ Á¶Á¤
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+            item.transform.position += dir * (3f * Time.deltaTime); // ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½
 
-            // Å©±â ÁÙÀÌ±â
+            // Å©ï¿½ï¿½ ï¿½ï¿½ï¿½Ì±ï¿½
             item.transform.localScale = Vector3.Lerp(originalScale, targetScale, elapsedTime / (duration / 3));
             elapsedTime += Time.deltaTime;
 
-            // PostProcess È¿°ú´Â EffectTrash ÄÄÆ÷³ÍÆ®°¡ ÀÖ´Â °æ¿ì¿¡¸¸ Æ®¸®°Å
+            // PostProcess È¿ï¿½ï¿½ï¿½ï¿½ EffectTrash ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½
             if (itemEffectTrash != null)
             {
                 itemEffectTrash.TriggerPostProcessEffect();
@@ -719,13 +719,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
             yield return null;
         }
 
-        // ¾ÆÀÌÅÛ ºñÈ°¼ºÈ­
-        item.SetActive(false); // ¾ÆÀÌÅÛ ºñÈ°¼ºÈ­
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
+        item.SetActive(false); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
     }
 }
 /*public void RPC_CollectItem(string itemName)
     {
-        GameObject item = GameObject.Find(itemName); // ÀÌ¸§À¸·Î ¾ÆÀÌÅÛ Ã£±â
+        GameObject item = GameObject.Find(itemName); // ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½
         if (item != null)
         {
             StartCoroutine(CollectItem(item));
@@ -738,15 +738,15 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         if (isDangerHolding )
         {
-            // FÅ°°¡ ´­¸° »óÅÂ¿¡¼­ ½½¶óÀÌ´õ °ªÀ» ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
+            // FÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Õ´Ï´ï¿½.
             if (Input.GetKey(KeyCode.F))
             {
-                currentHoldTime += Time.deltaTime; // ÃÊ´ç 1¾¿ Áõ°¡
+                currentHoldTime += Time.deltaTime; // ï¿½Ê´ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-                // ½½¶óÀÌ´õ °ª ¾÷µ¥ÀÌÆ®
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
                 progressBar.value = currentHoldTime;
 
-                // ½½¶óÀÌ´õ °ªÀÌ ÃÖ´ë°ª¿¡ µµ´ÞÇßÀ» ¶§
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ë°ªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
                 if (currentHoldTime >= maxHoldTime)
                 {
                     ConsumeDangerTrash();
@@ -754,21 +754,21 @@ public class Trash2 : MonoBehaviourPunCallbacks
             }
             else
             {
-                // FÅ°¸¦ ¶¼¸é ÃÊ±âÈ­
+                // FÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
                 ResetHold();
             }
         }
         if (isHolding)
         {
-            // FÅ°°¡ ´­¸° »óÅÂ¿¡¼­ ½½¶óÀÌ´õ °ªÀ» ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
+            // FÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Õ´Ï´ï¿½.
             if (Input.GetKey(KeyCode.F))
             {
-                currentHoldTime += Time.deltaTime; // ÃÊ´ç 1¾¿ Áõ°¡
+                currentHoldTime += Time.deltaTime; // ï¿½Ê´ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-                // ½½¶óÀÌ´õ °ª ¾÷µ¥ÀÌÆ®
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
                 progressBar.value = currentHoldTime;
 
-                // ½½¶óÀÌ´õ °ªÀÌ ÃÖ´ë°ª¿¡ µµ´ÞÇßÀ» ¶§
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ë°ªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
                 if (currentHoldTime >= maxHoldTime)
                 {
                     ConsumeTrash();
@@ -776,21 +776,21 @@ public class Trash2 : MonoBehaviourPunCallbacks
             }
             else
             {
-                // FÅ°¸¦ ¶¼¸é ÃÊ±âÈ­
+                // FÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
                 ResetHold();
             }
         }
         if (isCanHolding)
         {
-            // FÅ°°¡ ´­¸° »óÅÂ¿¡¼­ ½½¶óÀÌ´õ °ªÀ» ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
+            // FÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Õ´Ï´ï¿½.
             if (Input.GetKey(KeyCode.F))
             {
-                currentHoldTime += Time.deltaTime; // ÃÊ´ç 1¾¿ Áõ°¡
+                currentHoldTime += Time.deltaTime; // ï¿½Ê´ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-                // ½½¶óÀÌ´õ °ª ¾÷µ¥ÀÌÆ®
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
                 progressBar.value = currentHoldTime;
 
-                // ½½¶óÀÌ´õ °ªÀÌ ÃÖ´ë°ª¿¡ µµ´ÞÇßÀ» ¶§
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ë°ªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
                 if (currentHoldTime >= maxHoldTime)
                 {
                     ConsumeTrashCan();
@@ -798,7 +798,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             }
             else
             {
-                // FÅ°¸¦ ¶¼¸é ÃÊ±âÈ­
+                // FÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
                 ResetHold();
             }
         }
@@ -836,37 +836,37 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
     void ShowUITrash(GameObject trashObject)
     {
-        currentTrash = trashObject; // »óÈ£ÀÛ¿ëÇÒ ¿ÀºêÁ§Æ® ÀúÀå
-        interactUI.SetActive(true); // UI Ç¥½Ã
-        progressBar.gameObject.SetActive(true); // ÁøÇà ¹Ù Ç¥½Ã
-        isHolding = true; // FÅ°¸¦ ´©¸£´Â »óÅÂ·Î ¼³Á¤
+        currentTrash = trashObject; // ï¿½ï¿½È£ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+        interactUI.SetActive(true); // UI Ç¥ï¿½ï¿½
+        progressBar.gameObject.SetActive(true); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ç¥ï¿½ï¿½
+        isHolding = true; // FÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
     void ShowUIDangerTrash(GameObject trashObject)
     {
-        currentTrash = trashObject; // »óÈ£ÀÛ¿ëÇÒ ¿ÀºêÁ§Æ® ÀúÀå
-        interactUI.SetActive(true); // UI Ç¥½Ã
-        progressBar.gameObject.SetActive(true); // ÁøÇà ¹Ù Ç¥½Ã
-        isDangerHolding = true; // FÅ°¸¦ ´©¸£´Â »óÅÂ·Î ¼³Á¤
+        currentTrash = trashObject; // ï¿½ï¿½È£ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+        interactUI.SetActive(true); // UI Ç¥ï¿½ï¿½
+        progressBar.gameObject.SetActive(true); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ç¥ï¿½ï¿½
+        isDangerHolding = true; // FÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
     void ShowUITrashCan(GameObject trashObject)
     {
-        currentTrash = trashObject; // »óÈ£ÀÛ¿ëÇÒ ¿ÀºêÁ§Æ® ÀúÀå
-        interactUI.SetActive(true); // UI Ç¥½Ã
-        progressBar.gameObject.SetActive(true); // ÁøÇà ¹Ù Ç¥½Ã
-        isCanHolding = true; // FÅ°¸¦ ´©¸£´Â »óÅÂ·Î ¼³Á¤
+        currentTrash = trashObject; // ï¿½ï¿½È£ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+        interactUI.SetActive(true); // UI Ç¥ï¿½ï¿½
+        progressBar.gameObject.SetActive(true); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ç¥ï¿½ï¿½
+        isCanHolding = true; // FÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
     void HideUI()
     {
-        interactUI.SetActive(false); // UI ¼û±è
-        progressBar.gameObject.SetActive(false); // ÁøÇà ¹Ù ¼û±è
-        ResetHold(); // FÅ° ´©¸£´Â »óÅÂ ÃÊ±âÈ­
+        interactUI.SetActive(false); // UI ï¿½ï¿½ï¿½ï¿½
+        progressBar.gameObject.SetActive(false); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        ResetHold(); // FÅ° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
     }
 
     void ResetHold()
     {
         currentHoldTime = 0f;
-        progressBar.value = 0f; // ½½¶óÀÌ´õ °ª ÃÊ±âÈ­
+        progressBar.value = 0f; // ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ ï¿½Ê±ï¿½È­
         isHolding = false;
     }
 
@@ -874,16 +874,16 @@ public class Trash2 : MonoBehaviourPunCallbacks
     {
         if (trashManager.scary + Trashscary >= 100)
         {
-            return; // °øÆ÷Ä¡°¡ 100 ÀÌ»óÀÌ¸é ¼ÒºñÇÏÁö ¾ÊÀ½
+            return; // ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ 100 ï¿½Ì»ï¿½ï¿½Ì¸ï¿½ ï¿½Òºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
 
         string objectName = currentTrash.name;
-        currentTrash.SetActive(false); // ¾²·¹±â ¿ÀºêÁ§Æ® ºñÈ°¼ºÈ­
+        currentTrash.SetActive(false); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È°ï¿½ï¿½È­
 
         trashManager.scary += Trashscary;
-        trashManager.UpdateScaryBar(); // °øÆ÷Ä¡ UI ¾÷µ¥ÀÌÆ®
+        trashManager.UpdateScaryBar(); // ï¿½ï¿½ï¿½ï¿½Ä¡ UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
-        // ¾²·¹±â Á¾·ù¿¡ µû¸¥ UI ¾÷µ¥ÀÌÆ®
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
         if (objectName.Contains(trash1))
         {
             taskUIManager.UpdateCircleCount();
@@ -897,24 +897,24 @@ public class Trash2 : MonoBehaviourPunCallbacks
             taskUIManager.UpdateSquareCount();
         }
 
-        // ÃÊ±âÈ­
+        // ï¿½Ê±ï¿½È­
         HideUI();
     }
     void ConsumeDangerTrash()
     {
         if (trashManager.scary + Trashscary >= 100)
         {
-            return; // °øÆ÷Ä¡°¡ 100 ÀÌ»óÀÌ¸é ¼ÒºñÇÏÁö ¾ÊÀ½
+            return; // ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ 100 ï¿½Ì»ï¿½ï¿½Ì¸ï¿½ ï¿½Òºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
 
         string objectName = currentTrash.name;
-        currentTrash.SetActive(false); // ¾²·¹±â ¿ÀºêÁ§Æ® ºñÈ°¼ºÈ­
+        currentTrash.SetActive(false); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È°ï¿½ï¿½È­
 
         trashManager.scary += Trashscary;
-        trashManager.UpdateScaryBar(); // °øÆ÷Ä¡ UI ¾÷µ¥ÀÌÆ®
+        trashManager.UpdateScaryBar(); // ï¿½ï¿½ï¿½ï¿½Ä¡ UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
         trashManager.isEffectActive = true;
 
-        // ¾²·¹±â Á¾·ù¿¡ µû¸¥ UI ¾÷µ¥ÀÌÆ®
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
         if (objectName.Contains(trash1))
         {
             taskUIManager.UpdateCircleCount();
@@ -928,12 +928,12 @@ public class Trash2 : MonoBehaviourPunCallbacks
             taskUIManager.UpdateSquareCount();
         }
 
-        // ÃÊ±âÈ­
+        // ï¿½Ê±ï¿½È­
         HideUI();
     }
     void ConsumeTrashCan()
     {
         trashManager.scary = 0;
-        trashManager.UpdateScaryBar(); //°øÆ÷ ÀÌ¹ÌÁö °ü¸®
+        trashManager.UpdateScaryBar(); //ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         trashManager.isEffectActive = false;
     }*/
