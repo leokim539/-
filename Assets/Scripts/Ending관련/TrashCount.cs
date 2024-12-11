@@ -9,37 +9,37 @@ public class TrashCount : MonoBehaviourPunCallbacks
     {
         if (count > 0)
         {
-            // 포톤 RPC를 통해 쓰레기 수와 플레이어 정보를 추가
-            photonView.RPC("AddTrashRPC", RpcTarget.All, count, PhotonNetwork.LocalPlayer.NickName);
+            // 포톤 RPC를 통해 쓰레기 수를 추가
+            photonView.RPC("AddTrashRPC", RpcTarget.All, count);
         }
     }
 
     [PunRPC]
-    private void AddTrashRPC(int count, string playerName)
+    private void AddTrashRPC(int count)
     {
         if (count > 0)
         {
             totalTrashCount += count;
             LogTrashCount(); // 쓰레기 수 로그 출력
 
-            // 모든 플레이어에게 업데이트된 정보를 전파
-            UpdatePlayerInfo(playerName, totalTrashCount);
+            // 모든 플레이어의 정보를 업데이트
+            UpdateAllPlayerInfos();
         }
     }
 
-    private void UpdatePlayerInfo(string playerName, int trashCount)
+    private void UpdateAllPlayerInfos()
     {
-        // ResultUIManager 인스턴스에 접근하여 업데이트 호출
         ResultUIManager resultUIManager = FindObjectOfType<ResultUIManager>();
         if (resultUIManager != null)
         {
-            // PlayerInfo 배열 생성
             PlayerInfo[] playerInfos = new PlayerInfo[PhotonNetwork.PlayerList.Length];
             for (int i = 0; i < playerInfos.Length; i++)
             {
-                playerInfos[i] = new PlayerInfo(PhotonNetwork.PlayerList[i].NickName, totalTrashCount); // 각 플레이어의 정보를 업데이트
+                // 각 플레이어의 쓰레기 수를 가져오기
+                int trashCount = (i + 1 == photonView.Owner.ActorNumber) ? totalTrashCount : 0; // 이 플레이어의 쓰레기 수
+                playerInfos[i] = new PlayerInfo(PhotonNetwork.PlayerList[i].NickName, trashCount);
             }
-            resultUIManager.UpdateResult(playerInfos); // UI 업데이트
+            resultUIManager.UpdateResult(playerInfos);
         }
     }
 
