@@ -4,6 +4,7 @@ using Photon.Pun;
 public class TrashCount : MonoBehaviourPunCallbacks
 {
     [SerializeField] private int totalTrashCount = 0;
+    private TrashCount[] trashCounts; // TrashCount 배열 선언
 
     public void AddTrash(int count)
     {
@@ -40,7 +41,7 @@ public class TrashCount : MonoBehaviourPunCallbacks
 
                 // 각 플레이어의 쓰레기 수를 가져오기
                 int trashCount = 0;
-                if (trashCounts[i] != null)
+                if (trashCounts != null && trashCounts[i] != null)
                 {
                     trashCount = trashCounts[i].GetTotalTrashCount(); // 각 플레이어의 쓰레기 수를 가져옴
                 }
@@ -50,8 +51,11 @@ public class TrashCount : MonoBehaviourPunCallbacks
 
             resultUIManager.UpdateResult(playerInfos);
         }
+        else
+        {
+            Debug.LogError("ResultUIManager not found in the scene.");
+        }
     }
-
 
     public int GetTotalTrashCount()
     {
