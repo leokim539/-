@@ -1,16 +1,13 @@
+using Photon.Pun;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI; // UI를 사용하기 위한 네임스페이스
-using Photon.Pun;
-using Unity.VisualScripting;
-using Photon.Realtime;
 
 public class Trash2 : MonoBehaviourPunCallbacks
 {
     [Header("상호작용 거리")]
     public float interactDistance = 5f; // 플레이어와 오브젝트 간의 최대 상호작용 거리
-    
+
     [Header("쓰레기 먹으면 늘어나는 양")]
     public int Trashscary; // 쓰레기 먹으면 증가하는 공포치
 
@@ -20,6 +17,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     private FirstPersonController firstPersonController;
     private GameObject TrashCan;
     private TrashCan trashCan;
+
     [Header("쓰레기 이름")]
     public string trash1;
     public string trash2;
@@ -37,7 +35,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     public float currentHoldTime = 0f; // 현재 누르고 있는 시간
     private GameObject currentTrash; // 현재 상호작용 중인 쓰레기
     private EffectTrash effectTrash;
-    private bool _trashCan= false;
+    private bool _trashCan = false;
     [Header("사운드")]
     public PlayerSound soundManager;
     [Header("플레이어 설정")]
@@ -58,11 +56,11 @@ public class Trash2 : MonoBehaviourPunCallbacks
     [Header("바나나")]
     public GameObject baNaNaPrefab;
     [Header("너해킹")]
-    public bool hacking = true; 
+    public bool hacking = true;
     [Header("스마트폰")]
     public bool smartPhone = true;
     [Header("핸드크림")]
-    public bool handCream = true; 
+    public bool handCream = true;
     [Header("숟가락")]
     public bool spoon = true;
 
@@ -94,13 +92,13 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         TrashCan = GameObject.Find("TrashCan");
         trashCan = TrashCan.GetComponent<TrashCan>();
-        firstPersonController = GetComponent<FirstPersonController>();
+        //firstPersonController = GetComponent<FirstPersonController>();
         //progressBar.maxValue = maxHoldTime; // 슬라이더의 최대 값 설정
         //progressBar.value = 0; // 슬라이더 초기화
 
         ca = GetComponentInChildren<Camera>();
 
-        effectTrash = FindObjectOfType<EffectTrash>();       
+        effectTrash = FindObjectOfType<EffectTrash>();
     }
 
     void Update()
@@ -108,7 +106,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             CheckForObject();//확인
-            
+
             if (itemCanUse && Input.GetKeyDown(KeyCode.E))
             {
                 if (smartPhone)
@@ -144,7 +142,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             }
         }
     }
-    
+
     void CheckForObject()
     {
         RaycastHit hit;
@@ -177,7 +175,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
                     {
                         currentTrash = hit.collider.gameObject;
                         ConsumeDangerTrash(currentTrash);
-                    } 
+                    }
                 }
                 else if (hit.collider.CompareTag("Item"))
                 {
@@ -209,7 +207,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     void ResetHold()
     {
         currentHoldTime = 0f;
-        progressBar.value = 0f; 
+        progressBar.value = 0f;
     }
 
     void ConsumeTrash(GameObject trash)
@@ -292,7 +290,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             {
                 Debug.LogError("지금 못찾음");
             }
-        }        
+        }
         else if (trash.CompareTag("UseItem"))
         {
             int randomIndex = Random.Range(0, ItemNames.Length); // 랜덤 인덱스 생성
@@ -318,15 +316,15 @@ public class Trash2 : MonoBehaviourPunCallbacks
         }
         HideUI();
     }
-    
+
     public void ItemUse(string item)
     {
-        switch(item)
+        switch (item)
         {
             case "안대투척"://상대 시야 5초간 안보임
                 if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
                 {
-                    StartCoroutine(ApplyObscuringEffect());
+                    ItemManager.instane.RPCUseSkill0();
                 }
                 else Debug.Log("안대투척");
                 break;
@@ -334,9 +332,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             case "정상수"://테이져건 상대 5초간 못움직임
                 if (PhotonNetwork.IsConnected)
                 {
-                    Debug.Log("123");
-                    photonView.RPC("TaserGuns", RpcTarget.Others);
-                    Debug.Log("567");
+                    ItemManager.instane.RPCUseSkill1();
                 }
                 else Debug.Log("정상수");
                 break;
@@ -344,6 +340,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             case "변해라얍"://쓰레기통 위치 렌덤 바꾸기
                 if (PhotonNetwork.IsConnected)
                 {
+
                     photonView.RPC("TrashCanSpawns", RpcTarget.All);
                 }
                 else Debug.Log("변해라얍");
@@ -372,7 +369,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             case "느렷버섯"://느려짐
                 if (PhotonNetwork.IsConnected)
                 {
-                    
+
                     StartCoroutine(SpeedDown());
                 }
                 else Debug.Log("느려느려버섯");
@@ -474,53 +471,10 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 break;
         }
     }
+
+
     
-    private IEnumerator ApplyObscuringEffect()
-    {
-        if (spoon)
-        {
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in players)
-            {
-                if (player != gameObject) // 자신이 아닌 경우
-                {
-                    GameObject canvasInstance = PhotonNetwork.Instantiate(canvasPrefab.name, player.transform.position, Quaternion.identity, 0);
-                    canvasInstance.transform.SetParent(player.transform); // 상대방 오브젝트의 자식으로 설정
-
-                    RectTransform rectTransform = canvasInstance.GetComponent<RectTransform>();
-                    rectTransform.localPosition = Vector3.zero;
-                    rectTransform.localScale = new Vector3(1, 1, 1);
-
-                    yield return new WaitForSeconds(effectDuration);
-
-                    PhotonNetwork.Destroy(canvasInstance);
-                }
-            }
-        }
-        else yield return null;
-    }
     [PunRPC]
-    public void TaserGuns()
-    {
-        Debug.Log("456");
-        StartCoroutine(TaserGun());
-        
-    }
-    public IEnumerator TaserGun()
-    {
-        if (spoon)
-        {
-            if (firstPersonController != null)
-            {
-                Debug.Log("코루틴 진입");
-                firstPersonController.canMove = false; // 상대방의 이동 비활성화
-                yield return new WaitForSeconds(5f); // 5초 대기
-                firstPersonController.canMove = true; // 상대방의 이동 활성화
-            }
-        }
-        else yield return null; // 타겟이 없을 경우
-    }
-    [PunRPC] 
     public void TrashCanSpawns()
     {
         GameObject trashCan = GameObject.Find(trashCanSpawn);
@@ -538,17 +492,17 @@ public class Trash2 : MonoBehaviourPunCallbacks
             }
         }
     }
-    private IEnumerator SpeedUP()
+    public IEnumerator SpeedUP()
     {
         if (firstPersonController != null)
         {
-            float originalSpeed = firstPersonController.moveSpeed; 
+            float originalSpeed = firstPersonController.moveSpeed;
             float runSpeed = firstPersonController.runSpeed;
-            firstPersonController.moveSpeed += 5f; 
+            firstPersonController.moveSpeed += 5f;
             firstPersonController.runSpeed += 5f;
             yield return new WaitForSeconds(5);
 
-            firstPersonController.moveSpeed = originalSpeed; 
+            firstPersonController.moveSpeed = originalSpeed;
             firstPersonController.runSpeed = runSpeed;
         }
         else
@@ -592,8 +546,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
         Vector3 playerForward = transform.forward;
 
         Vector3 trapPosition = playerPosition - playerForward * 2;
-
-        Instantiate(baNaNaPrefab, trapPosition, Quaternion.identity);
+        PhotonNetwork.Instantiate(baNaNaPrefab.name, trapPosition, Quaternion.identity);
     }
     public IEnumerator Hacking()
     {
@@ -622,7 +575,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     }
     public void TVOn()
     {
-        soundManager.OnTVSound(); 
+        soundManager.OnTVSound();
     }
     public void SmartPhone()
     {

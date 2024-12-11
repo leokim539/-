@@ -23,8 +23,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     private float networkStrafe; // 네트워크에서 수신한 Strafe 애니메이션 값
     private float networkIsWalking; // 네트워크에서 수신한 걷기 상태
 
-
-
+    public Trash2 trash2;
     private Animator animator; // 애니메이터
     private AudioSource audioSource; // 오디오 소스
     private Rigidbody rd;
@@ -60,16 +59,18 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     public GameObject panel; // 패널을 드래그하여 연결합니다.
     public KeyCode keyToPress; // 상태창을 활성화하는 키
     public GameObject settingsPanel; // 설정 창 패널을 연결
+    public PhotonView m_PhotonView;
 
-    public bool canMove = true; 
+    public bool canMove; 
     public bool bond = true;
     public bool coffee = true;
     void Awake()
     {
+        ItemManager.instane.firstPersonController = this;
+        m_PhotonView = GetComponent<PhotonView>();
         character = GetComponent<FirstPersonController>().transform;
         animator = transform.Find("Idel").GetComponent<Animator>(); // 애니메이터 가져옴
     }
-
     void Start()
     {
         // 스태미나를 최대값으로 초기화
@@ -126,6 +127,7 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
 
     void Update()
     {
+        Debug.Log(canMove);
         if (photonView.IsMine)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
@@ -186,29 +188,6 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         }
 
     }
-    // void MovePlayer()
-    // {
-    //   float x = Input.GetAxis("Horizontal");
-    //  float z = Input.GetAxis("Vertical");
-    // Vector3 move = transform.right * x + transform.forward * z;
-    // transform.position += move * moveSpeed * Time.deltaTime;
-
-
-    // if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // 걷기 소리 재생
-    // {
-    //     PlaySound(walkSound);
-    //  }
-    //  else
-    // {
-    //     audioSource.Stop(); // 소리 정지
-    //  }
-
-
-
-    //  UpdateAnimator(move);
-    //  }
-
-
     void MovePlayer()
     {
         float x = Input.GetAxis("Horizontal");
@@ -287,12 +266,6 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
 
         UpdateAnimator(targetVelocity); // 애니메이션 상태 업데이트
     }
-
-
-
-
-
-
     public void StopMovement()
     {
         // Photon 네트워크 처리 (필요한 경우)
@@ -330,10 +303,6 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         // 선택적: 디버그 로그
         Debug.Log("StopMovement called. isRunning set to: " + isRunning);
     }
-
-
-
-
     void RecoverStamina()
     {
         // 쉬프트를 누르지 않을 때 또는 이동 중이 아닐 때 스태미나 회복
@@ -343,8 +312,6 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             stamina = Mathf.Clamp(stamina, 0, maxStamina); // 스태미나 범위 제한
         }
     }
-
-
     void UpdateStaminaBar()
     {
         if (staminaSlider != null)
@@ -352,11 +319,6 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
             staminaSlider.value = stamina; // 스태미나 값을 슬라이더에 반영
         }
     }
-
-
-
-
-
     private void UpdateAnimator(Vector2 targetVelocity)
     {
         // 이동 벡터의 크기를 계산하여 Forward와 Strafe 파라미터에 설정
@@ -494,7 +456,37 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
         transform.position = targetPosition;
         Debug.Log("Player teleported to: " + targetPosition);
     }
+    [PunRPC]
+    public void TaserGuns()
+    {
+        StartCoroutine(TaserGun()); // 타겟을 5초간 경직
+    }
+    [PunRPC]
+    public void ApplyObscuringEffects()
+    {
+        StartCoroutine(ApplyObscuringEffect()); // 상대 시야 5초간 안보임
+    }
+    public IEnumerator TaserGun()
+    {
+        canMove = false; // 상대방의 이동 비활성화
+        yield return new WaitForSeconds(5f); // 5초 대기
+        canMove = true; // 상대방의 이동 활성화
+    }
+    
+    public IEnumerator ApplyObscuringEffect()
+    {
+        GameObject canvasInstance = PhotonNetwork.Instantiate(trash2.canvasPrefab.name, transform.position, Quaternion.identity, 0);
+        canvasInstance.transform.SetParent(transform); // 상대방 오브젝트의 자식으로 설정
 
+        RectTransform rectTransform = canvasInstance.GetComponent<RectTransform>();
+        rectTransform.localPosition = Vector3.zero;
+        rectTransform.localScale = new Vector3(1, 1, 1);
+
+        yield return new WaitForSeconds(5);
+
+        PhotonNetwork.Destroy(canvasInstance);
+    }
+    
 
     // 추가한 메서드
     /*public void ResumeMovement()

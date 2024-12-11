@@ -230,7 +230,7 @@ namespace Photon.Pun.Demo.Asteroids
             byte maxPlayers = 2;
 
             RoomOptions options = new RoomOptions {MaxPlayers = maxPlayers, PlayerTtl = 10000 };
-
+            options.PublishUserId = true;
             PhotonNetwork.CreateRoom(roomName, options, null);
         }
 

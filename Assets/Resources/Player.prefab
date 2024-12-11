@@ -460,6 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2172c4bb2d5830e4aadfe5f12d8cff0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trash2: {fileID: 0}
   moveSpeed: 3
   sensitivity: 2
   runSpeed: 7
@@ -477,6 +478,7 @@ MonoBehaviour:
   panel: {fileID: 0}
   keyToPress: 9
   settingsPanel: {fileID: 0}
+  m_PhotonView: {fileID: 0}
   canMove: 1
   bond: 1
   coffee: 1
