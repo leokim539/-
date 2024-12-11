@@ -100,7 +100,12 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         ca = GetComponentInChildren<Camera>();
 
-        effectTrash = FindObjectOfType<EffectTrash>();       
+        effectTrash = FindObjectOfType<EffectTrash>();
+    }
+
+    public void UpdateTrashCanReference(GameObject trashCanReference)
+    {
+        trashCan = trashCanReference.GetComponent<TrashCan>();
     }
 
     void Update()

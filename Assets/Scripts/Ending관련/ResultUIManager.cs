@@ -46,6 +46,7 @@ public class ResultUIManager : MonoBehaviour
         {
             player1NameText.text = playerInfos[0].playerName;
             player1TotalText.text = playerInfos[0].totalTrashCount.ToString();
+
             player2NameText.text = playerInfos[1].playerName;
             player2TotalText.text = playerInfos[1].totalTrashCount.ToString();
         }
@@ -54,6 +55,7 @@ public class ResultUIManager : MonoBehaviour
             Debug.LogError("Player info is null or insufficient.");
         }
     }
+
 
     public void UpdateResultFromTrashCounts(TrashCount[] trashCounts)
     {
