@@ -82,6 +82,9 @@ MonoBehaviour:
   - ApplyObscuringEffects
   - RPCUseSkill0
   - RPCUseSkill1
+  - HideWarningUIRPC
+  - SetActiveRPC
+  - ShowWarningUIRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
