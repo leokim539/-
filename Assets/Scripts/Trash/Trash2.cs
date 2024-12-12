@@ -138,7 +138,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 {
                     trashCan.TrashCans();
                     ResetHold();
+
                 }
+
             }
             else
             {
@@ -192,7 +194,8 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    HideUI();
+                    HideUI(); 
+                    _trashCan = false;
                 }
             }
         }

@@ -481,6 +481,7 @@ MonoBehaviour:
   canMove: 1
   bond: 1
   coffee: 1
+  spoon: 1
 --- !u!82 &6967127152933504464
 AudioSource:
   m_ObjectHideFlags: 0
@@ -674,7 +675,6 @@ MonoBehaviour:
   hacking: 1
   smartPhone: 1
   handCream: 1
-  spoon: 1
 --- !u!114 &-4829004366119847647
 MonoBehaviour:
   m_ObjectHideFlags: 0

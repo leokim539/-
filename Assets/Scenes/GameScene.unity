@@ -12522,7 +12522,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1235616795}
-  totalTime: 40
+  totalTime: 868
   GameEndUI: {fileID: 1444120271}
 --- !u!4 &749116330
 Transform:
