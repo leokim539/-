@@ -11778,7 +11778,7 @@ Transform:
   m_GameObject: {fileID: 682846927}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 22.29, y: -3.873, z: 44.72}
+  m_LocalPosition: {x: 23.53, y: -3.873, z: 42.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -28583,7 +28583,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1202502718}
   m_Layer: 0
-  m_Name: SP_TC4 (1)
+  m_Name: SP_TC6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28598,7 +28598,7 @@ Transform:
   m_GameObject: {fileID: 1202502717}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.05, y: -3.873, z: 63.8}
+  m_LocalPosition: {x: 18.85, y: -3.873, z: 63.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -38488,8 +38488,8 @@ Transform:
   - {fileID: 396205955}
   - {fileID: 1272911700}
   - {fileID: 682846928}
-  - {fileID: 1202502718}
   - {fileID: 1851171585}
+  - {fileID: 1202502718}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1759101532
@@ -39701,7 +39701,7 @@ Transform:
   m_GameObject: {fileID: 1851171584}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 49.24, y: -3.873, z: 59.56}
+  m_LocalPosition: {x: 49.24, y: -3.873, z: 59.59}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
