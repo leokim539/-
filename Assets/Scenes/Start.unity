@@ -1314,7 +1314,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 36b24f999f6da104397b08b61839cc4a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1611,9 +1611,14 @@ MonoBehaviour:
   nextButton: {fileID: 603638739}
   backButton: {fileID: 1293280280}
   tutorialImages:
-  - {fileID: 0}
-  - {fileID: -2413806693520163455, guid: b2b75e648bfcda841bc98ee2b473d9a4, type: 3}
-  - {fileID: -1418787833, guid: 0b3c765974e8a3343ad27266aaf7f578, type: 3}
+  - {fileID: 21300000, guid: 36b24f999f6da104397b08b61839cc4a, type: 3}
+  - {fileID: 21300000, guid: df2314edc30c3cb48a3be554d753e931, type: 3}
+  - {fileID: 21300000, guid: 924dd504361a2e04e94c477da3cf5dc9, type: 3}
+  - {fileID: 21300000, guid: 941546bba4887cf4fbf1cf3a3ff6be37, type: 3}
+  - {fileID: 21300000, guid: 833679893937f4e44bb710f8249dcc16, type: 3}
+  - {fileID: 21300000, guid: 5ccbc58955b49ed43af8ea0ff0f194bd, type: 3}
+  - {fileID: 21300000, guid: 0fdb390d51d245f45b33f02a293977bd, type: 3}
+  - {fileID: 21300000, guid: 557048ad7941b924a97955ab672aae27, type: 3}
 --- !u!1 &1293280278
 GameObject:
   m_ObjectHideFlags: 0
@@ -2191,7 +2196,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1564089092
 RectTransform:
   m_ObjectHideFlags: 0
