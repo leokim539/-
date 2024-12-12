@@ -2,9 +2,9 @@ using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 
-public class DoorController : MonoBehaviourPunCallbacks  // MonoBehaviourPunCallbacks·Î º¯°æ
+public class DoorController : MonoBehaviourPunCallbacks  // MonoBehaviourPunCallbacksï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 {
-    public GameObject openUI;  // ¹®ÀÌ ¿­·ÈÀ» ¶§ Ç¥½ÃÇÒ UI
+    public GameObject openUI;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ UI
     public GameObject closeUI;
     private bool isOpen = false;
     private bool isMoving = false;
@@ -13,11 +13,11 @@ public class DoorController : MonoBehaviourPunCallbacks  // MonoBehaviourPunCall
     private AudioSource audioSource;
 
     [HideInInspector]
-    public bool isUnlocking = false;  // ÇöÀç Àá±ÝÇØÁ¦ ÁßÀÎÁö ¿©ºÎ
+    public bool isUnlocking = false;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     [HideInInspector]
-    public bool requiresUnlocking = false;  // Àá±ÝÇØÁ¦°¡ ÇÊ¿äÇÑ ¹®ÀÎÁö ¿©ºÎ
+    public bool requiresUnlocking = false;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     [HideInInspector]
-    public bool firstInteraction = true;    // ¿­¼è·Î Ã³À½ ¿©´Â °ÍÀÎÁö ¿©ºÎ
+    public bool firstInteraction = true;    // ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
     private void Start()
     {
@@ -50,14 +50,14 @@ public class DoorController : MonoBehaviourPunCallbacks  // MonoBehaviourPunCall
                     }
                     else
                     {
-                        // ¹®À» ¿©´Â RPC È£Ãâ
+                        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ RPC È£ï¿½ï¿½
                         door.photonView.RPC("ToggleDoorRPC", RpcTarget.All);
                     }
                 }
             }
         }
 
-        // UI Ç¥½Ã °ü·Ã ·¹ÀÌÄ³½ºÆ®
+        // UI Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½Æ®
         RaycastHit hitInteraction;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hitInteraction, 1.5f))
         {
@@ -66,50 +66,50 @@ public class DoorController : MonoBehaviourPunCallbacks  // MonoBehaviourPunCall
                 DoorController door = hitInteraction.transform.GetComponent<DoorController>();
                 if (door != null && door.enabled)
                 {
-                    // ¹® »óÅÂ¿¡ µû¶ó UI º¯°æ
-                    if (!door.isOpen) // ¹®ÀÌ ´ÝÇô ÀÖÀ» ¶§
+                    // ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½
+                    if (!door.isOpen) // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
                     {
-                        // OpenUI È°¼ºÈ­ Á¶°Ç ¼öÁ¤
-                        openUI.SetActive(!door.requiresUnlocking || !door.firstInteraction); // ¿­¼è°¡ ÇÊ¿ä ¾ø°Å³ª Ã¹ »óÈ£ÀÛ¿ëÀÌ falseÀÏ ¶§ È°¼ºÈ­
-                        closeUI.SetActive(false); // CloseUI ºñÈ°¼ºÈ­
+                        // OpenUI È°ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                        openUI.SetActive(!door.requiresUnlocking || !door.firstInteraction); // ï¿½ï¿½ï¿½è°¡ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½Å³ï¿½ Ã¹ ï¿½ï¿½È£ï¿½Û¿ï¿½ï¿½ï¿½ falseï¿½ï¿½ ï¿½ï¿½ È°ï¿½ï¿½È­
+                        closeUI.SetActive(false); // CloseUI ï¿½ï¿½È°ï¿½ï¿½È­
 
-                        // lockOpenUI È°¼ºÈ­ Á¶°Ç Ãß°¡
+                        // lockOpenUI È°ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
                         LockDoor lockDoor = door.GetComponent<LockDoor>();
                         if (lockDoor != null && lockDoor.lockOpenUI != null)
                         {
-                            lockDoor.lockOpenUI.SetActive(door.requiresUnlocking && door.firstInteraction); // Àá±Ý ÇØÁ¦°¡ ÇÊ¿äÇÑ ¹®ÀÌ°í Ã¹ »óÈ£ÀÛ¿ëÀÏ ¶§ È°¼ºÈ­
+                            lockDoor.lockOpenUI.SetActive(door.requiresUnlocking && door.firstInteraction); // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ Ã¹ ï¿½ï¿½È£ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ È°ï¿½ï¿½È­
                         }
                     }
-                    else // ¹®ÀÌ ¿­·Á ÀÖÀ» ¶§
+                    else // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
                     {
-                        openUI.SetActive(false);  // OpenUI ºñÈ°¼ºÈ­
-                        closeUI.SetActive(true);   // CloseUI È°¼ºÈ­
+                        openUI.SetActive(false);  // OpenUI ï¿½ï¿½È°ï¿½ï¿½È­
+                        closeUI.SetActive(true);   // CloseUI È°ï¿½ï¿½È­
                     }
                 }
             }
             else
             {
-                // ¹®ÀÌ ¾Æ´Ò °æ¿ì CloseUI ºñÈ°¼ºÈ­
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ CloseUI ï¿½ï¿½È°ï¿½ï¿½È­
                 closeUI.SetActive(false);
-                openUI.SetActive(false); // OpenUI ºñÈ°¼ºÈ­
+                openUI.SetActive(false); // OpenUI ï¿½ï¿½È°ï¿½ï¿½È­
             }
         }
         else
         {
-            // ·¹ÀÌÄ³½ºÆ®°¡ °¨ÁöµÇÁö ¾ÊÀ» °æ¿ì ¸ðµç UI ºñÈ°¼ºÈ­
+            // ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ UI ï¿½ï¿½È°ï¿½ï¿½È­
             openUI.SetActive(false);
             closeUI.SetActive(false);
 
-            // lockOpenUI ºñÈ°¼ºÈ­
+            // lockOpenUI ï¿½ï¿½È°ï¿½ï¿½È­
             LockDoor lockDoor = GetComponent<LockDoor>();
             if (lockDoor != null && lockDoor.lockOpenUI != null)
             {
-                lockDoor.lockOpenUI.SetActive(false); // lockOpenUI ºñÈ°¼ºÈ­
+                lockDoor.lockOpenUI.SetActive(false); // lockOpenUI ï¿½ï¿½È°ï¿½ï¿½È­
             }
         }
     }
 
-    [PunRPC]  // RPC ¸Þ¼­µå·Î ¼³Á¤
+    [PunRPC]  // RPC ï¿½Þ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     public void ToggleDoorRPC()
     {
         StartCoroutine(ToggleDoor());
@@ -123,13 +123,13 @@ public class DoorController : MonoBehaviourPunCallbacks  // MonoBehaviourPunCall
         float startAngle = transform.localEulerAngles.z;
         float targetAngle;
 
-        // ¹®ÀÌ ´ÝÇôÀÖ´Ù¸é ¿­±â (0 ¡æ 90)
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ (0 ï¿½ï¿½ 90)
         if (!isOpen)
         {
             startAngle = 0f;
             targetAngle = 90f;
         }
-        else  // ¹®ÀÌ ¿­·ÁÀÖ´Ù¸é ´Ý±â (90 ¡æ 0)
+        else  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´Ù¸ï¿½ ï¿½Ý±ï¿½ (90 ï¿½ï¿½ 0)
         {
             startAngle = 90f;
             targetAngle = 0f;
@@ -147,20 +147,20 @@ public class DoorController : MonoBehaviourPunCallbacks  // MonoBehaviourPunCall
         }
 
         float elapsedTime = 0f;
-        float totalRotationTime = 1f; // È¸Àü¿¡ °É¸®´Â ÃÑ ½Ã°£
+        float totalRotationTime = 1f; // È¸ï¿½ï¿½ï¿½ï¿½ ï¿½É¸ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ã°ï¿½
 
         while (elapsedTime < totalRotationTime)
         {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / totalRotationTime;
-            // SmoothstepÀ» »ç¿ëÇÏ¿© ´õ ÀÚ¿¬½º·¯¿î º¸°£ È¿°ú
+            // Smoothstepï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½
             t = t * t * (3f - 2f * t);
             float currentAngle = Mathf.Lerp(startAngle, targetAngle, t);
             transform.localEulerAngles = new Vector3(-90f, 0f, currentAngle);
             yield return null;
         }
 
-        // ÃÖÁ¾ °¢µµ ¸íÈ®È÷ ¼³Á¤
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         transform.localEulerAngles = new Vector3(-90f, 0f, targetAngle);
 
         if (audioSource != null)
