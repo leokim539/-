@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3758f8f58fdef43803eb9be1df0608, type: 3}
+  m_Name: PhotonServerSettings
+  m_EditorClassIdentifier: 
+  AppSettings:
+    AppIdRealtime: b0794d32-c380-4486-82d7-30d9ddaa2b50
+    AppIdFusion: 
+    AppIdChat: 
+    AppIdVoice: 
+    AppVersion: 
+    UseNameServer: 1
+    FixedRegion: 
+    Server: 
+    Port: 0
+    ProxyServer: 
+    Protocol: 0
+    EnableProtocolFallback: 1
+    AuthMode: 0
+    EnableLobbyStatistics: 0
+    NetworkLogging: 1
+  DevRegion: kr
+  PunLogging: 0
+  EnableSupportLogger: 0
+  RunInBackground: 1
+  StartInOfflineMode: 0
+  RpcList:
+  - ClickRpc
+  - DestroyRpc
+  - DestroySpaceship
+  - Fire
+  - RespawnSpaceship
+  - UpdateStamina
+  - ConsumeDangerTrash
+  - ConsumeTrash
+  - UpdateTaskUI
+  - UpdateEffectState
+  - ToggleDoorRPC
+  - RPC_CollectItem
+  - ToggleDrawerRPC
+  - DisableMovement
+  - UpdatePosition
+  - TrashCanSpawns
+  - Teleport
+  - RPC_UpdateBeerCanCount
+  - RPC_UpdateCircleCount
+  - RPC_UpdateCylinderCount
+  - RPC_UpdatePetBottleCount
+  - RPC_UpdateSquareCount
+  - RPC_UpdateTrashBagCount
+  - RPC_StoreBeerCanCount
+  - RPC_StoreCircleCount
+  - RPC_StoreCylinderCount
+  - RPC_StoreSquareCount
+  - RPC_StoreTrashBagCount
+  - SendScoreToPlayers
+  - UpdatePlayerScore
+  - SyncTrashCount
+  - UpdateResultUI
+  - RPC_MoveTrashCan
+  - RPC_ShowWarningUI
+  - RPC_SpawnObjects
+  - SpawnObjects
+  - SpawnTrashCan
+  - SyncPlayerInfo
+  - MoveTrashCanRPC
+  - AddTrashRPC
+  - SpawnParticleEffect
+  - TeleportTo
+  - TaserGuns
+  - DestroyItem
+  - RPCUseSkill
+  - ApplyObscuringEffects
+  - RPCUseSkill0
+  - RPCUseSkill1
+  - HideWarningUIRPC
+  - SetActiveRPC
+  - ShowWarningUIRPC
+  - Bonds
+  - Hackings
+  - HandCreams
+  - RPCUseSkill2
+  - RPCUseSkill3
+  - RPCUseSkill4
+  - RPCUseSkill5
+  - RPCUseSkill6
+  - SmartPhone
+  - Spoons
+  DisableAutoOpenWizard: 1
+  ShowSettings: 1
+  DevRegionSetOnce: 1
