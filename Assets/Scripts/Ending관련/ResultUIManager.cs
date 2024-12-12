@@ -15,6 +15,14 @@ public class ResultUIManager : MonoBehaviour
     public GameObject P2LoseUI; // Player 2 패배 UI
     public GameObject DrawUI; // Draw UI
 
+    // 추가된 변수
+    public GameObject player1WinObject; // Player 1 승리 오브젝트
+    public GameObject player1LoseObject; // Player 1 패배 오브젝트
+    public GameObject player2WinObject; // Player 2 승리 오브젝트
+    public GameObject player2LoseObject; // Player 2 패배 오브젝트
+    public GameObject player1DrawObject; // Player 1 무승부 오브젝트
+    public GameObject player2DrawObject; // Player 2 무승부 오브젝트
+
     void Start()
     {
         UpdateResult();
@@ -53,7 +61,6 @@ public class ResultUIManager : MonoBehaviour
         }
     }
 
-    // 승자를 결정하고 UI 업데이트
     private void DetermineWinner()
     {
         int player1Total = int.Parse(player1TotalText.text);
@@ -64,40 +71,65 @@ public class ResultUIManager : MonoBehaviour
         P1LoseUI.SetActive(false);
         P2WinUI.SetActive(false);
         P2LoseUI.SetActive(false);
-        DrawUI.SetActive(false); // Draw UI 초기화
+        DrawUI.SetActive(false);
+        player1DrawObject.SetActive(false);
+        player2DrawObject.SetActive(false);
+
+        // ResultAnimation 컴포넌트 찾기
+        ResultAnimation resultAnimation = FindObjectOfType<ResultAnimation>();
 
         // 점수 비교
         if (player1Total > player2Total)
         {
-            P1WinUI.SetActive(true); // Player 1 승리 UI 활성화
-            P2LoseUI.SetActive(true); // Player 2 패배 UI 활성화
+            P1WinUI.SetActive(true);
+            P2LoseUI.SetActive(true);
+
+            // Player1 승리 애니메이션 설정
+            if (resultAnimation != null)
+            {
+                resultAnimation.SetResult(true);
+            }
+
+            // Player1 승리 및 Player2 패배 오브젝트 활성화
+            if (player1WinObject != null)
+            {
+                player1WinObject.SetActive(true);
+            }
+
+            if (player2LoseObject != null)
+            {
+                player2LoseObject.SetActive(true);
+            }
         }
         else if (player1Total < player2Total)
         {
-            P1LoseUI.SetActive(true); // Player 1 패배 UI 활성화
-            P2WinUI.SetActive(true); // Player 2 승리 UI 활성화
+            P1LoseUI.SetActive(true);
+            P2WinUI.SetActive(true);
+
+            // Player2 승리 애니메이션 설정
+            if (resultAnimation != null)
+            {
+                resultAnimation.SetResult(false);
+            }
+
+            // Player2 승리 및 Player1 패배 오브젝트 활성화
+            if (player2WinObject != null)
+            {
+                player2WinObject.SetActive(true);
+            }
+
+            if (player1LoseObject != null)
+            {
+                player1LoseObject.SetActive(true);
+            }
         }
         else
         {
-            DrawUI.SetActive(true); // Draw UI 활성화
-            Debug.Log("It's a tie!"); // 동점 처리
-        }
-    }
-
-    // PlayerInfo 배열을 이용한 업데이트 메서드
-    public void UpdateResult(PlayerInfo[] playerInfos)
-    {
-        if (playerInfos != null && playerInfos.Length >= 2)
-        {
-            player1NameText.text = playerInfos[0].playerName;
-            player1TotalText.text = playerInfos[0].totalTrashCount.ToString();
-
-            player2NameText.text = playerInfos[1].playerName;
-            player2TotalText.text = playerInfos[1].totalTrashCount.ToString();
-        }
-        else
-        {
-            Debug.LogError("Player info is null or insufficient.");
+            // 점수가 같을 경우
+            DrawUI.SetActive(true);
+            player1DrawObject.SetActive(true);
+            player2DrawObject.SetActive(true);
+            Debug.Log("It's a tie!");
         }
     }
 }
