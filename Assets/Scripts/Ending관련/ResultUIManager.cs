@@ -1,57 +1,57 @@
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 using Photon.Pun;
 
 public class ResultUIManager : MonoBehaviour
 {
-    public TextMeshProUGUI player1NameText;
-    public TextMeshProUGUI player2NameText;
-    public TextMeshProUGUI player1TotalText;
-    public TextMeshProUGUI player2TotalText;
+    public Text player1NameText;
+    public Text player2NameText;
+    public Text player1TotalText;
+    public Text player2TotalText;
 
-    public GameObject P1WinUI; // Player 1 ½Â¸® UI
-    public GameObject P1LoseUI; // Player 1 ÆÐ¹è UI
-    public GameObject P2WinUI; // Player 2 ½Â¸® UI
-    public GameObject P2LoseUI; // Player 2 ÆÐ¹è UI
+    public GameObject P1WinUI; // Player 1 ï¿½Â¸ï¿½ UI
+    public GameObject P1LoseUI; // Player 1 ï¿½Ð¹ï¿½ UI
+    public GameObject P2WinUI; // Player 2 ï¿½Â¸ï¿½ UI
+    public GameObject P2LoseUI; // Player 2 ï¿½Ð¹ï¿½ UI
     public GameObject DrawUI; // Draw UI
 
-    // Ãß°¡µÈ º¯¼ö
-    public GameObject player1WinObject; // Player 1 ½Â¸® ¿ÀºêÁ§Æ®
-    public GameObject player1LoseObject; // Player 1 ÆÐ¹è ¿ÀºêÁ§Æ®
-    public GameObject player2WinObject; // Player 2 ½Â¸® ¿ÀºêÁ§Æ®
-    public GameObject player2LoseObject; // Player 2 ÆÐ¹è ¿ÀºêÁ§Æ®
-    public GameObject player1DrawObject; // Player 1 ¹«½ÂºÎ ¿ÀºêÁ§Æ®
-    public GameObject player2DrawObject; // Player 2 ¹«½ÂºÎ ¿ÀºêÁ§Æ®
+    // ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    public GameObject player1WinObject; // Player 1 ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    public GameObject player1LoseObject; // Player 1 ï¿½Ð¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    public GameObject player2WinObject; // Player 2 ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    public GameObject player2LoseObject; // Player 2 ï¿½Ð¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    public GameObject player1DrawObject; // Player 1 ï¿½ï¿½ï¿½Âºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    public GameObject player2DrawObject; // Player 2 ï¿½ï¿½ï¿½Âºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
     void Start()
     {
         UpdateResult();
-        DetermineWinner(); // ½ÂÀÚ °áÁ¤ ¸Þ¼­µå È£Ãâ
+        DetermineWinner(); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ È£ï¿½ï¿½
     }
 
     public void UpdateResult()
     {
-        // PhotonNetwork.PlayerList¸¦ »ç¿ëÇÏ¿© ÇÃ·¹ÀÌ¾î Á¤º¸¸¦ °¡Á®¿É´Ï´Ù.
+        // PhotonNetwork.PlayerListï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½É´Ï´ï¿½.
         if (PhotonNetwork.PlayerList.Length >= 2)
         {
             for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
             {
                 var player = PhotonNetwork.PlayerList[i];
 
-                // ÇÃ·¹ÀÌ¾î ÀÌ¸§ ¼³Á¤
+                // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
                 if (i == 0)
                 {
                     player1NameText.text = player.NickName;
                     player1TotalText.text = player.CustomProperties.ContainsKey("TotalTrashCount")
                         ? player.CustomProperties["TotalTrashCount"].ToString()
-                        : "0"; // ±âº»°ª 0
+                        : "0"; // ï¿½âº»ï¿½ï¿½ 0
                 }
                 else if (i == 1)
                 {
                     player2NameText.text = player.NickName;
                     player2TotalText.text = player.CustomProperties.ContainsKey("TotalTrashCount")
                         ? player.CustomProperties["TotalTrashCount"].ToString()
-                        : "0"; // ±âº»°ª 0
+                        : "0"; // ï¿½âº»ï¿½ï¿½ 0
                 }
             }
         }
@@ -66,7 +66,7 @@ public class ResultUIManager : MonoBehaviour
         int player1Total = int.Parse(player1TotalText.text);
         int player2Total = int.Parse(player2TotalText.text);
 
-        // UI ÃÊ±âÈ­
+        // UI ï¿½Ê±ï¿½È­
         P1WinUI.SetActive(false);
         P1LoseUI.SetActive(false);
         P2WinUI.SetActive(false);
@@ -75,22 +75,22 @@ public class ResultUIManager : MonoBehaviour
         player1DrawObject.SetActive(false);
         player2DrawObject.SetActive(false);
 
-        // ResultAnimation ÄÄÆ÷³ÍÆ® Ã£±â
+        // ResultAnimation ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® Ã£ï¿½ï¿½
         ResultAnimation resultAnimation = FindObjectOfType<ResultAnimation>();
 
-        // Á¡¼ö ºñ±³
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
         if (player1Total > player2Total)
         {
             P1WinUI.SetActive(true);
             P2LoseUI.SetActive(true);
 
-            // Player1 ½Â¸® ¾Ö´Ï¸ÞÀÌ¼Ç ¼³Á¤
+            // Player1 ï¿½Â¸ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (resultAnimation != null)
             {
                 resultAnimation.SetResult(true);
             }
 
-            // Player1 ½Â¸® ¹× Player2 ÆÐ¹è ¿ÀºêÁ§Æ® È°¼ºÈ­
+            // Player1 ï¿½Â¸ï¿½ ï¿½ï¿½ Player2 ï¿½Ð¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® È°ï¿½ï¿½È­
             if (player1WinObject != null)
             {
                 player1WinObject.SetActive(true);
@@ -106,13 +106,13 @@ public class ResultUIManager : MonoBehaviour
             P1LoseUI.SetActive(true);
             P2WinUI.SetActive(true);
 
-            // Player2 ½Â¸® ¾Ö´Ï¸ÞÀÌ¼Ç ¼³Á¤
+            // Player2 ï¿½Â¸ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (resultAnimation != null)
             {
                 resultAnimation.SetResult(false);
             }
 
-            // Player2 ½Â¸® ¹× Player1 ÆÐ¹è ¿ÀºêÁ§Æ® È°¼ºÈ­
+            // Player2 ï¿½Â¸ï¿½ ï¿½ï¿½ Player1 ï¿½Ð¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® È°ï¿½ï¿½È­
             if (player2WinObject != null)
             {
                 player2WinObject.SetActive(true);
@@ -125,7 +125,7 @@ public class ResultUIManager : MonoBehaviour
         }
         else
         {
-            // Á¡¼ö°¡ °°À» °æ¿ì
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
             DrawUI.SetActive(true);
             player1DrawObject.SetActive(true);
             player2DrawObject.SetActive(true);
