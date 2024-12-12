@@ -625,6 +625,7 @@ MonoBehaviour:
   trash6: TrashBag
   ca: {fileID: 1044452084491499104}
   interactUI: {fileID: 0}
+  DontUI: {fileID: 0}
   progressBar: {fileID: 0}
   maxHoldTime: 2
   currentHoldTime: 0
