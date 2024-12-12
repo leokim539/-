@@ -61,8 +61,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     public bool smartPhone = true;
     [Header("핸드크림")]
     public bool handCream = true;
-    [Header("숟가락")]
-    public bool spoon = true;
+    
 
     void Awake()
     {
@@ -395,12 +394,12 @@ public class Trash2 : MonoBehaviourPunCallbacks
             case "너해킹"://상대 10초간 아이템 사용불가
                 if (PhotonNetwork.IsConnected)
                 {
-                    StartCoroutine(Hacking());
+                    ItemManager.instane.RPCUseSkill2();
                 }
                 Debug.Log("너해킹");
                 break;
 
-            case "휴대용쓰레기통"://상대 10초간 아이템 사용불가
+            case "휴대용쓰레기통"://나 쓰레기통 한번 사용
                 if (PhotonNetwork.IsConnected)
                 {
                     if (photonView.IsMine)
@@ -425,7 +424,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             case "스마트폰"://적이 사용하는 다음 아이템 무력화 
                 if (PhotonNetwork.IsConnected)
                 {
-                    SmartPhone();
+                    ItemManager.instane.RPCUseSkill3();
                 }
                 Debug.Log("스마트폰");
                 break;
@@ -433,7 +432,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             case "핸드크림":// 5초간 아무것도 수집할 수 없게 만듦
                 if (PhotonNetwork.IsConnected)
                 {
-                    StartCoroutine(HandCream());
+                    ItemManager.instane.RPCUseSkill4();
                 }
                 Debug.Log("핸드크림");
                 break;
@@ -441,7 +440,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
             case "강력본드":// 상대 플레이어가 5초간 달릴 수 없게 함
                 if (PhotonNetwork.IsConnected)
                 {
-                    StartCoroutine(Bond());
+                    ItemManager.instane.RPCUseSkill5();
                 }
                 Debug.Log("강력본드");
                 break;
@@ -524,23 +523,16 @@ public class Trash2 : MonoBehaviourPunCallbacks
     }
     private IEnumerator SpeedDown()
     {
-        if (spoon)
+        if (firstPersonController != null)
         {
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in players)
-            {
-                if (player != gameObject) // 자신이 아닌 경우
-                {
-                    float originalSpeed = firstPersonController.moveSpeed;
-                    float runSpeed = firstPersonController.runSpeed;
-                    firstPersonController.moveSpeed -= 3f;
-                    firstPersonController.runSpeed -= 3f;
-                    yield return new WaitForSeconds(5);
+            float originalSpeed = firstPersonController.moveSpeed;
+            float runSpeed = firstPersonController.runSpeed;
+            firstPersonController.moveSpeed -= 2f;
+            firstPersonController.runSpeed -= 3f;
+            yield return new WaitForSeconds(5);
 
-                    firstPersonController.moveSpeed = originalSpeed;
-                    firstPersonController.runSpeed = runSpeed;
-                }
-            }
+            firstPersonController.moveSpeed = originalSpeed;
+            firstPersonController.runSpeed = runSpeed;
         }
         else yield return null;
     }
@@ -553,27 +545,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
         Vector3 trapPosition = playerPosition - playerForward * 2;
         PhotonNetwork.Instantiate(baNaNaPrefab.name, trapPosition, Quaternion.identity);
     }
-    public IEnumerator Hacking()
-    {
-        if (spoon)
-        {
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in players)
-            {
-                if (player != gameObject) // 자신이 아닌 플레이어
-                {
-                    Trash2 otherPlayer = player.GetComponent<Trash2>();
-                    if (otherPlayer != null)
-                    {
-                        otherPlayer.hacking = false;
-                        yield return new WaitForSeconds(5f);
-                        otherPlayer.hacking = true;
-                    }
-                }
-            }
-        }
-        else yield return null;
-    }
+    
     public void UseTrashCan()
     {
         trashManager.scary = 0;
@@ -582,58 +554,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
     {
         soundManager.OnTVSound();
     }
-    public void SmartPhone()
-    {
-        if (spoon)
-        {
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in players)
-            {
-                if (player != gameObject) // 자신이 아닌 플레이어
-                {
-                    smartPhone = false;
-                }
-            }
-        }
-        else return;
-    }
-    public IEnumerator HandCream()
-    {
-        if (spoon)
-        {
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in players)
-            {
-                if (player != gameObject) // 자신이 아닌 플레이어
-                {
-                    handCream = false;
-                    yield return new WaitForSeconds(10);
-                    handCream = true;
-                }
-            }
-        }
-        else yield return null;
-    }
-    public IEnumerator Bond()
-    {
-        if (spoon)
-        {
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in players)
-            {
-                if (player != gameObject) // 자신이 아닌 경우
-                {
-                    if (firstPersonController != null)
-                    {
-                        firstPersonController.bond = false;
-                        yield return new WaitForSeconds(5);
-                        firstPersonController.bond = true;
-                    }
-                }
-            }
-        }
-        else yield return null;
-    }
+    
+    
+    
     public IEnumerator Coffee()
     {
         if (firstPersonController != null)
@@ -653,20 +576,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
     }
     public IEnumerator Spoon()
     {
-        if (spoon)
-        {
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in players)
-            {
-                if (player != gameObject) // 자신이 아닌 경우
-                {
-                    spoon = false;
-                    yield return new WaitForSeconds(10);
-                    spoon = true;
-                }
-            }
-        }
-        else yield return null;
+        firstPersonController.spoon = false;
+        yield return new WaitForSeconds(10);
+        firstPersonController.spoon = true;
     }
     private void PlaySoundForLocalPlayer()
     {
@@ -728,7 +640,23 @@ public class Trash2 : MonoBehaviourPunCallbacks
         item.SetActive(false); // 아이템 비활성화
     }
 }
-
+/*public IEnumerator Spoon()
+    {
+        if (spoon)
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
+            {
+                if (player != gameObject) // 자신이 아닌 경우
+                {
+                    spoon = false;
+                    yield return new WaitForSeconds(10);
+                    spoon = true;
+                }
+            }
+        }
+        else yield return null;
+    }*/
 /*public void RPC_CollectItem(string itemName)
     {
         GameObject item = GameObject.Find(itemName); // �̸����� ������ ã��

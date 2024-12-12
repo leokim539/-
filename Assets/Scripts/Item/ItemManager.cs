@@ -23,13 +23,38 @@ public class ItemManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void RPCUseSkill0()
+    public void RPCUseSkill0()//연막탄
     {
         firstPersonController.m_PhotonView.RPC("ApplyObscuringEffects", RpcTarget.All);
     }
     [PunRPC]
-    public void RPCUseSkill1()
+    public void RPCUseSkill1()//섬광탄
     {
         firstPersonController.m_PhotonView.RPC("TaserGuns", RpcTarget.All);
+    }
+    [PunRPC]
+    public void RPCUseSkill2()//상대 해킹
+    {
+        firstPersonController.m_PhotonView.RPC("Hackings", RpcTarget.All);
+    }
+    [PunRPC]
+    public void RPCUseSkill3()//상대 스킬 1번 무력화
+    {
+        firstPersonController.m_PhotonView.RPC("SmartPhone", RpcTarget.All);
+    }
+    [PunRPC]
+    public void RPCUseSkill4()
+    {
+        firstPersonController.m_PhotonView.RPC("HandCreams", RpcTarget.All);
+    }
+    [PunRPC]
+    public void RPCUseSkill5()//상대 스킬 1번 무력화
+    {
+        firstPersonController.m_PhotonView.RPC("Bonds", RpcTarget.All);
+    }
+    [PunRPC]
+    public void RPCUseSkill6()//상대 스킬 1번 무력화
+    {
+        firstPersonController.m_PhotonView.RPC("Spoons", RpcTarget.All);
     }
 }

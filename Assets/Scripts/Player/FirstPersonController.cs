@@ -64,6 +64,8 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     public bool canMove; 
     public bool bond = true;
     public bool coffee = true;
+    [Header("숟가락")]
+    public bool spoon = true;
     void Awake()
     {
         ItemManager.instane.firstPersonController = this;
@@ -461,17 +463,18 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     {
         StartCoroutine(TaserGun()); // 타겟을 5초간 경직
     }
-    [PunRPC]
-    public void ApplyObscuringEffects()
-    {
-        StartCoroutine(ApplyObscuringEffect()); // 상대 시야 5초간 안보임
-    }
     public IEnumerator TaserGun()
     {
         canMove = false; // 상대방의 이동 비활성화
         yield return new WaitForSeconds(5f); // 5초 대기
         canMove = true; // 상대방의 이동 활성화
     }
+    [PunRPC]
+    public void ApplyObscuringEffects()
+    {
+        StartCoroutine(ApplyObscuringEffect()); // 상대 시야 5초간 안보임
+    }
+
     
     public IEnumerator ApplyObscuringEffect()
     {
@@ -486,8 +489,56 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
 
         PhotonNetwork.Destroy(canvasInstance);
     }
-    
+    [PunRPC]
+    public void Hackings()
+    {
+        StartCoroutine(Hacking()); // 적 5초간 해킹
+    }
+    public IEnumerator Hacking()
+    {
+        trash2.hacking = false;
+        yield return new WaitForSeconds(5f);
+        trash2.hacking = true;               
+    }
+    [PunRPC]
+    public void SmartPhone()
+    {
+         trash2.smartPhone = false;
+    }
+    [PunRPC]
+    public void HandCreams()
+    {
+        StartCoroutine(HandCream()); // 적 5초간 해킹
+    }
+    public IEnumerator HandCream()
+    {
+        trash2.handCream = false;
+        yield return new WaitForSeconds(10);
+        trash2.handCream = true;
 
+    }
+    [PunRPC]
+    public void Bonds()
+    {
+        StartCoroutine(Bond()); // 적 5초간 해킹
+    }
+    public IEnumerator Bond()
+    {
+        bond = false;
+        yield return new WaitForSeconds(5);
+        bond = true;
+    }
+    [PunRPC]
+    public void Spoons()
+    {
+        StartCoroutine(Spoon()); // 적 5초간 해킹
+    }
+    public IEnumerator Spoon()
+    {
+        spoon = false;
+        yield return new WaitForSeconds(10);
+        spoon = true;
+    }
     // 추가한 메서드
     /*public void ResumeMovement()
     {
