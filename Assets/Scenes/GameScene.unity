@@ -17892,15 +17892,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 673513470604582805, guid: 5443438e31bfaa04ca0ab7d6b078bbd1, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.7069834
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 673513470604582805, guid: 5443438e31bfaa04ca0ab7d6b078bbd1, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.7072302
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 673513470604582805, guid: 5443438e31bfaa04ca0ab7d6b078bbd1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -89.98
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 673513470604582805, guid: 5443438e31bfaa04ca0ab7d6b078bbd1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -18041,6 +18041,26 @@ PrefabInstance:
     - target: {fileID: 8044526379420111623, guid: 5443438e31bfaa04ca0ab7d6b078bbd1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708088238609194696, guid: 5443438e31bfaa04ca0ab7d6b078bbd1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708088238609194696, guid: 5443438e31bfaa04ca0ab7d6b078bbd1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708088238609194696, guid: 5443438e31bfaa04ca0ab7d6b078bbd1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708088238609194696, guid: 5443438e31bfaa04ca0ab7d6b078bbd1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708088238609194696, guid: 5443438e31bfaa04ca0ab7d6b078bbd1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -18529,8 +18549,8 @@ MonoBehaviour:
   isUnlocking: 0
   requiresUnlocking: 0
   firstInteraction: 1
-  closedRotation: {x: 0, y: 0, z: 0}
-  openRotation: {x: 0, y: 0, z: 0}
+  closedRotation: {x: -90, y: 0, z: -90}
+  openRotation: {x: -90, y: 0, z: 0}
 --- !u!114 &1016613731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18550,8 +18570,8 @@ MonoBehaviour:
   isUnlocking: 0
   requiresUnlocking: 0
   firstInteraction: 1
-  closedRotation: {x: 0, y: 0, z: 0}
-  openRotation: {x: 0, y: 0, z: 0}
+  closedRotation: {x: -90, y: 0, z: -90}
+  openRotation: {x: -90, y: 0, z: -180}
 --- !u!114 &1016613732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18571,8 +18591,8 @@ MonoBehaviour:
   isUnlocking: 0
   requiresUnlocking: 0
   firstInteraction: 1
-  closedRotation: {x: 0, y: 0, z: 0}
-  openRotation: {x: 0, y: 0, z: 0}
+  closedRotation: {x: -90, y: 0, z: -90}
+  openRotation: {x: -90, y: 0, z: -180}
 --- !u!114 &1016613733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18592,8 +18612,8 @@ MonoBehaviour:
   isUnlocking: 0
   requiresUnlocking: 0
   firstInteraction: 1
-  closedRotation: {x: 0, y: 0, z: 0}
-  openRotation: {x: 0, y: 0, z: 0}
+  closedRotation: {x: -90, y: 0, z: 0}
+  openRotation: {x: -90, y: 0, z: -90}
 --- !u!114 &1016613734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18613,8 +18633,8 @@ MonoBehaviour:
   isUnlocking: 0
   requiresUnlocking: 0
   firstInteraction: 1
-  closedRotation: {x: 0, y: 0, z: 0}
-  openRotation: {x: 0, y: 0, z: 0}
+  closedRotation: {x: -90, y: 0, z: 0}
+  openRotation: {x: -90, y: 0, z: -90}
 --- !u!1001 &1019743259
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34446,8 +34466,8 @@ MonoBehaviour:
   isUnlocking: 0
   requiresUnlocking: 0
   firstInteraction: 1
-  closedRotation: {x: 0, y: 0, z: 0}
-  openRotation: {x: 0, y: 0, z: 0}
+  closedRotation: {x: -90, y: 0, z: 90}
+  openRotation: {x: -90, y: 0, z: 0}
 --- !u!1001 &1513181565
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40773,8 +40793,8 @@ MonoBehaviour:
   isUnlocking: 0
   requiresUnlocking: 0
   firstInteraction: 1
-  closedRotation: {x: 0, y: 0, z: 0}
-  openRotation: {x: 0, y: 0, z: 0}
+  closedRotation: {x: -90, y: 0, z: 180}
+  openRotation: {x: -90, y: 0, z: 90}
 --- !u!1 &1952632190
 GameObject:
   m_ObjectHideFlags: 0
