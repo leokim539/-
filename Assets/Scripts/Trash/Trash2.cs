@@ -30,6 +30,8 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
     [Header("UI 관련")]
     public GameObject interactUI; // F키 UI
+    public GameObject DontUI; // 더 이상 못주울 때 뜨는 UI
+
     public Slider progressBar; // 원형 게이지 슬라이더
     public float maxHoldTime = 2f; // 최대 홀드 시간
     public float currentHoldTime = 0f; // 현재 누르고 있는 시간
@@ -94,11 +96,20 @@ public class Trash2 : MonoBehaviourPunCallbacks
         //firstPersonController = GetComponent<FirstPersonController>();
         //progressBar.maxValue = maxHoldTime; // 슬라이더의 최대 값 설정
         //progressBar.value = 0; // 슬라이더 초기화
+        DontUI = GameObject.Find("DontUI"); // DontUI 찾기
+        if (DontUI == null)
+        {
+            Debug.LogError("DontUI not found!");
+        }
+
+        DontUI.SetActive(false);
 
         ca = GetComponentInChildren<Camera>();
 
         effectTrash = FindObjectOfType<EffectTrash>();
     }
+
+   
 
     public void UpdateTrashCanReference(GameObject trashCanReference)
     {
@@ -156,6 +167,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
         {
             interactUI.SetActive(true); // UI 표시
             progressBar.gameObject.SetActive(true); // 진행 바 표시
+
             if (handCream)
             {
                 if (hit.collider.CompareTag("TrashCan"))
@@ -164,15 +176,30 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 }
                 else if (hit.collider.CompareTag("Trash"))
                 {
+                    // 공포치가 100 이상인 경우 완전히 상호작용 차단
+                    if (trashManager.scary + Trashscary >= 100)
+                    {
+                        DontUI.SetActive(true); // 활성화
+
+                        // 진행 바 및 상호작용 완전 차단
+                        currentHoldTime = 0f;
+                        progressBar.value = 0f;
+                        progressBar.gameObject.SetActive(false);
+                        currentTrash = null;
+                        return; // 더 이상 진행하지 않음
+                    }
+
+                    // 기존 로직 유지 (공포치 100 미만일 때만 상호작용 가능)
                     if (Input.GetKey(KeyCode.F))
                     {
                         currentTrash = hit.collider.gameObject;
-                        if (currentTrash != null) // currentTrash가 null인지 확인
+                        if (currentTrash != null)
                         {
-                            ConsumeTrash(currentTrash); // currentTrash를 인자로 전달
+                            ConsumeTrash(currentTrash);
                         }
                     }
                 }
+                // 기존의 다른 태그 체크 로직들 그대로 유지
                 else if (hit.collider.CompareTag("UseItem"))
                 {
                     if (Input.GetKey(KeyCode.F))
@@ -198,9 +225,12 @@ public class Trash2 : MonoBehaviourPunCallbacks
         }
         else
         {
+            // 레이캐스트에 감지가 없을 때 DontUI 비활성화
+            DontUI.SetActive(false);
             HideUI();
         }
     }
+
 
     void HideUI()
     {
@@ -216,31 +246,18 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
     void ConsumeTrash(GameObject trash)
     {
-        if (trash == null) // trash가 null인지 확인
-        {
-            Debug.LogError("Trash object is null!");
-            return; // null인 경우 메서드 종료
-        }
-
-        if (trashManager == null) // trashManager가 null인지 확인
-        {
-            Debug.LogError("TrashManager is null!");
-            return; // null인 경우 메서드 종료
-        }
-        if (trashManager.scary + Trashscary >= 100)
-        {
-            return; // 공포치가 100 이상이면 소비하지 않음
-        }
+       
 
         string objectName = trash.name;
-        StartCoroutine(CollectItem(currentTrash)); // 아이템 수집 효과 실행
+        StartCoroutine(CollectItem(currentTrash));
         trashManager.scary += Trashscary;
-        trashManager.UpdateScaryBar(); // 공포치 UI 업데이트
+        trashManager.UpdateScaryBar();
 
         UpdateTaskUI(objectName);
 
         photonView.RPC("DestroyItem", RpcTarget.Others, trash.GetComponent<PhotonView>().ViewID);
     }
+
     void UpdateTaskUI(string objectName)
     {
         if (objectName.Contains(trash1))
