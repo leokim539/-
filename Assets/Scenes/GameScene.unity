@@ -3203,7 +3203,7 @@ MonoBehaviour:
   itemImageRect: {fileID: 45318776}
   itemImage: {fileID: 144780448}
   slideDuration: 0.5
-  stayDuration: 1
+  stayDuration: 2
   startPosition: {x: -200, y: 0}
   endPosition: {x: 95, y: 0}
   gameObjects:
@@ -3211,7 +3211,7 @@ MonoBehaviour:
   - {fileID: 425357021}
   - {fileID: 1445384040}
   objectImages:
-  - {fileID: 21300000, guid: 30b54b4ba63f2524fbdccb5717da77f0, type: 3}
+  - {fileID: 21300000, guid: b68cdad3591a89a4d9711627e1a3e6e9, type: 3}
   - {fileID: 21300000, guid: 4a50bd83996178240b5f2d66a89db66e, type: 3}
   - {fileID: 21300000, guid: 36ef82ef9d9efa949bb069a2cd1e63ae, type: 3}
   - {fileID: 21300000, guid: b9fff8a28f420114497e10370f325df7, type: 3}
@@ -3219,11 +3219,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f5b3d1bb24f6b1c45a63e5ed563c97c1, type: 3}
   - {fileID: 21300000, guid: 8b282c9182e59e74bb4c17f6833583ae, type: 3}
   - {fileID: 21300000, guid: 1e6b677f50f53d943bac4fee47da3832, type: 3}
-  - {fileID: 21300000, guid: 928fe1fdd54d14742b83165e86edd92b, type: 3}
+  - {fileID: 21300000, guid: 95a8a9f5a65ee1d4c9721e58b7714536, type: 3}
   - {fileID: 21300000, guid: f0ac0b63293d99d409902e62cfeba692, type: 3}
   - {fileID: 21300000, guid: 532e141a2fe7c024e853bb3ee343dc6c, type: 3}
   - {fileID: 21300000, guid: 305c5cfe6b91ac74b8d8477a24e1b463, type: 3}
-  - {fileID: 21300000, guid: 9a3b1f78981a90d478762e4dd941f219, type: 3}
+  - {fileID: 21300000, guid: 25068b32105752d4bbc80c281fd58e63, type: 3}
   - {fileID: 21300000, guid: 2bcf443d3371f43449b3df6732135324, type: 3}
   - {fileID: 21300000, guid: ea0ff05352421d646ae8fc02eb9484de, type: 3}
   - {fileID: 21300000, guid: 1cf67627c0783ef44bd88ef82a45bf69, type: 3}
@@ -35212,7 +35212,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 102.812256, y: 26.4}
+  m_AnchoredPosition: {x: 102.812256, y: 26.400024}
   m_SizeDelta: {x: 198.6245, y: 44.2835}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1548865300
@@ -36084,7 +36084,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.20425421, g: 0.2498891, b: 0.9622642, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
