@@ -12030,7 +12030,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1235616795}
-  totalTime: 10000
+  totalTime: 40
   GameEndUI: {fileID: 1444120271}
 --- !u!4 &749116330
 Transform:
@@ -12066,9 +12066,9 @@ MonoBehaviour:
   circleText: {fileID: 2027047611}
   cylinderText: {fileID: 552915855}
   squareText: {fileID: 1200425884}
-  BeerCanText: {fileID: 170369875}
-  PetBottleText: {fileID: 1170919461}
-  TrashBagText: {fileID: 322692666}
+  beerCanText: {fileID: 1170919461}
+  petBottleText: {fileID: 322692666}
+  trashBagText: {fileID: 170369875}
 --- !u!114 &749116335
 MonoBehaviour:
   m_ObjectHideFlags: 0
