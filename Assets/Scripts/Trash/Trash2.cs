@@ -31,6 +31,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     [Header("UI 관련")]
     public GameObject interactUI; // F키 UI
     public GameObject DontUI; // 더 이상 못주울 때 뜨는 UI
+    public GameObject ThrowUI; // 쓰레기통과 상호작용할 때 뜨는 UI
 
     public Slider progressBar; // 원형 게이지 슬라이더
     public float maxHoldTime = 2f; // 최대 홀드 시간
@@ -82,6 +83,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     }
     void Start()
     {
+        ThrowUI = GameObject.Find("버리기");
         interactUI = GameObject.Find("F"); // Start에서 찾기
         if (interactUI == null)
         {
@@ -103,6 +105,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
         }
 
         DontUI.SetActive(false);
+        ThrowUI.SetActive(false);
 
         ca = GetComponentInChildren<Camera>();
 
@@ -139,13 +142,15 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 }
             }
         }
-        if (_trashCan)
+       if (_trashCan)
         {
             if (Input.GetKey(KeyCode.F))
             {
                 currentHoldTime += Time.deltaTime; // 초당 1씩 증가
                 progressBar.value = currentHoldTime;
-                if (currentHoldTime >= maxHoldTime)
+
+                // Trashscary가 0이 아닐 때만 진행 바를 업데이트
+                if (Trashscary > 0 && currentHoldTime >= maxHoldTime)
                 {
                     trashCan.TrashCans();
                     ResetHold();
@@ -165,16 +170,23 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
-            interactUI.SetActive(true); // UI 표시
+             // 쓰레기통이 감지되면 interactUI 비활성화
+            if (hit.collider.CompareTag("TrashCan"))
+            {
+                interactUI.SetActive(false); // 쓰레기통을 볼 때는 interactUI 비활성화
+                ThrowUI.SetActive(true); // 쓰레기통 UI 활성화
+                _trashCan = true;
+            }
+            else
+            {
+                interactUI.SetActive(true); // 다른 오브젝트와 상호작용할 때는 interactUI 활성화
+                ThrowUI.SetActive(false); // 쓰레기통이 아닐 경우 ThrowUI 비활성화
+            }
             progressBar.gameObject.SetActive(true); // 진행 바 표시
 
             if (handCream)
             {
-                if (hit.collider.CompareTag("TrashCan"))
-                {
-                    _trashCan = true;
-                }
-                else if (hit.collider.CompareTag("Trash"))
+                   if (hit.collider.CompareTag("Trash"))
                 {
                     // 공포치가 100 이상인 경우 완전히 상호작용 차단
                     if (trashManager.scary + Trashscary >= 100)
@@ -227,6 +239,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
         {
             // 레이캐스트에 감지가 없을 때 DontUI 비활성화
             DontUI.SetActive(false);
+            ThrowUI.SetActive(false);
             HideUI();
         }
     }

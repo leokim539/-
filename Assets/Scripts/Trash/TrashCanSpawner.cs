@@ -5,14 +5,19 @@ using Photon.Pun;
 
 public class TrashCanSpawner : MonoBehaviourPunCallbacks
 {
-    public GameObject trashCan; // ¾À¿¡ ÀÌ¹Ì Á¸ÀçÇÏ´Â Æ®·¡½Ã Äµ
+    public GameObject trashCan; // ì´ë™í•  ì“°ë ˆê¸°í†µ ì˜¤ë¸Œì íŠ¸
     public float spawnInterval = 30f;
     public Transform spawnPointsParent;
     public GameObject warningUI;
+    public AudioClip warningSound; // ê²½ê³  ì‚¬ìš´ë“œ í´ë¦½
+    private AudioSource audioSource; // AudioSource ì»´í¬ë„ŒíŠ¸
 
     public void Start()
     {
-        // ¸¶½ºÅÍ Å¬¶óÀÌ¾ğÆ®¿¡¼­¸¸ MoveTrashCan ÄÚ·çÆ¾ ½ÃÀÛ
+        // AudioSource ì»´í¬ë„ŒíŠ¸ë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
+        audioSource = GetComponent<AudioSource>();
+
+        // ë§ˆìŠ¤í„° í´ë¼ì´ì–¸íŠ¸ì¼ ê²½ìš° MoveTrashCan ì½”ë£¨í‹´ ì‹œì‘
         if (PhotonNetwork.IsMasterClient)
         {
             StartCoroutine(MoveTrashCan());
@@ -23,19 +28,22 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks
     {
         while (true)
         {
-            // 10ÃÊ Àü¿¡ UI È°¼ºÈ­
+            // 10ì´ˆ ì „ UI í™œì„±í™”
             yield return new WaitForSeconds(spawnInterval - 10f);
 
-            // ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡¼­ UI È°¼ºÈ­
+            // ì‚¬ìš´ë“œ ì¬ìƒ
+            photonView.RPC("PlayWarningSoundRPC", RpcTarget.All);
+
+            // UI í™œì„±í™”
             photonView.RPC("ShowWarningUIRPC", RpcTarget.All);
 
-            // ÁöÁ¤µÈ ½Ã°£ µ¿¾È ´ë±â
+            // 5ì´ˆ ëŒ€ê¸°
             yield return new WaitForSeconds(5f);
 
-            // ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡¼­ UI ºñÈ°¼ºÈ­
+            // UI ë¹„í™œì„±í™”
             photonView.RPC("HideWarningUIRPC", RpcTarget.All);
 
-            // ·£´ı À§Ä¡·Î TrashCan ÀÌµ¿ (¸¶½ºÅÍ Å¬¶óÀÌ¾ğÆ®¿¡¼­¸¸ ½ÇÇà)
+            // ì“°ë ˆê¸°í†µ ì´ë™
             if (PhotonNetwork.IsMasterClient)
             {
                 MoveToRandomPosition();
@@ -43,7 +51,7 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks
         }
     }
 
-    // UI °ü·Ã RPC ¸Ş¼­µå Ãß°¡
+    // UI í‘œì‹œ RPC í•¨ìˆ˜
     [PunRPC]
     private void ShowWarningUIRPC()
     {
@@ -56,9 +64,19 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks
         warningUI.SetActive(false);
     }
 
+    // ì‚¬ìš´ë“œ ì¬ìƒ RPC í•¨ìˆ˜
+    [PunRPC]
+    private void PlayWarningSoundRPC()
+    {
+        if (audioSource != null && warningSound != null)
+        {
+            audioSource.PlayOneShot(warningSound);
+        }
+    }
+
     public void MoveToRandomPosition()
     {
-        // SpawnPointsÀÇ ÀÚ½Ä ¿ÀºêÁ§Æ®¸¦ °¡Á®¿È
+        // SpawnPointsì—ì„œ ëœë¤ ìœ„ì¹˜ ì„ íƒ
         Transform[] spawnPoints = spawnPointsParent.GetComponentsInChildren<Transform>();
 
         List<Transform> validSpawnPoints = new List<Transform>();
@@ -67,13 +85,13 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks
             validSpawnPoints.Add(spawnPoints[i]);
         }
 
-        // À¯È¿ÇÑ ½ºÆù Æ÷ÀÎÆ®°¡ ÀÖÀ» ¶§ ·£´ı ¼±ÅÃ
+        // ìœ íš¨í•œ ìœ„ì¹˜ê°€ ìˆì„ ê²½ìš°
         if (validSpawnPoints.Count > 0)
         {
             int randomIndex = Random.Range(0, validSpawnPoints.Count);
             Vector3 newPosition = validSpawnPoints[randomIndex].position;
 
-            // TrashCan ÀÌµ¿ (¸¶½ºÅÍ Å¬¶óÀÌ¾ğÆ®¿¡¼­ ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡ RPC È£Ãâ)
+            // TrashCan ì´ë™ (RPC í˜¸ì¶œ)
             photonView.RPC("MoveTrashCanRPC", RpcTarget.All, newPosition);
         }
         else
@@ -85,7 +103,7 @@ public class TrashCanSpawner : MonoBehaviourPunCallbacks
     [PunRPC]
     public void MoveTrashCanRPC(Vector3 newPosition)
     {
-        // ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡¼­ TrashCanÀ» »õ·Î¿î À§Ä¡·Î ÀÌµ¿
+        // ì“°ë ˆê¸°í†µì„ ìƒˆë¡œìš´ ìœ„ì¹˜ë¡œ ì´ë™
         if (trashCan != null)
         {
             trashCan.transform.position = newPosition;

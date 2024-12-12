@@ -95,6 +95,7 @@ MonoBehaviour:
   - RPCUseSkill6
   - SmartPhone
   - Spoons
+  - PlayWarningSoundRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
