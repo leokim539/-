@@ -85,6 +85,16 @@ MonoBehaviour:
   - HideWarningUIRPC
   - SetActiveRPC
   - ShowWarningUIRPC
+  - Bonds
+  - Hackings
+  - HandCreams
+  - RPCUseSkill2
+  - RPCUseSkill3
+  - RPCUseSkill4
+  - RPCUseSkill5
+  - RPCUseSkill6
+  - SmartPhone
+  - Spoons
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
