@@ -17,7 +17,7 @@ public class ItemPickupUI : MonoBehaviour
     public Sprite[] objectImages; // 게임 오브젝트에 매칭될 이미지 배열
 
     [Header("상호작용 거리")]
-    public float interactionDistance = 5f; // 상호작용 거리
+    public float interactionDistance = 3f; // 상호작용 거리
 
     private Transform playerTransform; // 플레이어 Transform
     private Coroutine currentSlideCoroutine = null; // 현재 실행 중인 슬라이드 Coroutine
