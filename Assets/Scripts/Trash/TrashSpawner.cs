@@ -7,6 +7,7 @@ public class TrashSpawner : MonoBehaviourPunCallbacks
     public BeerCanObjectData[] beerCanTypes; // BeerCanObjectData 배열
     public PetBottleObjectData[] petBottleTypes; // PetBottleObjectData 배열
     public TrashBagObjectData[] trashBagTypes; // TrashBagObjectData 배열
+    public CylinderObjectData[] cylinderTypes; // CylinderObjectData 배열 추가
     public int objectsPerType = 5; // 각 타입당 생성할 객체 수
     public Transform spawnPointsParent; // 스폰 포인트 부모 객체
 
@@ -48,6 +49,7 @@ public class TrashSpawner : MonoBehaviourPunCallbacks
         SpawnBeerCans(validSpawnPoints);
         SpawnPetBottles(validSpawnPoints);
         SpawnTrashBags(validSpawnPoints);
+        SpawnCylinders(validSpawnPoints); // 실린더 오브젝트 생성 추가
 
         Debug.Log("스폰 객체 생성 완료");
     }
@@ -92,6 +94,21 @@ public class TrashSpawner : MonoBehaviourPunCallbacks
                 if (spawnPosition == Vector3.zero) break; // 유효한 위치가 없으면 종료
 
                 PhotonNetwork.Instantiate(trashBag.prefab.name, spawnPosition, Quaternion.identity, 0);
+                occupiedPositions.Add(spawnPosition);
+            }
+        }
+    }
+
+    void SpawnCylinders(List<Transform> validSpawnPoints) // 실린더 스폰 메서드 추가
+    {
+        foreach (var cylinder in cylinderTypes)
+        {
+            for (int i = 0; i < objectsPerType; i++)
+            {
+                Vector3 spawnPosition = GetUniqueSpawnPosition(validSpawnPoints);
+                if (spawnPosition == Vector3.zero) break; // 유효한 위치가 없으면 종료
+
+                PhotonNetwork.Instantiate(cylinder.prefab.name, spawnPosition, Quaternion.identity, 0);
                 occupiedPositions.Add(spawnPosition);
             }
         }

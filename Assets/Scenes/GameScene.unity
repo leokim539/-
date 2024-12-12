@@ -12312,6 +12312,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a7c69e2803a36fd4f8d037a01028cd9d, type: 2}
   trashBagTypes:
   - {fileID: 11400000, guid: 73cd465487637814f8dabdefa7982e93, type: 2}
+  cylinderTypes:
+  - {fileID: 11400000, guid: ca5967ce09cd65941b2059babe27684b, type: 2}
   objectsPerType: 10
   spawnPointsParent: {fileID: 706953348}
 --- !u!114 &706953350
@@ -13075,7 +13077,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1235616795}
-  totalTime: 30
+  totalTime: 100
   GameEndUI: {fileID: 1444120271}
 --- !u!4 &749116330
 Transform:
