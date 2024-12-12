@@ -5027,26 +5027,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1244528808271462, guid: 0b50edd1ab1ea9c4ba8edc42f1b15181, type: 3}
   m_PrefabInstance: {fileID: 274115462}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &278117392
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 958893590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae7555bda93c35c4bbf2abdc3e506def, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  NeedKeyUI: {fileID: 736644065}
-  lockOpenUI: {fileID: 2022037858}
-  lockSound: {fileID: 8300000, guid: 37f00c80e9dde1f409715db08d7e7a5e, type: 3}
-  unlockSound: {fileID: 8300000, guid: 50d64015e4099474186545acf6548e9f, type: 3}
-  interactionDistance: 3
-  soundDistance: 1.5
-  unlockDuration: 1.5
-  keyObject: {fileID: 496067455}
 --- !u!1001 &283075146
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16855,9 +16835,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1912760427357071103, guid: f99600df81b1a6d44abd619502f40979, type: 3}
       insertIndex: -1
       addedObject: {fileID: 291768201}
-    - targetCorrespondingSourceObject: {fileID: 1912760427357071103, guid: f99600df81b1a6d44abd619502f40979, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 278117392}
     - targetCorrespondingSourceObject: {fileID: 5363872547722726867, guid: f99600df81b1a6d44abd619502f40979, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1566551744}
@@ -16894,6 +16871,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5982114743016603433, guid: f99600df81b1a6d44abd619502f40979, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1307939426}
+    - targetCorrespondingSourceObject: {fileID: 5982114743016603433, guid: f99600df81b1a6d44abd619502f40979, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1307939427}
     - targetCorrespondingSourceObject: {fileID: 7423365995848876979, guid: f99600df81b1a6d44abd619502f40979, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2041405036}
@@ -29563,6 +29543,26 @@ MonoBehaviour:
   sceneViewId: 5
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &1307939427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958893586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae7555bda93c35c4bbf2abdc3e506def, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NeedKeyUI: {fileID: 736644065}
+  lockOpenUI: {fileID: 2022037858}
+  lockSound: {fileID: 8300000, guid: 37f00c80e9dde1f409715db08d7e7a5e, type: 3}
+  unlockSound: {fileID: 8300000, guid: 50d64015e4099474186545acf6548e9f, type: 3}
+  interactionDistance: 3
+  soundDistance: 1.5
+  unlockDuration: 1.5
+  keyObject: {fileID: 0}
 --- !u!1 &1308238369
 GameObject:
   m_ObjectHideFlags: 0
