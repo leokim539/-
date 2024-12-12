@@ -6,7 +6,11 @@ public class PlayerTp : MonoBehaviourPunCallbacks
     [Header("순간이동위치")] 
     public Transform portal1; // 포탈 A 위치
     public Transform portal2;
+<<<<<<< HEAD
     public float stayDuration = 1f; // 머무는 시간
+=======
+    public float stayDuration = 2f; // 머무는 시간
+>>>>>>> 3d789fa3b5b5808e3c708510a1bced69630792a3
     private bool isInZone = false; // 플레이어가 특정 지역에 있는지 여부
     private float stayTimer = 0f; // 머무는 시간 카운터
     private PhotonView playerPhotonView; // 순간이동할 플레이어의 PhotonView
