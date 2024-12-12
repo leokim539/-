@@ -111,7 +111,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
         {
             CheckForObject();//확인
 
-            if (itemCanUse && Input.GetKeyDown(KeyCode.E))
+            if (itemCanUse && Input.GetMouseButtonDown(0))
             {
                 if (smartPhone)
                 {
