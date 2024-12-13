@@ -126,26 +126,28 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
 
         }
     }
-
+    void FixedUpdate()
+    {
+        if (!isSettingsOpen)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            CameraRotation(); // 카메라 처리
+            if (canMove)
+            {
+                MovePlayer(); // 이동 처리
+            }
+        }
+    }
     void Update()
     {
-        Debug.Log(canMove);
         if (photonView.IsMine)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 ToggleSettingsPanel();
             }
-            if (!isSettingsOpen)
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                CameraRotation(); // 카메라 처리
-                if (canMove)
-                {
-                    MovePlayer(); // 이동 처리
-                }
-            }
+            
             if (Input.GetKey(keyToPress))
             {
                 panel.SetActive(true);
@@ -456,7 +458,6 @@ public class FirstPersonController : MonoBehaviourPunCallbacks, IPunObservable
     public void TeleportTo(Vector3 targetPosition)
     {
         transform.position = targetPosition;
-        Debug.Log("Player teleported to: " + targetPosition);
     }
     [PunRPC]
     public void TaserGuns()
