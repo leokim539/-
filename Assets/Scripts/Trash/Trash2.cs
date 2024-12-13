@@ -142,15 +142,14 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 }
             }
         }
-       if (_trashCan)
+        
+      if (_trashCan)
         {
             if (Input.GetKey(KeyCode.F))
             {
                 currentHoldTime += Time.deltaTime; // 초당 1씩 증가
                 progressBar.value = currentHoldTime;
-
-                // Trashscary가 0이 아닐 때만 진행 바를 업데이트
-                if (Trashscary > 0 && currentHoldTime >= maxHoldTime)
+                if (currentHoldTime >= maxHoldTime)
                 {
                     trashCan.TrashCans();
                     ResetHold();
@@ -160,7 +159,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
             {
                 ResetHold();
             }
+
         }
+        
     }
 
     void CheckForObject()
@@ -176,6 +177,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 interactUI.SetActive(false); // 쓰레기통을 볼 때는 interactUI 비활성화
                 ThrowUI.SetActive(true); // 쓰레기통 UI 활성화
                 _trashCan = true;
+                progressBar.gameObject.SetActive(true); // 진행 바 활성화
             }
             else
             {

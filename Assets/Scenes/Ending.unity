@@ -573,7 +573,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -22.5
+      value: -24.9
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -819,7 +819,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.9
+      value: 24.3
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1093,7 +1093,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -22.5
+      value: -24.9
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1306,7 +1306,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -22.5
+      value: -24.9
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1908,7 +1908,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.9
+      value: 24.3
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2234,7 +2234,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -300, y: 300}
+  m_AnchoredPosition: {x: -380, y: 300}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1735181565
@@ -2272,13 +2272,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 5
     m_MaxSize: 50
-    m_Alignment: 0
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: 123
 --- !u!1 &1760756787
 GameObject:
   m_ObjectHideFlags: 0
@@ -2674,7 +2674,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.9
+      value: 24.3
       objectReference: {fileID: 0}
     - target: {fileID: 4978887135667488676, guid: 9031fb8ada3fceb4e92d60ffdfef02bc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2789,7 +2789,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
+  m_SizeDelta: {x: 1920, y: 1100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1996285150
 MonoBehaviour:
@@ -2938,7 +2938,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 300, y: 300}
+  m_AnchoredPosition: {x: 380, y: 300}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2130421278
@@ -2976,13 +2976,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 5
     m_MaxSize: 50
-    m_Alignment: 0
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: 123
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
