@@ -1,19 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class TutorialController : MonoBehaviour
 {
     [Header("UI Elements")]
     public GameObject tutorialPanel; // 튜토리얼 패널
     public Image tutorialImage; // 튜토리얼 이미지
-    public TMP_Text tutorialText; // 튜토리얼 텍스트
     public Button nextButton; // 다음 버튼
     public Button backButton; // 이전 버튼
 
     [Header("Tutorial Data")]
     public Sprite[] tutorialImages; // 튜토리얼 이미지 배열
-    public string[] tutorialTexts; // 튜토리얼 텍스트 배열
 
     private int currentIndex = 0; // 현재 페이지 인덱스
 
@@ -50,9 +47,8 @@ public class TutorialController : MonoBehaviour
         if (!ValidateFields()) return; // 필드 유효성 검사
         if (!ValidateData()) return; // 데이터 유효성 검사
 
-        // 이미지와 텍스트 업데이트
+        // 이미지 업데이트
         tutorialImage.sprite = tutorialImages[currentIndex];
-        tutorialText.text = tutorialTexts[currentIndex];
 
         // 버튼 활성화/비활성화 처리
         backButton.gameObject.SetActive(currentIndex > 0); // 첫 번째 페이지에서는 이전 버튼 비활성화
@@ -80,7 +76,7 @@ public class TutorialController : MonoBehaviour
     // 필드 유효성 검사 함수
     private bool ValidateFields()
     {
-        if (tutorialPanel == null || tutorialImage == null || tutorialText == null || nextButton == null || backButton == null)
+        if (tutorialPanel == null || tutorialImage == null || nextButton == null || backButton == null)
         {
             return false;
         }
@@ -90,11 +86,7 @@ public class TutorialController : MonoBehaviour
     // 데이터 유효성 검사 함수
     private bool ValidateData()
     {
-        if (tutorialImages == null || tutorialTexts == null || tutorialImages.Length == 0 || tutorialTexts.Length == 0)
-        {
-            return false;
-        }
-        if (tutorialImages.Length != tutorialTexts.Length)
+        if (tutorialImages == null || tutorialImages.Length == 0)
         {
             return false;
         }

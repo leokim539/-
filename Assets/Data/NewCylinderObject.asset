@@ -9,11 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 005ee23ae41844643a129995db538355, type: 3}
-  m_Name: cylinder
+  m_Script: {fileID: 11500000, guid: 1aabeb3185f4a9e41a58f21c7b23905e, type: 3}
+  m_Name: NewCylinderObject
   m_EditorClassIdentifier: 
-  prefab: {fileID: 520402341616845165, guid: 47cfb2e9d236e5849ab4757825991f4f, type: 3}
-  spawnPosition:
-  - {x: 1, y: 1, z: 1}
-  - {x: 2, y: 1, z: 1}
-  - {x: 3, y: 1, z: 1}
+  prefab: {fileID: 5638474871531026574, guid: bfd9080714d346a46a4430eb552d39eb, type: 3}

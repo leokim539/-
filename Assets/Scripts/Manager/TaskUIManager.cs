@@ -137,11 +137,11 @@ public class TaskUIManager : MonoBehaviourPunCallbacks
     public void UpdateUI()
     {
         if (circleText != null) circleText.text = $"{circleCount}/5";
-        if (cylinderText != null) cylinderText.text = $"{cylinderCount}/5";
+        if (cylinderText != null) cylinderText.text = $"{cylinderCount}/10";
         if (squareText != null) squareText.text = $"{squareCount}/5";
-        if (beerCanText != null) beerCanText.text = $"{beerCanCount}/5";
-        if (petBottleText != null) petBottleText.text = $"{petBottleCount}/5";
-        if (trashBagText != null) trashBagText.text = $"{trashBagCount}/5";
+        if (beerCanText != null) beerCanText.text = $"{beerCanCount}/10";
+        if (petBottleText != null) petBottleText.text = $"{petBottleCount}/10";
+        if (trashBagText != null) trashBagText.text = $"{trashBagCount}/10";
 
         foreach (var playerInfo in playerInfos)
         {
