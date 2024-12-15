@@ -171,7 +171,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
 
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
-             // 쓰레기통이 감지되면 interactUI 비활성화
+            // 쓰레기통이 감지되면 interactUI 비활성화
             if (hit.collider.CompareTag("TrashCan"))
             {
                 interactUI.SetActive(false); // 쓰레기통을 볼 때는 interactUI 비활성화
@@ -179,16 +179,22 @@ public class Trash2 : MonoBehaviourPunCallbacks
                 _trashCan = true;
                 progressBar.gameObject.SetActive(true); // 진행 바 활성화
             }
+            else if (hit.collider.CompareTag("Trash") || hit.collider.CompareTag("UseItem") || hit.collider.CompareTag("Item"))
+            {
+                interactUI.SetActive(true); // 쓰레기나 아이템과 상호작용할 때는 interactUI 활성화
+                ThrowUI.SetActive(false); // 쓰레기통이 아닐 경우 ThrowUI 비활성화
+                _trashCan = false;
+                progressBar.gameObject.SetActive(true); // 진행 바 활성화
+            }
             else
             {
-                interactUI.SetActive(true); // 다른 오브젝트와 상호작용할 때는 interactUI 활성화
-                ThrowUI.SetActive(false); // 쓰레기통이 아닐 경우 ThrowUI 비활성화
+                HideUI();
+                _trashCan = false;
             }
-            progressBar.gameObject.SetActive(true); // 진행 바 표시
 
             if (handCream)
             {
-                   if (hit.collider.CompareTag("Trash"))
+                if (hit.collider.CompareTag("Trash"))
                 {
                     // 공포치가 100 이상인 경우 완전히 상호작용 차단
                     if (trashManager.scary + Trashscary >= 100)
@@ -231,17 +237,14 @@ public class Trash2 : MonoBehaviourPunCallbacks
                         ConsumeDangerTrash(currentTrash);
                     }
                 }
-                else
-                {
-                    HideUI();
-                }
             }
         }
         else
         {
-            // 레이캐스트에 감지가 없을 때 DontUI 비활성화
+            // 레이캐스트에 감지가 없을 때 모든 UI 비활성화
             DontUI.SetActive(false);
             ThrowUI.SetActive(false);
+            _trashCan = false;
             HideUI();
         }
     }
