@@ -42,6 +42,7 @@ public class Trash2 : MonoBehaviourPunCallbacks
     public GameObject DontUI; // 더 이상 못주울 때 뜨는 UI
     public GameObject ThrowUI; // 쓰레기통과 상호작용할 때 뜨는 UI
     public GameObject NoTrashUI; // 버릴게없음 UI
+    public GameObject ItemUseUI; // 아이템 사용 알림 UI
 
     public Slider progressBar; // 원형 게이지 슬라이더
     public float maxHoldTime = 2f; // 최대 홀드 시간
@@ -121,6 +122,16 @@ public class Trash2 : MonoBehaviourPunCallbacks
             Debug.LogError("DontUI not found!");
         }
 
+       ItemUseUI = GameObject.Find("ItemUseUI");
+     if (ItemUseUI == null)
+     {
+        Debug.LogError("ItemUseUI not found!");
+     }
+     else
+     {
+        ItemUseUI.SetActive(false); // 초기 상태는 비활성화
+     }
+
         DontUI.SetActive(false);
         ThrowUI.SetActive(false);
 
@@ -145,29 +156,38 @@ public class Trash2 : MonoBehaviourPunCallbacks
         trashCan = trashCanReference.GetComponent<TrashCan>();
     }
 
+ 
+
     void Update()
     {
-        if (photonView.IsMine)
-        {
-            CheckForObject();//확인
+       
+    if (photonView.IsMine)
+    {
+        CheckForObject();
 
-            if (itemCanUse && Input.GetMouseButtonDown(0))
+        if (itemCanUse && Input.GetMouseButtonDown(0))
+        {
+          
+     if (smartPhone)
+     {
+        Debug.Log("Using item: " + currentItem);
+        ItemUse(currentItem);
+        if (PhotonNetwork.IsConnected)
+        {
+            photonView.RPC("ShowItemUseUI", RpcTarget.All);
+        }
+        currentItem = null;
+        ItemImage.sprite = null;
+        itemCanUse = false;
+     }
+            else if (!smartPhone)
             {
-                if (smartPhone)
-                {
-                    ItemUse(currentItem);
-                    currentItem = null; // 현재 아이템 초기화
-                    ItemImage.sprite = null; // UI 이미지 초기화
-                    itemCanUse = false;
-                }
-                else if (!smartPhone)
-                {
-                    currentItem = null; // 현재 아이템 초기화
-                    ItemImage.sprite = null; // UI 이미지 초기화
-                    itemCanUse = false;
-                }
+                currentItem = null;
+                ItemImage.sprite = null;
+                itemCanUse = false;
             }
         }
+    }
         
       if (_trashCan)
         {
@@ -190,8 +210,52 @@ public class Trash2 : MonoBehaviourPunCallbacks
         
     }
 
-   void CheckForObject()
+    [PunRPC]
+private void ShowItemUseUI()
 {
+    Debug.Log("ShowItemUseUI RPC Called");
+    if (!photonView.IsMine)
+    {
+        if (ItemUseUI != null)
+        {
+            StartCoroutine(ShowItemUseUICoroutine());
+        }
+        else
+        {
+            ItemUseUI = GameObject.Find("아이템에당함");
+            if (ItemUseUI != null)
+            {
+                StartCoroutine(ShowItemUseUICoroutine());
+            }
+            else
+            {
+                Debug.LogError("ItemUseUI not found in RPC!");
+            }
+        }
+    }
+}
+
+ private IEnumerator ShowItemUseUICoroutine()
+ {
+    Debug.Log("Starting UI Coroutine");  // 코루틴 시작 확인
+    if (ItemUseUI != null)
+    {
+        ItemUseUI.SetActive(true);
+        Debug.Log("UI Activated");  // UI 활성화 확인
+        yield return new WaitForSeconds(3f);
+        ItemUseUI.SetActive(false);
+        Debug.Log("UI Deactivated");  // UI 비활성화 확인
+    }
+    else
+    {
+        Debug.LogError("ItemUseUI is null!");
+    }
+ }
+
+
+   
+   void CheckForObject()
+ {
     RaycastHit hit;
     Ray ray = ca.ScreenPointToRay(Input.mousePosition);
 
