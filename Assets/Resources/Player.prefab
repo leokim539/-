@@ -496,6 +496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactDistance: 3
   Trashscary: 30
+  itemPickupUI: {fileID: 0}
   trash1: circle
   trash2: cylinder
   trash3: square

@@ -11,6 +11,9 @@ public class Trash2 : MonoBehaviourPunCallbacks
     [Header("쓰레기 먹으면 늘어나는 양")]
     public int Trashscary; // 쓰레기 먹으면 증가하는 공포치
 
+    [SerializeField] private ItemPickupUI itemPickupUI; // Inspector에서 할당
+
+
     private GameObject Manager;
     private TrashManager trashManager;
     private TaskUIManager taskUIManager;
@@ -92,6 +95,12 @@ public class Trash2 : MonoBehaviourPunCallbacks
         Manager = GameObject.Find("Manager");
         trashManager = Manager.GetComponent<TrashManager>();
         taskUIManager = Manager.GetComponent<TaskUIManager>();
+
+        // 기존 Start 코드...
+        if (itemPickupUI == null)
+        {
+            itemPickupUI = FindObjectOfType<ItemPickupUI>();
+        }
 
         TrashCan = GameObject.Find("TrashCan");
         trashCan = TrashCan.GetComponent<TrashCan>();
@@ -303,58 +312,49 @@ public class Trash2 : MonoBehaviourPunCallbacks
             taskUIManager.StoreTrashBagCount(); // 카운트 저장
         }
     }
-    void ConsumeDangerTrash(GameObject trash)
+   void ConsumeDangerTrash(GameObject trash)
+{
+    currentItem = null;
+    ItemImage.sprite = null;
+    
+    if (trash.CompareTag("Item") || trash.CompareTag("UseItem"))
     {
-        currentItem = null; // 현재 아이템 초기화
-        ItemImage.sprite = null; // UI 이미지 초기화
-        if (trash.CompareTag("Item"))
-        {
+        // UseItem인 경우 랜덤 아이템 선택
+        if(trash.CompareTag("UseItem")) {
+            int randomIndex = Random.Range(0, ItemNames.Length);
+            currentItem = ItemNames[randomIndex];
+        } else {
             currentItem = item;
-            int index = System.Array.IndexOf(ItemNames, currentItem); // 아이템 이름의 인덱스 찾기
-
-            //StartCoroutine(CollectItem(currentTrash));
-            if (index >= 0 && index < ItemSprites.Length)
-            {
-                ItemImage.sprite = ItemSprites[index]; // 해당 인덱스의 스프라이트로 이미지 변경
-                Debug.LogWarning(currentItem);
-                itemCanUse = true;
-            } // 선택된 주문 이름에 따라 이미지 업데이트
-            PhotonView trashPhotonView = trash.GetComponent<PhotonView>();
-            if (trashPhotonView != null)
-            {
-                Debug.Log(trashPhotonView.ViewID);
-                photonView.RPC("DestroyItem", RpcTarget.All, trashPhotonView.ViewID);
-            }
-            else
-            {
-                Debug.LogError("지금 못찾음");
-            }
         }
-        else if (trash.CompareTag("UseItem"))
+
+        // Trash2의 UI 업데이트
+        int itemIndex = System.Array.IndexOf(ItemNames, currentItem);
+        if (itemIndex >= 0 && itemIndex < ItemSprites.Length)
         {
-            int randomIndex = Random.Range(0, ItemNames.Length); // 랜덤 인덱스 생성
-            currentItem = ItemNames[randomIndex]; // 랜덤으로 선택된 아이템 이름
-            int index = System.Array.IndexOf(ItemNames, currentItem); // 아이템 이름의 인덱스 찾기
+            ItemImage.sprite = ItemSprites[itemIndex];
+            itemCanUse = true;
+        }
 
-            //StartCoroutine(CollectItem(currentTrash));
-            if (index >= 0 && index < ItemSprites.Length)
+        // ItemPickupUI 업데이트
+        if (itemPickupUI != null)
+        {
+            // trash 오브젝트와 매칭되는 이미지 찾기
+            int pickupIndex = System.Array.IndexOf(itemPickupUI.gameObjects, trash);
+            if (pickupIndex >= 0 && pickupIndex < itemPickupUI.objectImages.Length)
             {
-                ItemImage.sprite = ItemSprites[index]; // 해당 인덱스의 스프라이트로 이미지 변경
-                Debug.LogWarning(currentItem);
-                itemCanUse = true;
-            } // 선택된 주문 이름에 따라 이미지 업데이트
-            PhotonView trashPhotonView = trash.GetComponent<PhotonView>();
-            if (trashPhotonView != null)
-            {
-                photonView.RPC("DestroyItem", RpcTarget.All, trashPhotonView.ViewID);
-            }
-            else
-            {
-                Debug.LogError("지금 못찾음");
+                itemPickupUI.TriggerItemPickupUI(itemPickupUI.objectImages[pickupIndex]);
             }
         }
-        HideUI();
+
+        PhotonView trashPhotonView = trash.GetComponent<PhotonView>();
+        if (trashPhotonView != null)
+        {
+            photonView.RPC("DestroyItem", RpcTarget.All, trashPhotonView.ViewID);
+        }
     }
+    HideUI();
+}
+
 
     public void ItemUse(string item)
     {

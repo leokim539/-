@@ -4,23 +4,26 @@ using UnityEngine.UI;
 
 public class ItemPickupUI : MonoBehaviour
 {
-    [Header("½½¶óÀÌµå ¾Ö´Ï¸ŞÀÌ¼Ç °ü·Ã")]
-    public RectTransform itemImageRect; // ¾ÆÀÌÅÛ ÀÌ¹ÌÁöÀÇ RectTransform
-    public Image itemImage; // UI¿¡ Ç¥½ÃµÉ ¾ÆÀÌÅÛ ÀÌ¹ÌÁö
-    public float slideDuration = 0.5f; // ½½¶óÀÌµå ¾Ö´Ï¸ŞÀÌ¼Ç ½Ã°£
-    public float stayDuration = 1f; // È­¸é¿¡ ¸Ó¹«´Â ½Ã°£
-    public Vector2 startPosition = new Vector2(-200, 0); // ½ÃÀÛ À§Ä¡
-    public Vector2 endPosition = new Vector2(95, 0); // ³¡ À§Ä¡
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½")]
+    public RectTransform itemImageRect; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ RectTransform
+    public Image itemImage; // UIï¿½ï¿½ Ç¥ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½
+    public float slideDuration = 0.5f; // ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ã°ï¿½
+    public float stayDuration = 1f; // È­ï¿½é¿¡ ï¿½Ó¹ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+    public Vector2 startPosition = new Vector2(-200, 0); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
+    public Vector2 endPosition = new Vector2(95, 0); // ï¿½ï¿½ ï¿½ï¿½Ä¡
 
-    [Header("°ÔÀÓ ¿ÀºêÁ§Æ® ¹× ÀÌ¹ÌÁö ¸ÅÇÎ")]
-    public GameObject[] gameObjects; // °ÔÀÓ ¿ÀºêÁ§Æ® ¹è¿­
-    public Sprite[] objectImages; // °ÔÀÓ ¿ÀºêÁ§Æ®¿¡ ¸ÅÄªµÉ ÀÌ¹ÌÁö ¹è¿­
+    private bool shouldShowUI = false;
+    private Sprite itemSpriteToShow;
 
-    [Header("»óÈ£ÀÛ¿ë °Å¸®")]
-    public float interactionDistance = 3f; // »óÈ£ÀÛ¿ë °Å¸®
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
+    public GameObject[] gameObjects; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½è¿­
+    public Sprite[] objectImages; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Äªï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½è¿­
 
-    private Transform playerTransform; // ÇÃ·¹ÀÌ¾î Transform
-    private Coroutine currentSlideCoroutine = null; // ÇöÀç ½ÇÇà ÁßÀÎ ½½¶óÀÌµå Coroutine
+    [Header("ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½Å¸ï¿½")]
+    public float interactionDistance = 3f; // ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½Å¸ï¿½
+
+    private Transform playerTransform; // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ Transform
+    private Coroutine currentSlideCoroutine = null; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ Coroutine
 
     void Start()
     {
@@ -31,10 +34,24 @@ public class ItemPickupUI : MonoBehaviour
 
     void Update()
     {
-        if (playerTransform != null && Input.GetKeyDown(KeyCode.F))
+        if (shouldShowUI)
         {
             HandleInteraction();
+            shouldShowUI = false;
         }
+    }
+    
+
+    // ì™¸ë¶€ì—ì„œ í˜¸ì¶œí•  ë©”ì„œë“œ ì¶”ê°€
+    public void TriggerItemPickupUI(Sprite itemSprite)
+    {
+        itemSpriteToShow = itemSprite;
+        shouldShowUI = true;
+    }
+
+    private void HandleInteraction()
+    {
+        ShowItemUI(itemSpriteToShow);
     }
 
     private IEnumerator FindPlayerTransform()
@@ -45,43 +62,17 @@ public class ItemPickupUI : MonoBehaviour
             if (player != null)
             {
                 playerTransform = player.transform;
-                Debug.Log("PlayerÀÇ TransformÀ» ¼º°øÀûÀ¸·Î ¼³Á¤Çß½À´Ï´Ù.");
+                Debug.Log("Playerï¿½ï¿½ Transformï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½.");
             }
             else
             {
-                Debug.LogWarning("Player ÅÂ±×¸¦ °¡Áø ¿ÀºêÁ§Æ®¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù. ´Ù½Ã ½ÃµµÇÕ´Ï´Ù...");
+                Debug.LogWarning("Player ï¿½Â±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½Ù½ï¿½ ï¿½Ãµï¿½ï¿½Õ´Ï´ï¿½...");
             }
-            yield return new WaitForSeconds(0.5f); // 0.5ÃÊ¸¶´Ù Àç½Ãµµ
+            yield return new WaitForSeconds(0.5f); // 0.5ï¿½Ê¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ãµï¿½
         }
     }
 
-    private void HandleInteraction()
-    {
-        for (int i = 0; i < gameObjects.Length; i++)
-        {
-            if (gameObjects[i] != null)
-            {
-                // ¿ÀºêÁ§Æ®¿ÍÀÇ °Å¸® °è»ê
-                float distance = Vector3.Distance(playerTransform.position, gameObjects[i].transform.position);
-
-                if (distance <= interactionDistance)
-                {
-                    // UI Ç¥½Ã ¹× ¿ÀºêÁ§Æ® Á¦°Å
-                    ShowItemUI(objectImages[i]);
-                    Destroy(gameObjects[i]);
-
-                    // ¹è¿­ Á¤¸®
-                    gameObjects[i] = null;
-                    return;
-                }
-                else
-                {
-                    Debug.Log($"¿ÀºêÁ§Æ®°¡ ³Ê¹« ¸Ö¾î¼­ »óÈ£ÀÛ¿ëÇÒ ¼ö ¾ø½À´Ï´Ù. ÇöÀç °Å¸®: {distance}");
-                }
-            }
-        }
-        Debug.Log("»óÈ£ÀÛ¿ë °¡´ÉÇÑ ¿ÀºêÁ§Æ®°¡ ¾ø½À´Ï´Ù.");
-    }
+    
 
     public void ShowItemUI(Sprite sprite)
     {
@@ -94,20 +85,20 @@ public class ItemPickupUI : MonoBehaviour
 
     IEnumerator SlideUI(Sprite sprite)
     {
-        // ÀÌ¹ÌÁö ¼³Á¤
+        // ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         itemImage.sprite = sprite;
         itemImageRect.gameObject.SetActive(true);
 
-        // ¿ŞÂÊ¿¡¼­ ¿À¸¥ÂÊÀ¸·Î ½½¶óÀÌµå
+        // ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½
         yield return StartCoroutine(Slide(startPosition, endPosition, slideDuration));
 
-        // ÀÏÁ¤ ½Ã°£ µ¿¾È ¸Ó¹«¸§
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ó¹ï¿½ï¿½ï¿½
         yield return new WaitForSeconds(stayDuration);
 
-        // ¿À¸¥ÂÊ¿¡¼­ ¿ŞÂÊÀ¸·Î ½½¶óÀÌµå
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½
         yield return StartCoroutine(Slide(endPosition, startPosition, slideDuration));
 
-        // UI ºñÈ°¼ºÈ­
+        // UI ï¿½ï¿½È°ï¿½ï¿½È­
         itemImageRect.gameObject.SetActive(false);
 
         currentSlideCoroutine = null;
