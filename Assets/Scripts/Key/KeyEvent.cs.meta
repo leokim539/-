@@ -3,7 +3,10 @@ guid: de3e1fdaef7842543adb0ae2e971b15d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - interactionUI: {instanceID: 0}
+  - doorToUnlock: {instanceID: 0}
+  - keyPickupSound: {fileID: 8300000, guid: 2f59d922654d48f4e85c01bece574f3a, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
