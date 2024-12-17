@@ -991,7 +991,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.27014354, g: 0.47464135, b: 0.5471698, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -49230,6 +49230,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 84809174}
     m_Modifications:
+    - target: {fileID: 83227362855321551, guid: 9ecb69863a0bb1a4daeaa3c1b9ccb011, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: b1381f06d91ebb5478e503b4075d5290, type: 3}
     - target: {fileID: 893681390328998251, guid: 9ecb69863a0bb1a4daeaa3c1b9ccb011, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
