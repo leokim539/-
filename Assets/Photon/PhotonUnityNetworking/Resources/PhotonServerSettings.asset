@@ -97,6 +97,11 @@ MonoBehaviour:
   - Spoons
   - PlayWarningSoundRPC
   - ShowItemUseUI
+  - ActivateFUI
+  - TeleportPlayer
+  - RequestTeleport
+  - HandleTeleportRequest
+  - PerformTeleport
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
