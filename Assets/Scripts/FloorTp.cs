@@ -1,46 +1,83 @@
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class FloorTP : MonoBehaviour
+public class FloorTP : MonoBehaviourPunCallbacks
 {
-    public GameObject triggerObject; // 트리거 역할을 할 빈 오브젝트
-    public GameObject targetObject; // 순간이동할 빈 오브젝트
-    public GameObject FUI; // 활성화할 UI 요소
-    private bool isInTrigger = false; // 트리거 안에 있는지 여부
+    public GameObject triggerObject;
+    public GameObject targetObject;
+    public GameObject FUI;
+    private PhotonView photonView;
+    private bool isLocalPlayerInTrigger = false;
 
     void Start()
     {
-        // FUI를 비활성화합니다.
+        photonView = GetComponent<PhotonView>();
+        // 모든 클라이언트에서 UI 비활성화
         FUI.SetActive(false);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) // 플레이어가 트리거에 들어갔는지 확인
+        // 오직 로컬 플레이어에 대해서만 UI 활성화
+        if (other.CompareTag("Player") && other.GetComponent<PhotonView>().IsMine)
         {
-            isInTrigger = true;
-            FUI.SetActive(true); // FUI 활성화
+            isLocalPlayerInTrigger = true;
+            FUI.SetActive(true);
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player")) // 플레이어가 트리거에서 나갔는지 확인
+        // 오직 로컬 플레이어에 대해서만 UI 비활성화
+        if (other.CompareTag("Player") && other.GetComponent<PhotonView>().IsMine)
         {
-            isInTrigger = false;
-            FUI.SetActive(false); // FUI 비활성화
+            isLocalPlayerInTrigger = false;
+            FUI.SetActive(false);
         }
     }
 
     void Update()
     {
-        if (isInTrigger && Input.GetKeyDown(KeyCode.F)) // F 키가 눌렸을 때
+        // 오직 로컬 플레이어의 트리거 상태에서만 F키 입력 처리
+        if (isLocalPlayerInTrigger && Input.GetKeyDown(KeyCode.F))
         {
-            // 순간이동
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
+            // 현재 클라이언트의 플레이어 정보 가져오기
+            GameObject localPlayer = GameObject.FindGameObjectWithTag("Player");
+            if (localPlayer != null)
             {
-                player.transform.position = targetObject.transform.position; // 플레이어 위치를 타겟 오브젝트 위치로 변경
+                PhotonView playerPhotonView = localPlayer.GetComponent<PhotonView>();
+
+                // 로컬 플레이어일 때만 마스터 클라이언트에게 텔레포트 요청
+                if (playerPhotonView.IsMine)
+                {
+                    photonView.RPC("HandleTeleportRequest", RpcTarget.MasterClient, playerPhotonView.ViewID);
+                }
             }
+        }
+    }
+
+    [PunRPC]
+    void HandleTeleportRequest(int playerViewID)
+    {
+        // 마스터 클라이언트만 실행
+        if (PhotonNetwork.IsMasterClient)
+        {
+            // 텔레포트 명령을 요청한 특정 플레이어에게만 전달
+            photonView.RPC("PerformTeleport", RpcTarget.All, playerViewID);
+        }
+    }
+
+    [PunRPC]
+    void PerformTeleport(int playerViewID)
+    {
+        // 특정 플레이어 ID로 플레이어 찾기
+        PhotonView targetPlayerView = PhotonView.Find(playerViewID);
+
+        if (targetPlayerView != null && targetPlayerView.IsMine)
+        {
+            // 오직 해당 플레이어만 이동
+            targetPlayerView.gameObject.transform.position = targetObject.transform.position;
         }
     }
 }
